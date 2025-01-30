@@ -1,9 +1,10 @@
+import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 
 export default function HomePage() {
   return (
     <>
-      <nav className="h-24 w-full bg-yellow-200">navbar</nav>
+      <Navbar />
 
       <section className="h-[calc(100vh-6rem)] w-full bg-green-200">
         landing hero
