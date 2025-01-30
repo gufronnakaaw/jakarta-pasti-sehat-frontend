@@ -1,16 +1,23 @@
-import { Button } from "@heroui/react";
-import { ArrowRight } from "@phosphor-icons/react";
+import Layout from "@/components/wrapper/Layout";
 
 export default function HomePage() {
   return (
-    <div className="flex h-screen w-full items-center justify-center">
-      <Button
-        color="primary"
-        endContent={<ArrowRight weight="bold" size={18} />}
-        className="px-8 font-bold"
-      >
-        Button
-      </Button>
-    </div>
+    <>
+      <nav className="h-24 w-full bg-yellow-200">navbar</nav>
+
+      <section className="h-[calc(100vh-6rem)] w-full bg-green-200">
+        landing hero
+      </section>
+
+      <Layout title="Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat">
+        <section className="h-screen bg-red-200">content 1</section>
+
+        <section className="h-screen bg-lime-200">content 2</section>
+
+        <section className="h-screen bg-zinc-200">content 3</section>
+      </Layout>
+
+      <footer className="bg-orange h-[625px] w-full">footer</footer>
+    </>
   );
 }
