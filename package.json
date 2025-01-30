@@ -3,24 +3,41 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^9.4.0",
+    "@heroui/react": "^2.6.14",
+    "@next/third-parties": "^15.1.6",
+    "@phosphor-icons/react": "^2.1.7",
+    "axios": "^1.7.9",
+    "embla-carousel-react": "^8.5.2",
+    "framer-motion": "^12.0.6",
+    "html-react-parser": "^5.2.2",
+    "next": "14.2.15",
+    "next-auth": "^4.24.11",
+    "nextjs-progressbar": "^0.0.16",
     "react": "^18",
     "react-dom": "^18",
-    "next": "14.2.15"
+    "react-easy-crop": "^5.2.0",
+    "react-hot-toast": "^2.5.1",
+    "swr": "^2.3.0",
+    "tailwind-merge": "^2.6.0",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
-    "typescript": "^5",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.15"
+    "eslint-config-next": "14.2.15",
+    "postcss": "^8",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.11",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
   }
 }
