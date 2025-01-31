@@ -110,10 +110,14 @@ export default function Navbar() {
               <X weight="bold" size={18} />
             </Button>
           </div>
+
+          <Button color="secondary" className="px-8 font-bold">
+            Dukungan Untuk Kami
+          </Button>
         </div>
 
         <div className="flex items-center">
-          <Button color="secondary" className="font-bold">
+          <Button color="secondary" className="hidden font-bold lg:flex">
             Dukungan Untuk Kami
           </Button>
 
