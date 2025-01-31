@@ -1,3 +1,4 @@
+import CardPrinciples from "@/components/card/CardPrinciples";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { Button } from "@heroui/react";
@@ -56,7 +57,7 @@ export default function HomePage() {
             />
 
             <div className="grid">
-              <h1 className="mb-4 text-[32px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px] xl:text-[52px]">
+              <h1 className="mb-4 text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px] xl:text-[52px]">
                 <Quotes
                   weight="fill"
                   size={28}
@@ -84,7 +85,15 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="h-screen bg-lime-200">content 2</section>
+        <section className="grid pb-[150px]">
+          <div className="mx-auto grid max-w-[600px] gap-8 lg:mx-0 lg:max-w-none lg:items-center">
+            <h1 className="text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+              Prinsip kami untuk jakarta pasti sehat
+            </h1>
+
+            <CardPrinciples />
+          </div>
+        </section>
 
         <section className="h-screen bg-zinc-200">content 3</section>
       </Layout>
