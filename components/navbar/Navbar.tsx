@@ -1,3 +1,4 @@
+import { LogoJPS } from "@/public/img/logo";
 import { Button } from "@heroui/react";
 import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -17,7 +18,6 @@ export default function Navbar() {
   const router = useRouter();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
-
   const isHome = router.pathname === "/";
 
   useEffect(() => {
@@ -53,16 +53,19 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`fixed left-0 top-0 w-full transition-all ${isHome ? (stickyHeader ? "bg-white" : "bg-transparent") : "bg-green-100"}`}
+      className={`fixed left-0 top-0 z-50 w-full transition-all ${isHome ? (stickyHeader ? "bg-white" : "bg-transparent") : "bg-white"}`}
     >
       <div className="mx-auto flex h-24 max-w-[1440px] items-center justify-between gap-4 px-6">
-        <Link
-          href="#"
-          className={`text-xl font-black transition-all ${
-            isHome ? (stickyHeader ? "text-black" : "text-white") : "text-black"
-          }`}
-        >
-          Logo
+        <Link href="#">
+          <LogoJPS
+            className={`h-auto w-[100px] transition-all ${
+              isHome
+                ? stickyHeader
+                  ? "text-green"
+                  : "text-white"
+                : "text-green"
+            }`}
+          />
         </Link>
 
         {/* === desktop view === */}
@@ -99,8 +102,8 @@ export default function Navbar() {
           ))}
 
           <div className="absolute left-0 top-4 flex w-full items-center justify-between gap-2 px-4">
-            <Link href="#" className="text-xl font-black">
-              Logo
+            <Link href="#">
+              <LogoJPS className="h-auto w-[100px] text-green" />
             </Link>
 
             <Button isIconOnly variant="light" onPress={toggleMenu}>
@@ -118,16 +121,22 @@ export default function Navbar() {
             isIconOnly
             variant="light"
             onPress={toggleMenu}
-            className="ml-2 lg:hidden"
+            className={`ml-2 lg:hidden ${
+              isHome
+                ? stickyHeader
+                  ? "text-black"
+                  : "text-white"
+                : "text-black"
+            }`}
           >
-            <List weight="bold" size={18} />
+            <List weight="bold" size={24} />
           </Button>
         </div>
       </div>
 
       {/* === overlay === */}
       <div
-        className={`absolute left-0 top-0 z-10 h-screen w-full bg-black/20 transition-all ${isMenuOpen ? "flex" : "hidden"}`}
+        className={`absolute left-0 top-0 z-10 h-screen w-full bg-black/30 backdrop-blur-[2px] transition-all ${isMenuOpen ? "flex" : "hidden"}`}
         onClick={toggleMenu}
       />
     </nav>
