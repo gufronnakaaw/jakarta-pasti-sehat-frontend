@@ -1,3 +1,4 @@
+import CardArticle from "@/components/card/CardArticle";
 import CardPrinciples from "@/components/card/CardPrinciples";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
@@ -87,7 +88,7 @@ export default function HomePage() {
 
         <section className="grid pb-[150px]">
           <div className="mx-auto grid max-w-[600px] gap-8 lg:mx-0 lg:max-w-none lg:items-center">
-            <h1 className="text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+            <h1 className="px-8 text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
               Prinsip kami untuk jakarta pasti sehat
             </h1>
 
@@ -95,7 +96,37 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="h-screen bg-zinc-200">content 3</section>
+        <section className="grid pb-[150px]">
+          <div className="mx-auto grid max-w-[600px] gap-8 lg:max-w-none">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="grid gap-2">
+                <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+                  Artikel Terbaru
+                </h1>
+                <p className="font-medium leading-[180%] text-gray">
+                  Temukan berbagai artikel terbaru seputar kesehatan,
+                  <br />
+                  gaya hidup, dan tips menjaga kesejahteraan.
+                </p>
+              </div>
+
+              <Button
+                variant="light"
+                color="primary"
+                endContent={<ArrowRight weight="bold" size={18} />}
+                className="font-bold capitalize"
+              >
+                Lihat semua artikel
+              </Button>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+              {Array.from({ length: 5 }, (_, index) => (
+                <CardArticle key={index} />
+              ))}
+            </div>
+          </div>
+        </section>
       </Layout>
 
       <footer className="h-[625px] w-full bg-orange">footer</footer>
