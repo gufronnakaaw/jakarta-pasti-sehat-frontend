@@ -1,5 +1,6 @@
 import CardArticle from "@/components/card/CardArticle";
 import CardEvent from "@/components/card/CardEvent";
+import CardPartner from "@/components/card/CardPartner";
 import CardPrinciples from "@/components/card/CardPrinciples";
 import CardTeam from "@/components/card/CardTeam";
 import Navbar from "@/components/navbar/Navbar";
@@ -50,7 +51,7 @@ export default function HomePage() {
 
       <Layout title="Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat">
         <section className="grid justify-items-center py-[150px]">
-          <div className="grid max-w-[600px] gap-6 lg:max-w-none lg:grid-cols-2 lg:items-center xl:gap-12">
+          <div className="grid w-full max-w-[600px] gap-6 lg:max-w-none lg:grid-cols-2 lg:items-center xl:gap-12">
             <Image
               src="/img/about-img.png"
               alt="about img"
@@ -89,7 +90,7 @@ export default function HomePage() {
         </section>
 
         <section className="grid pb-[150px]">
-          <div className="mx-auto grid max-w-[600px] gap-8 lg:mx-0 lg:max-w-none lg:items-center">
+          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:mx-0 lg:max-w-none lg:items-center">
             <h1 className="px-8 text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
               Prinsip kami untuk jakarta pasti sehat
             </h1>
@@ -99,7 +100,7 @@ export default function HomePage() {
         </section>
 
         <section className="grid pb-[150px]">
-          <div className="mx-auto grid max-w-[600px] gap-8 lg:max-w-none">
+          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
                 <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
@@ -131,7 +132,7 @@ export default function HomePage() {
         </section>
 
         <section className="grid pb-[150px]">
-          <div className="mx-auto grid max-w-[600px] gap-8 lg:max-w-none">
+          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
                 <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
@@ -163,7 +164,7 @@ export default function HomePage() {
         </section>
 
         <section className="grid pb-[150px]">
-          <div className="mx-auto grid max-w-[600px] gap-8 lg:max-w-none">
+          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
             <div className="grid justify-items-center gap-2 text-center">
               <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
                 Tim Terbaik Kami
@@ -180,6 +181,28 @@ export default function HomePage() {
                 <CardTeam key={index} />
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="grid pb-[150px]">
+          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
+            <h1 className="text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+              Tim Terbaik Kami
+            </h1>
+
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
+              {Array.from({ length: 7 }, (_, index) => (
+                <CardPartner key={index} />
+              ))}
+            </div>
+
+            <Button
+              color="primary"
+              endContent={<ArrowRight weight="bold" size={18} />}
+              className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
+            >
+              Lihat semua mitra
+            </Button>
           </div>
         </section>
       </Layout>
