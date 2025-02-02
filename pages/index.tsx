@@ -1,4 +1,5 @@
 import CardArticle from "@/components/card/CardArticle";
+import CardEvent from "@/components/card/CardEvent";
 import CardPrinciples from "@/components/card/CardPrinciples";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
@@ -121,8 +122,40 @@ export default function HomePage() {
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-              {Array.from({ length: 5 }, (_, index) => (
+              {Array.from({ length: 4 }, (_, index) => (
                 <CardArticle key={index} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid pb-[150px]">
+          <div className="mx-auto grid max-w-[600px] gap-8 lg:max-w-none">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div className="grid gap-2">
+                <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+                  Event Kami
+                </h1>
+                <p className="font-medium leading-[180%] text-gray">
+                  Daftar event menarik yang kami selenggarakan, mulai
+                  <br />
+                  dari seminar, workshop, hingga kegiatan komunitas.
+                </p>
+              </div>
+
+              <Button
+                variant="light"
+                color="primary"
+                endContent={<ArrowRight weight="bold" size={18} />}
+                className="font-bold capitalize"
+              >
+                Lihat semua event
+              </Button>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+              {Array.from({ length: 4 }, (_, index) => (
+                <CardEvent key={index} />
               ))}
             </div>
           </div>
