@@ -11,7 +11,7 @@ const navMenu = [
   { key: "documentation", path: "/documentation", text: "Dokumentasi" },
   { key: "article", path: "/article", text: "Artikel" },
   { key: "event", path: "/event", text: "Event" },
-  { key: "contact", path: "contact-us", text: "Hubungi Kami" },
+  { key: "contact", path: "/company/contact-us", text: "Hubungi Kami" },
 ];
 
 export default function Navbar() {

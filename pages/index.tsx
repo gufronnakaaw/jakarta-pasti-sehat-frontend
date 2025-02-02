@@ -3,6 +3,7 @@ import CardEvent from "@/components/card/CardEvent";
 import CardPartner from "@/components/card/CardPartner";
 import CardPrinciples from "@/components/card/CardPrinciples";
 import CardTeam from "@/components/card/CardTeam";
+import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { Button } from "@heroui/react";
@@ -207,7 +208,7 @@ export default function HomePage() {
         </section>
       </Layout>
 
-      <footer className="h-[625px] w-full bg-orange">footer</footer>
+      <Footer />
     </>
   );
 }
