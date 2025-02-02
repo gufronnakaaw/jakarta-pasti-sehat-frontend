@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 const navMenu = [
   { key: "home", path: "/", text: "Beranda" },
-  { key: "about", path: "/about-us", text: "Tentang Kami" },
+  { key: "about", path: "/company/about-us", text: "Tentang Kami" },
   { key: "documentation", path: "/documentation", text: "Dokumentasi" },
   { key: "article", path: "/article", text: "Artikel" },
   { key: "event", path: "/event", text: "Event" },
