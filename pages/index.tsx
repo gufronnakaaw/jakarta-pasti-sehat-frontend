@@ -1,6 +1,7 @@
 import CardArticle from "@/components/card/CardArticle";
 import CardEvent from "@/components/card/CardEvent";
 import CardPrinciples from "@/components/card/CardPrinciples";
+import CardTeam from "@/components/card/CardTeam";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { Button } from "@heroui/react";
@@ -156,6 +157,27 @@ export default function HomePage() {
             <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
               {Array.from({ length: 4 }, (_, index) => (
                 <CardEvent key={index} />
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid pb-[150px]">
+          <div className="mx-auto grid max-w-[600px] gap-8 lg:max-w-none">
+            <div className="grid justify-items-center gap-2 text-center">
+              <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+                Tim Terbaik Kami
+              </h1>
+              <p className="max-w-[800px] font-medium leading-[180%] text-gray">
+                Tim kami terdiri dari individu yang berdedikasi, berkomitmen,
+                dan peduli terhadap kesehatan warga Jakarta. Kami bekerja
+                bersama membuat perubahan nyata yang positif untuk semua.
+              </p>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+              {Array.from({ length: 4 }, (_, index) => (
+                <CardTeam key={index} />
               ))}
             </div>
           </div>
