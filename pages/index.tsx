@@ -51,8 +51,8 @@ export default function HomePage() {
       </section>
 
       <Layout title="Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat">
-        <section className="grid justify-items-center py-[150px]">
-          <div className="grid w-full max-w-[600px] gap-6 lg:max-w-none lg:grid-cols-2 lg:items-center xl:gap-12">
+        <section className="base pt-[150px]">
+          <div className="wrapper lg:grid-cols-2 lg:items-center xl:gap-12">
             <Image
               src="/img/about-img.png"
               alt="about img"
@@ -90,8 +90,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="grid pb-[150px]">
-          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:mx-0 lg:max-w-none lg:items-center">
+        <section className="base">
+          <div className="wrapper lg:items-center">
             <h1 className="px-8 text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
               Prinsip kami untuk jakarta pasti sehat
             </h1>
@@ -100,8 +100,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="grid pb-[150px]">
-          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
+        <section className="base">
+          <div className="wrapper">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
                 <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
@@ -132,8 +132,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="grid pb-[150px]">
-          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
+        <section className="base">
+          <div className="wrapper">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
                 <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
@@ -164,8 +164,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="grid pb-[150px]">
-          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
+        <section className="base">
+          <div className="wrapper">
             <div className="grid justify-items-center gap-2 text-center">
               <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
                 Tim Terbaik Kami
@@ -185,8 +185,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="grid pb-[150px]">
-          <div className="mx-auto grid w-full max-w-[600px] gap-8 lg:max-w-none">
+        <section className="base">
+          <div className="wrapper">
             <h1 className="text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
               Tim Terbaik Kami
             </h1>

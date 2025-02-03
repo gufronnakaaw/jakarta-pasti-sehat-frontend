@@ -11,3 +11,12 @@
 ::selection {
   @apply bg-secondary text-white;
 }
+
+@layer utilities {
+  .base {
+    @apply grid justify-items-center pb-[150px];
+  }
+  .wrapper {
+    @apply grid w-full max-w-[600px] gap-8 lg:max-w-none;
+  }
+}
