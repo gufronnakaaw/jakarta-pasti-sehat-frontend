@@ -62,7 +62,7 @@ export default function HomePage() {
             />
 
             <div className="grid">
-              <h1 className="mb-4 text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px] xl:text-[52px]">
+              <h1 className="title mb-4 xl:text-[52px]">
                 <Quotes
                   weight="fill"
                   size={28}
@@ -92,7 +92,7 @@ export default function HomePage() {
 
         <section className="base">
           <div className="wrapper lg:items-center">
-            <h1 className="px-8 text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
+            <h1 className="title px-8 text-center">
               Prinsip kami untuk jakarta pasti sehat
             </h1>
 
@@ -104,9 +104,7 @@ export default function HomePage() {
           <div className="wrapper">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
-                <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
-                  Artikel Terbaru
-                </h1>
+                <h1 className="title">Artikel Terbaru</h1>
                 <p className="font-medium leading-[180%] text-gray">
                   Temukan berbagai artikel terbaru seputar kesehatan,
                   <br />
@@ -136,9 +134,7 @@ export default function HomePage() {
           <div className="wrapper">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div className="grid gap-2">
-                <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
-                  Event Kami
-                </h1>
+                <h1 className="title">Event Kami</h1>
                 <p className="font-medium leading-[180%] text-gray">
                   Daftar event menarik yang kami selenggarakan, mulai
                   <br />
@@ -167,9 +163,7 @@ export default function HomePage() {
         <section className="base">
           <div className="wrapper">
             <div className="grid justify-items-center gap-2 text-center">
-              <h1 className="text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
-                Tim Terbaik Kami
-              </h1>
+              <h1 className="title">Tim Terbaik Kami</h1>
               <p className="max-w-[800px] font-medium leading-[180%] text-gray">
                 Tim kami terdiri dari individu yang berdedikasi, berkomitmen,
                 dan peduli terhadap kesehatan warga Jakarta. Kami bekerja
@@ -187,9 +181,7 @@ export default function HomePage() {
 
         <section className="base">
           <div className="wrapper">
-            <h1 className="text-center text-[36px] font-black capitalize leading-[100%] -tracking-[2px] text-black sm:text-[42px]">
-              Tim Terbaik Kami
-            </h1>
+            <h1 className="title text-center">Tim Terbaik Kami</h1>
 
             <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
               {Array.from({ length: 7 }, (_, index) => (
