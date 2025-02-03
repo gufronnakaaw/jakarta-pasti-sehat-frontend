@@ -56,7 +56,7 @@ export default function Navbar() {
       className={`fixed left-0 top-0 z-50 w-full transition-all ${isHome ? (stickyHeader ? "bg-white" : "bg-transparent") : "bg-white"}`}
     >
       <div className="mx-auto flex h-24 max-w-[1440px] items-center justify-between gap-4 px-6">
-        <Link href="#">
+        <Link href="/">
           <LogoJPS
             className={`h-auto w-[100px] transition-all ${
               isHome
