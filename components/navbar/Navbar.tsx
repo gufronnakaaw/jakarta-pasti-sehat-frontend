@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 const navMenu = [
   { key: "home", path: "/", text: "Beranda" },
   { key: "about", path: "/company/about-us", text: "Tentang Kami" },
-  { key: "documentation", path: "/documentation", text: "Dokumentasi" },
-  { key: "article", path: "/article", text: "Artikel" },
-  { key: "event", path: "/event", text: "Event" },
+  { key: "documentation", path: "/documentations", text: "Dokumentasi" },
+  { key: "article", path: "/articles", text: "Artikel" },
+  { key: "event", path: "/events", text: "Event" },
   { key: "contact", path: "/company/contact-us", text: "Hubungi Kami" },
 ];
 
