@@ -9,8 +9,12 @@ import Layout from "@/components/wrapper/Layout";
 import { Button } from "@heroui/react";
 import { ArrowRight, Quotes } from "@phosphor-icons/react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function HomePage() {
+  const router = useRouter();
+
   return (
     <>
       <Navbar />
@@ -32,6 +36,8 @@ export default function HomePage() {
             </p>
 
             <Button
+              as={Link}
+              href="#about"
               color="primary"
               endContent={<ArrowRight weight="bold" size={18} />}
               className="mt-6 w-max px-8 font-bold"
@@ -51,7 +57,7 @@ export default function HomePage() {
       </section>
 
       <Layout title="Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat">
-        <section className="base pt-[150px]">
+        <section id="about" className="base pt-[150px]">
           <div className="wrapper lg:grid-cols-2 lg:items-center xl:gap-12">
             <Image
               src="/img/about-img.png"
@@ -83,6 +89,7 @@ export default function HomePage() {
                 color="primary"
                 endContent={<ArrowRight weight="bold" size={18} />}
                 className="mt-10 w-max px-8 font-bold"
+                onPress={() => router.push("/company/about-us")}
               >
                 Detail Tentang Kami
               </Button>
@@ -181,7 +188,7 @@ export default function HomePage() {
 
         <section className="base">
           <div className="wrapper">
-            <h1 className="title text-center">Tim Terbaik Kami</h1>
+            <h1 className="title text-center">Mitra Kami</h1>
 
             <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
               {Array.from({ length: 7 }, (_, index) => (
