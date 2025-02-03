@@ -58,7 +58,7 @@ export default function Footer() {
             className="h-auto w-[250px] brightness-[1000%]"
           />
 
-          <div className="flex flex-wrap items-start gap-20">
+          <div className="flex flex-wrap items-start gap-6 xs:gap-10 md:gap-16 xl:gap-20">
             {footerMenu.map((menu, index) => (
               <div key={index} className="grid gap-4">
                 <h3 className="text-[22px] font-extrabold text-white">
