@@ -183,6 +183,15 @@ export default function HomePage() {
                 <CardTeam key={index} />
               ))}
             </div>
+
+            <Button
+              color="primary"
+              endContent={<ArrowRight weight="bold" size={18} />}
+              onPress={() => router.push("/company/our-teams")}
+              className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
+            >
+              Lihat semua tim
+            </Button>
           </div>
         </section>
 
