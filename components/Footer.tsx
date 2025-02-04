@@ -40,7 +40,7 @@ const footerMenu = [
     title: "Panduan",
     list: [
       { url: "/company/privacy-policy", label: "Kebijakan Privasi" },
-      { url: "/company/terms-condition", label: "Syarat dan Ketentuan" },
+      { url: "/company/terms-conditions", label: "Syarat dan Ketentuan" },
       { url: "/company/contact-us", label: "Hubungi Kami" },
     ],
   },
