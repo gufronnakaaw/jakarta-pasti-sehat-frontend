@@ -199,6 +199,7 @@ export default function HomePage() {
             <Button
               color="primary"
               endContent={<ArrowRight weight="bold" size={18} />}
+              onPress={() => router.push("/partners")}
               className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
             >
               Lihat semua mitra
