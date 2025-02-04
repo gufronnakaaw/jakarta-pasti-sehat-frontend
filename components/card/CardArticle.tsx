@@ -6,7 +6,7 @@ export default function CardArticle() {
   return (
     <Link
       href="#"
-      className="group grid overflow-hidden rounded-2xl bg-white shadow-[4px_2px_18px_rgba(0,0,0,0.0.1)]"
+      className="group grid overflow-hidden rounded-2xl bg-white shadow-[4px_2px_18px_rgba(0,0,0,0.1)]"
     >
       <div className="relative aspect-square overflow-hidden">
         <Image
