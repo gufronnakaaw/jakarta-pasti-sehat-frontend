@@ -153,6 +153,7 @@ export default function HomePage() {
                 variant="light"
                 color="primary"
                 endContent={<ArrowRight weight="bold" size={18} />}
+                onPress={() => router.push("/events")}
                 className="font-bold capitalize"
               >
                 Lihat semua event
