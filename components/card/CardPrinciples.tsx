@@ -15,7 +15,7 @@ const priciples = [
   {
     id: 2,
     icon: ChatsCircle,
-    title: "Relateble",
+    title: "Relatable",
     text: "Dekat dan bisa diandalkan, setiap program dan informasi yang kami tawarkan relevan dengan kebutuhan sehari-hari warga Jakarta.",
   },
   {
