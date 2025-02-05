@@ -123,6 +123,7 @@ export default function HomePage() {
                 variant="light"
                 color="primary"
                 endContent={<ArrowRight weight="bold" size={18} />}
+                onPress={() => router.push("/articles")}
                 className="font-bold capitalize"
               >
                 Lihat semua artikel

@@ -1,6 +1,8 @@
-import CardEvent from "@/components/card/CardEvent";
+import CardArticle from "@/components/card/CardArticle";
+import CTAMain from "@/components/cta/CTAMain";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
+import SearchInput from "@/components/SearchInput";
 import Layout from "@/components/wrapper/Layout";
 import { Select, SelectItem } from "@heroui/react";
 import { Sliders } from "@phosphor-icons/react";
@@ -11,21 +13,21 @@ const filterEventData = [
   { key: "oldest", text: "Terlama" },
 ];
 
-export default function EventsPage() {
+export default function ArticlesPage() {
   return (
     <>
       <Navbar />
 
-      <Layout title="Event Kami">
+      <Layout title="Artikel">
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
-            <h1 className="title mb-8 text-center lg:mb-16">Event Kami 🎉</h1>
+            <h1 className="title mb-8 text-center lg:mb-16">
+              Temukan Artikel Apapun Disini 📰
+            </h1>
 
             <div className="grid gap-4">
               <div className="flex flex-wrap items-end justify-between gap-4">
-                <h2 className="text-[24px] font-black leading-[110%] -tracking-[1px] text-black lg:text-[28px]">
-                  Daftar Event
-                </h2>
+                <SearchInput placeholder="Cari Artikel..." />
 
                 <Select
                   aria-label="filter event"
@@ -54,11 +56,23 @@ export default function EventsPage() {
 
               <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
                 {Array.from({ length: 4 }, (_, index) => (
-                  <CardEvent key={index} />
+                  <CardArticle key={index} />
                 ))}
               </div>
             </div>
           </div>
+        </section>
+
+        <section className="base">
+          <CTAMain
+            title={
+              <>
+                Dapatkan artikel terkini dari{" "}
+                <br className="hidden lg:inline" />
+                kami seputar kesehatan!
+              </>
+            }
+          />
         </section>
       </Layout>
 
