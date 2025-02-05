@@ -1,15 +1,8 @@
 import CardEvent from "@/components/card/CardEvent";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
+import SelectFilterData from "@/components/SelectFilterData";
 import Layout from "@/components/wrapper/Layout";
-import { Select, SelectItem } from "@heroui/react";
-import { Sliders } from "@phosphor-icons/react";
-
-const filterEventData = [
-  { key: "all", text: "Semua" },
-  { key: "newest", text: "Terbaru" },
-  { key: "oldest", text: "Terlama" },
-];
 
 export default function EventsPage() {
   return (
@@ -27,29 +20,7 @@ export default function EventsPage() {
                   Daftar Event
                 </h2>
 
-                <Select
-                  aria-label="filter event"
-                  variant="flat"
-                  placeholder="Filter"
-                  labelPlacement="outside"
-                  defaultSelectedKeys={["all"]}
-                  startContent={
-                    <Sliders weight="bold" size={18} className="text-black" />
-                  }
-                  listboxProps={{
-                    itemClasses: {
-                      title: "font-semibold text-black",
-                    },
-                  }}
-                  classNames={{
-                    base: "w-[180px]",
-                    value: "font-semibold text-black",
-                  }}
-                >
-                  {filterEventData.map((item) => (
-                    <SelectItem key={item.key}>{item.text}</SelectItem>
-                  ))}
-                </Select>
+                <SelectFilterData />
               </div>
 
               <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
