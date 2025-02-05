@@ -15,7 +15,12 @@ export default function Layout({ children, className, title }: LayoutProps) {
         <title>{`${title} | Jakarta Pasti Sehat`}</title>
       </Head>
 
-      <div className={twMerge("mx-auto w-full max-w-[1440px] px-6", className)}>
+      <div
+        className={twMerge(
+          "mx-auto min-h-[calc(100vh-6rem)] w-full max-w-[1440px] px-6",
+          className,
+        )}
+      >
         {children}
       </div>
     </>
