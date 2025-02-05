@@ -6,13 +6,20 @@ import CardTeam from "@/components/card/CardTeam";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
+import { SuccessResponse } from "@/types/global";
+import { Homepage } from "@/types/homepage";
+import { fetcher } from "@/utils/fetcher";
 import { Button } from "@heroui/react";
 import { ArrowRight, Quotes } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-export default function HomePage() {
+export default function HomePage({
+  data,
+  error,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
   return (
@@ -221,3 +228,29 @@ export default function HomePage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  data?: Homepage;
+  error?: any;
+}> = async () => {
+  try {
+    const response: SuccessResponse<Homepage> = await fetcher({
+      endpoint: "/homepage",
+      method: "GET",
+    });
+
+    return {
+      props: {
+        data: response.data,
+      },
+    };
+  } catch (error: any) {
+    console.error(error);
+
+    return {
+      props: {
+        error,
+      },
+    };
+  }
+};
