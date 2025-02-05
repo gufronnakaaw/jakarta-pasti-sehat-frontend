@@ -1,8 +1,9 @@
+import { ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 
 type TitleTextProps = {
   title: string;
-  text: string;
+  text: ReactNode;
   className?: string;
 };
 

@@ -1,6 +1,7 @@
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
+import Link from "next/link";
 
 export default function DashboardPage() {
   return (
@@ -10,7 +11,18 @@ export default function DashboardPage() {
           <div className="flex items-end justify-between gap-4">
             <TitleText
               title="Selamat Datang 👋"
-              text="Berikut rangkuman web jakartapastisehat.com"
+              text={
+                <>
+                  Berikut rangkuman web{" "}
+                  <Link
+                    href="https://jakartapastisehat.com"
+                    target="_blank"
+                    className="font-bold text-orange hover:underline"
+                  >
+                    jakartapastisehat.com
+                  </Link>
+                </>
+              }
             />
 
             <span className="text-sm font-bold text-black">
