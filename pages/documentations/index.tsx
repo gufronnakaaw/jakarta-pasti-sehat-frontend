@@ -12,7 +12,7 @@ export default function DocumentationsPage() {
       <Layout title="Dokumentasi">
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
-            <div className="mb-8 grid justify-items-center gap-2 text-center">
+            <div className="mb-8 grid justify-items-center gap-4 text-center">
               <h1 className="title text-center">Dokumentasi 📷</h1>
               <p className="max-w-[900px] font-medium leading-[180%] text-gray">
                 Kami membagikan dokumentasi lengkap dari beberapa kegiatan yang

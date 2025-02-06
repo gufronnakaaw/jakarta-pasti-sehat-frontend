@@ -12,7 +12,7 @@ export default function OurTeamsPage() {
       <Layout title="Tim Kami">
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
-            <div className="mb-8 grid justify-items-center gap-2 text-center">
+            <div className="mb-8 grid justify-items-center gap-4 text-center">
               <h1 className="title text-center">Tim Terbaik Kami 🧡</h1>
               <p className="max-w-[800px] font-medium leading-[180%] text-gray">
                 Tim kami terdiri dari individu yang berdedikasi, berkomitmen,
