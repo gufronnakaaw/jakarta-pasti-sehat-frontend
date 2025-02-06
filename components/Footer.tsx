@@ -29,7 +29,7 @@ const footerMenu = [
       { url: "mailto:jktpastisehat@gmail.com", label: "Email" },
       { url: "https://instagram.com/pastisehat.jkt", label: "Instagram" },
       { url: "https://www.tiktok.com/@pastisehat.jkt", label: "Tiktok" },
-      { url: "https://wa.me/085212775157", label: "WhatsApp" },
+      { url: "https://wa.me/+6285212775157", label: "WhatsApp" },
       { url: "#", label: "LinkedIn" },
       { url: "#", label: "Twitter/X" },
       { url: "#", label: "Youtube" },
