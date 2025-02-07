@@ -6,9 +6,9 @@ const footerMenu = [
     key: "about",
     title: "Tentang Kami",
     list: [
-      { url: "/company/about-us", label: "Tentang Kami" },
-      { url: "/company/careers", label: "karir" },
-      { url: "/company/our-teams", label: "Tim Kami" },
+      { url: "/about-us", label: "Tentang Kami" },
+      { url: "/careers", label: "karir" },
+      { url: "/our-teams", label: "Tim Kami" },
     ],
   },
   {
@@ -39,9 +39,9 @@ const footerMenu = [
     key: "guides",
     title: "Panduan",
     list: [
-      { url: "/company/privacy-policy", label: "Kebijakan Privasi" },
-      { url: "/company/terms-conditions", label: "Syarat dan Ketentuan" },
-      { url: "/company/contact-us", label: "Hubungi Kami" },
+      { url: "/privacy-policy", label: "Kebijakan Privasi" },
+      { url: "/terms-conditions", label: "Syarat dan Ketentuan" },
+      { url: "/contact-us", label: "Hubungi Kami" },
     ],
   },
 ];

@@ -7,11 +7,11 @@ import { useEffect, useState } from "react";
 
 const navMenu = [
   { key: "home", path: "/", text: "Beranda" },
-  { key: "about", path: "/company/about-us", text: "Tentang Kami" },
+  { key: "about", path: "/about-us", text: "Tentang Kami" },
   { key: "documentation", path: "/documentations", text: "Dokumentasi" },
   { key: "article", path: "/articles", text: "Artikel" },
   { key: "event", path: "/events", text: "Event" },
-  { key: "contact", path: "/company/contact-us", text: "Hubungi Kami" },
+  { key: "contact", path: "/contact-us", text: "Hubungi Kami" },
 ];
 
 export default function Navbar() {
