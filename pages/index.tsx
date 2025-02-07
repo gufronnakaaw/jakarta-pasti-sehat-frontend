@@ -26,7 +26,7 @@ export default function HomePage({
     <>
       <Navbar />
 
-      <section className="relative h-[750px] w-full">
+      <section className="relative h-[calc(100vh-5rem)] w-full">
         {/* === overlay navbar === */}
         <div className="absolute left-0 top-0 z-10 h-24 w-full bg-gradient-to-b from-black to-transparent" />
 
@@ -251,7 +251,8 @@ export const getServerSideProps: GetServerSideProps<{
 
     return {
       props: {
-        error,
+        error:
+          error?.message || "Telah terjadi kesalahan, mohon reload halaman!",
       },
     };
   }
