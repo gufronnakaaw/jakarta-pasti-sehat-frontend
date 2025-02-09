@@ -14,7 +14,7 @@
 
 @layer utilities {
   .base {
-    @apply grid justify-items-center pb-[150px];
+    @apply grid justify-items-center pb-[200px];
   }
   .wrapper {
     @apply grid w-full max-w-[600px] gap-8 lg:max-w-none;
