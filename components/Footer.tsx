@@ -67,8 +67,9 @@ export default function Footer() {
                 </h3>
 
                 <div className="grid gap-2">
-                  {menu.list.map((item) => (
+                  {menu.list.map((item, index) => (
                     <Link
+                      key={index}
                       href={item.url as string}
                       className="w-max font-medium capitalize text-white/80 hover:text-green hover:underline"
                     >
