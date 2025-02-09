@@ -26,7 +26,7 @@ export default function ArticleDetailsPage() {
               </div>
 
               <div className="grid gap-2">
-                <h1 className="text-[32px] font-black leading-[120%] text-black lg:text-[42px]">
+                <h1 className="title">
                   Ini adalah judul dari sebuah artikel yang ditulis
                 </h1>
                 <p className="font-medium leading-[180%] text-gray">
