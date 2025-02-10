@@ -1,7 +1,10 @@
 import { Button, Chip } from "@heroui/react";
 import { ArrowUpRight, CalendarMinus } from "@phosphor-icons/react";
+import { useRouter } from "next/router";
 
 export default function CardVolunteer() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-12 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
       <div className="grid flex-1 gap-6">
@@ -32,6 +35,7 @@ export default function CardVolunteer() {
       <Button
         color="primary"
         endContent={<ArrowUpRight weight="bold" size={18} />}
+        onPress={() => router.push("/volunteers/asd")}
         className="w-full px-8 font-bold lg:w-max"
       >
         Apply
