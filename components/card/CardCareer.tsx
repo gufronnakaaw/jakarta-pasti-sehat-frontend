@@ -1,7 +1,10 @@
 import { Button, Chip } from "@heroui/react";
 import { ArrowUpRight, Clock, MapPin } from "@phosphor-icons/react";
+import { useRouter } from "next/router";
 
 export default function CardCareer() {
+  const router = useRouter();
+
   return (
     <div className="flex flex-wrap items-center justify-between gap-12 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
       <div className="grid flex-1 gap-6">
@@ -22,14 +25,14 @@ export default function CardCareer() {
         </div>
 
         <div className="inline-flex items-center gap-4">
-          <div className="inline-flex items-center gap-2 rounded-full border-2 border-orange text-orange [padding:6px_12px]">
+          <div className="inline-flex items-center gap-2 rounded-full border-2 border-orange text-orange [padding:4px_12px]">
             <MapPin weight="fill" size={18} />
-            <p className="text-sm font-bold md:text-base">Onsite</p>
+            <p className="text-[12px] font-bold md:text-base">Onsite</p>
           </div>
 
-          <div className="inline-flex items-center gap-2 rounded-full border-2 border-orange text-orange [padding:6px_12px]">
+          <div className="inline-flex items-center gap-2 rounded-full border-2 border-orange text-orange [padding:4px_12px]">
             <Clock weight="fill" size={18} />
-            <p className="text-sm font-bold md:text-base">Fulltime</p>
+            <p className="text-[12px] font-bold md:text-base">Fulltime</p>
           </div>
         </div>
       </div>
@@ -37,6 +40,7 @@ export default function CardCareer() {
       <Button
         color="primary"
         endContent={<ArrowUpRight weight="bold" size={18} />}
+        onPress={() => router.push("/careers/asd")}
         className="w-full px-8 font-bold lg:w-max"
       >
         Apply
