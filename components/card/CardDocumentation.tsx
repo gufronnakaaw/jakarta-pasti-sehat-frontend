@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function CardDocumentation() {
   return (
     <Link
-      href="#"
+      href="/documentations/asd"
       className="group grid overflow-hidden rounded-2xl bg-white shadow-[4px_2px_18px_rgba(0,0,0,0.1)]"
     >
       <div className="relative h-[380px] overflow-hidden">
