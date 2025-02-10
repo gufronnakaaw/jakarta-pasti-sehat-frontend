@@ -2,7 +2,7 @@ import CardCareer from "@/components/card/CardCareer";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import SearchInput from "@/components/SearchInput";
-import SelectFilterData from "@/components/SelectFilterData";
+import SelectFilterData from "@/components/select/SelectFilterData";
 import Layout from "@/components/wrapper/Layout";
 
 export default function CareersPage() {
