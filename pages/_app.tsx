@@ -2,6 +2,7 @@ import UnderConstruction from "@/components/UnderConstruction";
 import "@/styles/globals.css";
 import { HeroUIProvider } from "@heroui/react";
 import type { AppProps } from "next/app";
+import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -18,6 +19,7 @@ export default function App({ Component, pageProps }: AppProps) {
           },
         }}
       />
+      <NextNProgress color="#F58120" options={{ showSpinner: false }} />
       <Component {...pageProps} />
     </HeroUIProvider>
   );
