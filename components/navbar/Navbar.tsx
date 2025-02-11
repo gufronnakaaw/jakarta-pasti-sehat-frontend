@@ -1,9 +1,10 @@
+import { AppContext } from "@/context/AppContext";
 import { LogoJPS } from "@/public/img/logo";
 import { Button } from "@heroui/react";
 import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const navMenu = [
   { key: "home", path: "/", text: "Beranda" },
@@ -16,6 +17,7 @@ const navMenu = [
 
 export default function Navbar() {
   const router = useRouter();
+  const ctx = useContext(AppContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
   const isHome = router.pathname === "/";
@@ -111,13 +113,21 @@ export default function Navbar() {
             </Button>
           </div>
 
-          <Button color="secondary" className="px-8 font-bold">
+          <Button
+            color="secondary"
+            onPress={() => ctx?.onOpenModalDonation()}
+            className="px-8 font-bold"
+          >
             Dukungan Untuk Kami
           </Button>
         </div>
 
         <div className="flex items-center">
-          <Button color="secondary" className="hidden font-bold lg:flex">
+          <Button
+            color="secondary"
+            onPress={() => ctx?.onOpenModalDonation()}
+            className="hidden font-bold lg:flex"
+          >
             Dukungan Untuk Kami
           </Button>
 

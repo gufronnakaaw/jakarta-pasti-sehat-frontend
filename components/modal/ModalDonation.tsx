@@ -9,15 +9,12 @@ import {
 
 type ModalDonationProps = {
   isOpen: boolean;
-  onOpenChange: (isOpen: boolean) => void;
+  onClose: () => void;
 };
 
-export default function ModalDonation({
-  isOpen,
-  onOpenChange,
-}: ModalDonationProps) {
+export default function ModalDonation({ isOpen, onClose }: ModalDonationProps) {
   return (
-    <Modal placement="center" isOpen={isOpen} onOpenChange={onOpenChange}>
+    <Modal placement="center" isOpen={isOpen} onClose={onClose}>
       <ModalContent>
         <ModalHeader className="font-extrabold text-black">
           Syarat Donasi Jakarta Pasti Sehat
@@ -42,7 +39,7 @@ export default function ModalDonation({
               ))}
             </div>
 
-            <div className="grid gap-4 text-sm font-medium leading-[180%] text-gray">
+            <div className="grid gap-4 text-sm font-medium leading-[160%] text-gray">
               <p>
                 Untuk memastikan donasi tercatat dengan benar, setiap nominal
                 transfer wajib ditambahkan dengan angka "003". Contohnya:

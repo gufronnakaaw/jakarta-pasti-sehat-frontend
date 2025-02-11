@@ -1,5 +1,7 @@
+import ModalDonation from "@/components/modal/ModalDonation";
+import { AppContext } from "@/context/AppContext";
 import Head from "next/head";
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { twMerge } from "tailwind-merge";
 
 type LayoutProps = {
@@ -9,6 +11,8 @@ type LayoutProps = {
 };
 
 export default function Layout({ children, className, title }: LayoutProps) {
+  const ctx = useContext(AppContext);
+
   return (
     <>
       <Head>
@@ -21,6 +25,11 @@ export default function Layout({ children, className, title }: LayoutProps) {
           className,
         )}
       >
+        <ModalDonation
+          isOpen={ctx?.isOpenModalDonation as boolean}
+          onClose={ctx?.onCloseModalDonation as () => void}
+        />
+
         {children}
       </div>
     </>

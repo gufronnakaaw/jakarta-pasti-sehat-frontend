@@ -16,7 +16,6 @@ const footerMenu = [
     title: "Pintasan",
     list: [
       { url: "/documentations", label: "Dokumentasi" },
-      { url: "#", label: "Donasi" },
       { url: "/articles", label: "Artikel Terbaru" },
       { url: "/events", label: "Event" },
       { url: "/volunteers", label: "Volunteer" },

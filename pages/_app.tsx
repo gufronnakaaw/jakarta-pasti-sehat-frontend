@@ -1,4 +1,5 @@
 import UnderConstruction from "@/components/UnderConstruction";
+import AppProvider from "@/context/AppProvider";
 import "@/styles/globals.css";
 import { HeroUIProvider } from "@heroui/react";
 import type { AppProps } from "next/app";
@@ -20,7 +21,9 @@ export default function App({ Component, pageProps }: AppProps) {
         }}
       />
       <NextNProgress color="#F58120" options={{ showSpinner: false }} />
-      <Component {...pageProps} />
+      <AppProvider>
+        <Component {...pageProps} />
+      </AppProvider>
     </HeroUIProvider>
   );
 }
