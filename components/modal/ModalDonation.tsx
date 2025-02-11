@@ -70,7 +70,7 @@ export default function ModalDonation({ isOpen, onClose }: ModalDonationProps) {
               color="primary"
               className="w-full font-bold"
               onPress={() =>
-                window.open("https://wa.me/085212775157", "_blank")
+                window.open("https://wa.me/+6285212775157", "_blank")
               }
             >
               Konfirmasi Donasi
