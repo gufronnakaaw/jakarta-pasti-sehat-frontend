@@ -59,7 +59,7 @@ export default function DashboardPage() {
             </span>
           </div>
 
-          <div className="grid gap-6 rounded-xl border-[2px] border-gray/20 px-16 py-8">
+          <div className="grid gap-6 rounded-xl border-[2px] border-gray/15 bg-white px-16 py-8">
             <h4 className="font-bold text-black">
               Data Web Jakarta Pasti Sehat 💊
             </h4>

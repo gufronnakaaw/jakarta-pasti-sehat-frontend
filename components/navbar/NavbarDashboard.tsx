@@ -28,7 +28,7 @@ export default function NavbarDashboard() {
   };
 
   return (
-    <nav className="bg-white px-6">
+    <nav className="bg-gray/5 px-6">
       <div className="flex h-20 items-center justify-end">
         <Dropdown>
           <DropdownTrigger>

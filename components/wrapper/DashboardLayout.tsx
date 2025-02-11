@@ -27,7 +27,9 @@ export default function DashboardLayout({
         <div className="grid w-full">
           <NavbarDashboard />
 
-          <div className={twMerge("overflow-y-scroll", `${className}`)}>
+          <div
+            className={twMerge("overflow-y-scroll bg-gray/5", `${className}`)}
+          >
             <div className="mx-auto w-full max-w-[1200px] p-[0_1.5rem_6rem]">
               {children}
             </div>

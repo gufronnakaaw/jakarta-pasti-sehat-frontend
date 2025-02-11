@@ -15,7 +15,7 @@ export default function SidebarDashboard() {
   const otherRoute = SidebarOtherMenuDashboard(adminId);
 
   return (
-    <div className="static left-0 top-0 z-50 grid h-screen min-w-[250px] grid-rows-[24px_1fr] gap-8 border-r border-gray/15 bg-gray/5 [padding:2rem_1rem]">
+    <div className="static left-0 top-0 z-50 grid h-screen min-w-[250px] grid-rows-[24px_1fr] gap-8 border-r border-gray/15 bg-white [padding:2rem_1rem]">
       <Link
         href="/dashboard"
         className="inline-flex items-center gap-2 justify-self-center"
