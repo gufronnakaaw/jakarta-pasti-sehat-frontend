@@ -18,7 +18,7 @@ export default function DashboardLayout({
   return (
     <>
       <Head>
-        <title>{`${title} | Jakarta Pasti Sehat`}</title>
+        <title>{`${title} | Dashboard - Jakarta Pasti Sehat`}</title>
       </Head>
 
       <main className="flex h-screen">

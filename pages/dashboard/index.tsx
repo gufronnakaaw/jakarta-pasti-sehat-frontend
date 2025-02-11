@@ -35,7 +35,7 @@ export default function DashboardPage() {
   return (
     <DashboardLayout title="Dashboard" className="scrollbar-hide">
       <DashboardContainer>
-        <section className="grid gap-8">
+        <section className="base-dashboard">
           <div className="flex items-end justify-between gap-4">
             <TitleText
               title="Selamat Datang 👋"
