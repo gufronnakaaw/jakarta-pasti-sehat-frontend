@@ -2,6 +2,7 @@ import {
   Bag,
   CalendarStar,
   Camera,
+  FileText,
   HandHeart,
   Handshake,
   House,
@@ -17,9 +18,9 @@ type SidebarMainMenuDashboard = {
   icon: Icon;
 };
 
-export function SidebarMainMenuDashboard(): SidebarMainMenuDashboard[] {
-  const baseUrl = "/dashboard";
+const baseUrl = "/dashboard";
 
+export function SidebarMainMenuDashboard(): SidebarMainMenuDashboard[] {
   const mainMenuItems: SidebarMainMenuDashboard[] = [
     {
       label: "Dashboard",
@@ -69,4 +70,34 @@ export function SidebarMainMenuDashboard(): SidebarMainMenuDashboard[] {
   ];
 
   return mainMenuItems;
+}
+
+export function SidebarOtherMenuDashboard(
+  adminId: string,
+): SidebarMainMenuDashboard[] {
+  const isSuperAdmin = adminId.startsWith("JPSSA");
+
+  const otherMenuItems: SidebarMainMenuDashboard[] = [
+    {
+      label: "Pilar",
+      path: `${baseUrl}/pillars`,
+      icon: FileText,
+    },
+    {
+      label: "Posisi",
+      path: `${baseUrl}/potitions`,
+      icon: FileText,
+    },
+    ...(isSuperAdmin
+      ? [
+          {
+            label: "Admin",
+            path: `${baseUrl}/admins`,
+            icon: Users,
+          },
+        ]
+      : []),
+  ];
+
+  return otherMenuItems;
 }
