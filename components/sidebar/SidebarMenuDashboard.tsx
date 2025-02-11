@@ -8,6 +8,7 @@ import {
   House,
   Icon,
   Image,
+  Key,
   Newspaper,
   Users,
 } from "@phosphor-icons/react";
@@ -90,6 +91,11 @@ export function SidebarOtherMenuDashboard(
     },
     ...(isSuperAdmin
       ? [
+          {
+            label: "Akses",
+            path: `${baseUrl}/keys`,
+            icon: Key,
+          },
           {
             label: "Admin",
             path: `${baseUrl}/admins`,
