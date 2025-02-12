@@ -4,7 +4,7 @@ import DashboardLayout from "@/components/wrapper/DashboardLayout";
 
 export default function DashboardPillarsPage() {
   return (
-    <DashboardLayout title="pilar" className="scrollbar-hide">
+    <DashboardLayout title="Pilar" className="scrollbar-hide">
       <DashboardContainer>
         <section className="base-dashboard">
           <TitleText
