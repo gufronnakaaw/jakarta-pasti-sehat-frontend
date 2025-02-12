@@ -161,17 +161,15 @@ export default function CareerDetailsPage() {
                       <p className="max-w-[550px] text-sm font-medium leading-[180%] text-gray">
                         Harap unggah dokumen pendukung Anda dalam bahasa Inggris
                         agar kami dapat mengenal Anda lebih baik. Format:{" "}
-                        <span className="font-bold text-orange">
-                          .doc, .pdf, .png, .jpg
-                        </span>
-                        . Ukuran Maksimal:{" "}
-                        <span className="font-bold text-orange">10MB</span>
+                        <span className="font-bold text-orange">.pdf</span>.
+                        Ukuran Maksimal:{" "}
+                        <span className="font-bold text-orange">5MB</span>
                       </p>
                     </div>
 
                     <Input
                       type="file"
-                      accept=".doc,.docx,.pdf,.png,.jpg,.jpeg"
+                      accept=".pdf"
                       variant="flat"
                       labelPlacement="outside"
                       placeholder="CV / Resume"
