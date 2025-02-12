@@ -2,6 +2,7 @@ import UnderConstruction from "@/components/UnderConstruction";
 import AppProvider from "@/context/AppProvider";
 import "@/styles/globals.css";
 import { HeroUIProvider } from "@heroui/react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
@@ -24,6 +25,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <AppProvider>
         <Component {...pageProps} />
       </AppProvider>
+      <GoogleAnalytics gaId="G-4J7582YYQ6" />
     </HeroUIProvider>
   );
 }
