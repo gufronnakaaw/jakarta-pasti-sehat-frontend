@@ -25,6 +25,14 @@ export default function VolunteerDetails() {
         <section className="base pt-[80px]">
           <div className={twMerge("wrapper", "lg:max-w-[900px] lg:gap-16")}>
             <div className="grid gap-4">
+              <div className="inline-flex items-center gap-2 text-orange">
+                <p className="font-medium">Pilar 1</p>
+                <div className="size-1.5 rounded-full bg-orange" />
+                <p className="line-clamp-1 font-medium">
+                  Penyakit Tidak Menular
+                </p>
+              </div>
+
               <h1 className="title">
                 Open Reqruitment Volunteer Batch 2 Jakarta Pasti Sehat
               </h1>
@@ -137,17 +145,15 @@ export default function VolunteerDetails() {
                       <p className="max-w-[550px] text-sm font-medium leading-[180%] text-gray">
                         Harap unggah dokumen pendukung Anda dalam bahasa Inggris
                         agar kami dapat mengenal Anda lebih baik. Format:{" "}
-                        <span className="font-bold text-orange">
-                          .doc, .pdf, .png, .jpg
-                        </span>
-                        . Ukuran Maksimal:{" "}
-                        <span className="font-bold text-orange">10MB</span>
+                        <span className="font-bold text-orange">.pdf</span>.
+                        Ukuran Maksimal:{" "}
+                        <span className="font-bold text-orange">5MB</span>
                       </p>
                     </div>
 
                     <Input
                       type="file"
-                      accept=".doc,.docx,.pdf,.png,.jpg,.jpeg"
+                      accept=".pdf"
                       variant="flat"
                       labelPlacement="outside"
                       placeholder="CV / Resume"

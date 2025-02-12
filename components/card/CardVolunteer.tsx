@@ -1,4 +1,4 @@
-import { Button, Chip } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { ArrowUpRight, CalendarMinus } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
 
@@ -9,15 +9,11 @@ export default function CardVolunteer() {
     <div className="flex flex-wrap items-center justify-between gap-12 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
       <div className="grid flex-1 gap-6">
         <div className="grid gap-2">
-          <Chip
-            color="success"
-            variant="flat"
-            classNames={{
-              content: "font-bold px-4",
-            }}
-          >
-            Tersedia
-          </Chip>
+          <div className="inline-flex items-center gap-2 text-orange">
+            <p className="font-medium">Pilar 1</p>
+            <div className="size-1.5 rounded-full bg-orange" />
+            <p className="line-clamp-1 font-medium">Penyakit Tidak Menular</p>
+          </div>
 
           <h1 className="line-clamp-2 text-[20px] font-extrabold leading-[120%] text-black md:text-[24px]">
             Open Reqruitment Volunteer Batch 2 Jakarta Pasti Sehat
