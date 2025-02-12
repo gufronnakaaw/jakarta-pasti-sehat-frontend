@@ -48,8 +48,8 @@ const footerMenu = [
 export default function Footer() {
   return (
     <footer className="bg-orange pt-[150px]">
-      <div className="mx-auto grid max-w-[1440px] grid-rows-[1fr_max-content] gap-48 px-6">
-        <div className="flex flex-wrap items-start justify-between gap-32">
+      <div className="relative mx-auto grid max-w-[1440px] grid-rows-[1fr_max-content] gap-32 px-6 lg:gap-64">
+        <div className="z-20 flex flex-wrap items-start justify-between gap-32">
           <Image
             src="/img/logo.svg"
             alt="logo jps"
@@ -81,7 +81,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 border-t-2 border-white/20 py-8 sm:justify-between">
+        <div className="z-20 flex h-24 flex-wrap items-center justify-center gap-2 border-t-2 border-white/20 sm:justify-between lg:border-none">
           <p className="text-sm font-medium capitalize text-white">
             &copy; {new Date().getFullYear()} Jakarta Pasti Sehat. All right
             reserved.
@@ -94,6 +94,14 @@ export default function Footer() {
             </span>
           </p>
         </div>
+
+        <Image
+          src="/img/jkt-bg.svg"
+          alt="jkt bg"
+          width={1440}
+          height={900}
+          className="absolute bottom-24 left-0 z-10 hidden h-auto w-full opacity-10 lg:flex"
+        />
       </div>
     </footer>
   );
