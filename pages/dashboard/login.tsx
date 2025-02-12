@@ -1,8 +1,17 @@
+import { LogoJPS } from "@/public/img/logo";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { handleKeyDown } from "@/utils/handleKeyDown";
 import { Button, Input } from "@heroui/react";
-import { Eye, EyeSlash, IconContext, Lock, User } from "@phosphor-icons/react";
+import {
+  Eye,
+  EyeSlash,
+  IconContext,
+  Key,
+  Lock,
+  User,
+} from "@phosphor-icons/react";
 import Head from "next/head";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -11,9 +20,11 @@ export default function LoginPage() {
   const router = useRouter();
   const [input, setInput] = useState<{
     admin_id: string;
+    access_key: string;
     password: string;
   }>({
     admin_id: "",
+    access_key: "",
     password: "",
   });
   const [passwordType, setPasswordType] = useState("password");
@@ -29,13 +40,26 @@ export default function LoginPage() {
         <title>Login | Jakarta Pasti Sehat</title>
       </Head>
 
-      <main className="flex h-screen w-full items-center justify-center py-20">
-        <div className="grid w-max gap-8 justify-self-center">
+      <main className="relative flex h-screen w-full items-center">
+        <div className="relative h-full w-full">
+          <Image
+            src="/img/landing-img.png"
+            alt="landing img"
+            width={1440}
+            height={750}
+            className="h-full w-full object-cover object-right"
+          />
+
+          {/* === overlay === */}
+          <div className="absolute left-0 top-0 z-10 h-full w-full bg-gradient-to-tr from-green/80 to-orange" />
+        </div>
+
+        <div className="absolute right-24 z-20 grid gap-8">
           <div className="text-center">
-            <h1 className="text-[26px] font-bold -tracking-[1px] text-black lg:text-[36px]">
-              Hi, Admin Jakarta Pasti Sehat 👋
+            <h1 className="text-[36px] font-black -tracking-[1px] text-white">
+              Selamat Datang Admin 👋
             </h1>
-            <p className="font-medium text-gray">
+            <p className="font-medium text-white">
               Silakan login dulu untuk bisa mengatur semuanya
             </p>
           </div>
@@ -48,6 +72,22 @@ export default function LoginPage() {
             }}
           >
             <div className="grid gap-2">
+              <Input
+                type="password"
+                variant="flat"
+                labelPlacement="outside"
+                placeholder="Kunci Akses"
+                name="access_key"
+                onChange={(e) => {
+                  setInput({
+                    ...input,
+                    [e.target.name]: e.target.value,
+                  });
+                }}
+                startContent={<Key />}
+                classNames={customStyleInput}
+              />
+
               <Input
                 type="text"
                 variant="flat"
@@ -106,6 +146,10 @@ export default function LoginPage() {
           >
             {loading ? "Tunggu Sebentar..." : "Masuk Sekarang"}
           </Button>
+        </div>
+
+        <div className="absolute bottom-24 left-24 z-20">
+          <LogoJPS className={`h-auto w-[200px] text-white transition-all`} />
         </div>
       </main>
     </>
