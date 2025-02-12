@@ -49,37 +49,11 @@ export default function DocumentationDetailsPage() {
               <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-tr from-green/30 to-orange/30" />
             </div>
 
-            <div className="flex items-center justify-center py-4">
+            <div className="flex items-center justify-center pt-4">
               <div className="h-[3px] w-[64px] border-t-3 border-orange" />
               <div className="size-3 rounded-full border-3 border-orange" />
               <div className="h-[3px] w-[64px] border-t-3 border-orange" />
             </div>
-
-            <p className="font-medium leading-[180%] text-gray">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ab non
-              labore commodi. Veniam facere porro sint! Praesentium ea harum,
-              eius quam ipsum ex minima amet voluptatum sapiente, nesciunt iusto
-              vero 🔫
-              <br />
-              <br />
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste
-              quasi quibusdam ab exercitationem assumenda inventore impedit qui
-              dolorum velit, odio natus esse. Exercitationem obcaecati similique
-              nobis architecto animi delectus molestias voluptates quaerat
-              nostrum porro et dolor aliquam praesentium saepe, minus expedita
-              sit? Distinctio sed, fugit dignissimos accusantium debitis illo
-              facere! 😱
-              <br />
-              <br />
-              Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim
-              aperiam magnam neque necessitatibus, in, debitis reiciendis, quis
-              beatae nisi amet repellendus alias? Consectetur esse, ipsa sint,
-              odio temporibus soluta deserunt consequatur doloribus ex velit
-              facere distinctio ullam sunt delectus, non architecto error
-              facilis. Dolore libero assumenda, earum maxime fugit reprehenderit
-              perspiciatis ex tempora, corporis esse labore quia enim nisi
-              autem. 🦅
-            </p>
           </div>
         </section>
 
