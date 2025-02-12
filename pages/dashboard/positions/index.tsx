@@ -8,8 +8,8 @@ export default function DashboardPotisionsPage() {
       <DashboardContainer>
         <section className="base-dashboard">
           <TitleText
-            title="Daftar Posisi 📄"
-            text="Lihat dan kelola semua posisi di sini"
+            title="Daftar Jabatan 📄"
+            text="Lihat dan kelola semua jabatan di sini"
           />
         </section>
       </DashboardContainer>

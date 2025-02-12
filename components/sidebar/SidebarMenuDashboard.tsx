@@ -85,8 +85,8 @@ export function SidebarOtherMenuDashboard(
       icon: FileText,
     },
     {
-      label: "Posisi",
-      path: `${baseUrl}/potitions`,
+      label: "Jabatan",
+      path: `${baseUrl}/positions`,
       icon: FileText,
     },
     ...(isSuperAdmin
