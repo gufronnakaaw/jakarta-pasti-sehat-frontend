@@ -43,7 +43,7 @@ export default function DashboardPillarsPage() {
     endpoint: "/pillars",
     method: "GET",
     token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5NjE0MTE0LCJleHAiOjE3Mzk2MzU3MTR9.iNHp0306cpC9tu9laaypaw410WDuxqKwAc1ogH7QPG0",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
     role: "admin",
   });
 
