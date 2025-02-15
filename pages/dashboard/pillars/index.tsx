@@ -10,6 +10,7 @@ import { customStyleTable } from "@/utils/customStyleTable";
 import { formatDate } from "@/utils/formatDate";
 import {
   Button,
+  Pagination,
   Table,
   TableBody,
   TableCell,
@@ -17,9 +18,15 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { Eye, PencilLine, Plus } from "@phosphor-icons/react";
+import {
+  Eye,
+  IconContext,
+  PencilLine,
+  Plus,
+  Trash,
+} from "@phosphor-icons/react";
 import { useRouter } from "next/router";
-import { Key, useCallback } from "react";
+import { Key, useCallback, useState } from "react";
 import useSWR from "swr";
 
 export type PillarResponse = {
@@ -31,6 +38,7 @@ export type PillarResponse = {
 
 export default function DashboardPillarsPage() {
   const router = useRouter();
+  const [search, setSearch] = useState<string>("");
   const { data, isLoading } = useSWR<SuccessResponse<PillarResponse>>({
     endpoint: "/pillars",
     method: "GET",
@@ -66,21 +74,39 @@ export default function DashboardPillarsPage() {
         );
       case "action":
         return (
-          <div className="inline-flex w-max items-center gap-1">
-            <Button isIconOnly variant="light" color="primary" size="sm">
-              <Eye weight="bold" size={18} />
-            </Button>
+          <IconContext.Provider
+            value={{
+              weight: "bold",
+              size: 18,
+              className: "text-gray",
+            }}
+          >
+            <div className="inline-flex w-max items-center gap-1">
+              <Button isIconOnly variant="light" size="sm">
+                <Eye />
+              </Button>
 
-            <Button isIconOnly variant="light" color="primary" size="sm">
-              <PencilLine weight="bold" size={18} />
-            </Button>
-          </div>
+              <Button isIconOnly variant="light" size="sm">
+                <PencilLine />
+              </Button>
+
+              <Button isIconOnly variant="light" size="sm" color="danger">
+                <Trash className="text-danger" />
+              </Button>
+            </div>
+          </IconContext.Provider>
         );
 
       default:
         return cellValue;
     }
   }, []);
+
+  const filteredPillar = data?.data.pillars.filter((name) =>
+    [name.name, name.pillar_id].some((value) =>
+      value.toLowerCase().includes(search.toLowerCase()),
+    ),
+  );
 
   if (isLoading) return <LoadingScreen />;
 
@@ -95,7 +121,11 @@ export default function DashboardPillarsPage() {
 
           <div className="grid gap-4">
             <div className="flex items-center justify-between gap-4">
-              <SearchInput placeholder="Cari Pillar..." />
+              <SearchInput
+                placeholder="Cari Pillar..."
+                onChange={(e) => setSearch(e.target.value)}
+                onClear={() => setSearch("")}
+              />
 
               <Button
                 color="primary"
@@ -109,7 +139,7 @@ export default function DashboardPillarsPage() {
 
             <div className="overflow-x-scroll scrollbar-hide">
               <Table
-                isHeaderSticky
+                isStriped
                 aria-label="pillar table"
                 color="primary"
                 selectionMode="none"
@@ -123,7 +153,7 @@ export default function DashboardPillarsPage() {
                 </TableHeader>
 
                 <TableBody
-                  items={data?.data.pillars ?? []}
+                  items={filteredPillar ?? []}
                   emptyContent={<EmptyData text="Pilar tidak ditemukan!" />}
                 >
                   {(pillar: Pillar) => (
@@ -139,7 +169,24 @@ export default function DashboardPillarsPage() {
               </Table>
             </div>
 
-            <div>pagination here</div>
+            {data?.data.pillars.length ? (
+              <Pagination
+                isCompact
+                showControls
+                color="primary"
+                page={data?.data.page as number}
+                total={data?.data.total_pages as number}
+                onChange={(e) => {
+                  router.push({
+                    query: {
+                      ...router.query,
+                      page: e,
+                    },
+                  });
+                }}
+                className="justify-self-center"
+              />
+            ) : null}
           </div>
         </section>
       </DashboardContainer>
