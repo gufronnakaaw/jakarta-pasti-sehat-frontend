@@ -22,6 +22,7 @@ export async function fetcher({
   const options = {
     url: `https://${prefix}.jakartapastisehat.com/api${endpoint}`,
     method,
+    headers: {},
   };
 
   if (data) {
@@ -31,6 +32,7 @@ export async function fetcher({
   if (file) {
     Object.assign(options, {
       headers: {
+        ...options.headers,
         "Content-Type": "multipart/form-data",
       },
     });
@@ -39,6 +41,7 @@ export async function fetcher({
   if (token) {
     Object.assign(options, {
       headers: {
+        ...options.headers,
         Authorization: `Bearer ${token}`,
       },
     });
@@ -47,6 +50,7 @@ export async function fetcher({
   if (role) {
     Object.assign(options, {
       headers: {
+        ...options.headers,
         "x-role": role,
       },
     });
