@@ -7,12 +7,12 @@ export default function SearchInput(props: InputProps) {
     <Input
       isClearable
       type="text"
-      variant="flat"
+      variant="bordered"
       labelPlacement="outside"
       startContent={
         <MagnifyingGlass weight="bold" size={18} className="text-gray" />
       }
-      classNames={customStyleInput}
+      classNames={{ ...customStyleInput, inputWrapper: "bg-white" }}
       className="max-w-[500px]"
       {...props}
     />

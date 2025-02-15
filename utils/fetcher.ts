@@ -47,7 +47,7 @@ export async function fetcher({
   if (role) {
     Object.assign(options, {
       headers: {
-        "X-ROLE": role,
+        "x-role": role,
       },
     });
   }
