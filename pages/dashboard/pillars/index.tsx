@@ -1,5 +1,6 @@
 import EmptyData from "@/components/EmptyData";
 import LoadingScreen from "@/components/loading/LoadingScreen";
+import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
 import SearchInput from "@/components/SearchInput";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
@@ -7,6 +8,7 @@ import DashboardLayout from "@/components/wrapper/DashboardLayout";
 import { SuccessResponse } from "@/types/global";
 import { Pillar } from "@/types/pillar";
 import { customStyleTable } from "@/utils/customStyleTable";
+import { fetcher } from "@/utils/fetcher";
 import { formatDate } from "@/utils/formatDate";
 import {
   Button,
@@ -27,6 +29,7 @@ import {
 } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
 import { Key, useCallback, useState } from "react";
+import toast from "react-hot-toast";
 import useSWR from "swr";
 
 export type PillarResponse = {
@@ -38,12 +41,13 @@ export type PillarResponse = {
 
 export default function DashboardPillarsPage() {
   const router = useRouter();
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
-  const { data, isLoading } = useSWR<SuccessResponse<PillarResponse>>({
+  const { data, isLoading, mutate } = useSWR<SuccessResponse<PillarResponse>>({
     endpoint: "/pillars",
     method: "GET",
-    token:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+    token: token,
     role: "admin",
   });
 
@@ -90,9 +94,22 @@ export default function DashboardPillarsPage() {
                 <PencilLine />
               </Button>
 
-              <Button isIconOnly variant="light" size="sm" color="danger">
-                <Trash className="text-danger" />
-              </Button>
+              <ModalConfirmDelete
+                trigger={
+                  <Button isIconOnly variant="light" size="sm" color="danger">
+                    <Trash className="text-danger" />
+                  </Button>
+                }
+                footer={() => (
+                  <Button
+                    color="danger"
+                    className="px-6 font-bold"
+                    onPress={() => handleDeletePillar(pillar.pillar_id)}
+                  >
+                    Ya, Hapus
+                  </Button>
+                )}
+              />
             </div>
           </IconContext.Provider>
         );
@@ -101,6 +118,23 @@ export default function DashboardPillarsPage() {
         return cellValue;
     }
   }, []);
+
+  async function handleDeletePillar(id: string) {
+    try {
+      await fetcher({
+        endpoint: `/pillars/${id}`,
+        method: "DELETE",
+        token: token,
+      });
+
+      mutate();
+      toast.success("Pilar berhasil dihapus");
+    } catch (error: any) {
+      console.error(error);
+
+      toast.success("Gagal menghapus pilar");
+    }
+  }
 
   const filteredPillar = data?.data.pillars.filter((name) =>
     [name.name, name.pillar_id].some((value) =>
