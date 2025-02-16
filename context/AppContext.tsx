@@ -1,9 +1,9 @@
 import { createContext } from "react";
 
 type AppContextType = {
-  isOpenModalDonation: boolean;
-  onOpenModalDonation: () => void;
-  onCloseModalDonation: () => void;
+  isOpenModal: boolean;
+  onOpenModal: () => void;
+  onCloseModal: () => void;
 };
 
 export const AppContext = createContext<AppContextType | undefined>(undefined);

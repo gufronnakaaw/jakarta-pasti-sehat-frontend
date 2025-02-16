@@ -26,8 +26,8 @@ export default function Layout({ children, className, title }: LayoutProps) {
         )}
       >
         <ModalDonation
-          isOpen={ctx?.isOpenModalDonation as boolean}
-          onClose={ctx?.onCloseModalDonation as () => void}
+          isOpen={ctx?.isOpenModal as boolean}
+          onClose={ctx?.onCloseModal as () => void}
         />
 
         {children}

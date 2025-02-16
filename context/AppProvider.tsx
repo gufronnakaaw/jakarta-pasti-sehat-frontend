@@ -6,21 +6,21 @@ import { ReactNode, useEffect } from "react";
 export default function AppProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
   const {
-    isOpen: isOpenModalDonation,
-    onOpen: onOpenModalDonation,
-    onClose: onCloseModalDonation,
+    isOpen: isOpenModal,
+    onOpen: onOpenModal,
+    onClose: onCloseModal,
   } = useDisclosure();
 
   useEffect(() => {
-    onCloseModalDonation();
-  }, [router, onCloseModalDonation]);
+    onCloseModal();
+  }, [router, onCloseModal]);
 
   return (
     <AppContext.Provider
       value={{
-        isOpenModalDonation,
-        onOpenModalDonation,
-        onCloseModalDonation,
+        isOpenModal,
+        onOpenModal,
+        onCloseModal,
       }}
     >
       {children}

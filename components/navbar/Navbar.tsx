@@ -115,7 +115,7 @@ export default function Navbar() {
 
           <Button
             color="secondary"
-            onPress={() => ctx?.onOpenModalDonation()}
+            onPress={() => ctx?.onOpenModal()}
             className="px-8 font-bold"
           >
             Dukungan Untuk Kami
@@ -125,7 +125,7 @@ export default function Navbar() {
         <div className="flex items-center">
           <Button
             color="secondary"
-            onPress={() => ctx?.onOpenModalDonation()}
+            onPress={() => ctx?.onOpenModal()}
             className="hidden font-bold lg:flex"
           >
             Dukungan Untuk Kami
