@@ -6,6 +6,7 @@ import { formatDayWithoutTime } from "@/utils/formatDate";
 import {
   CalendarStar,
   HandHeart,
+  Handshake,
   IconContext,
   Newspaper,
   Users,
@@ -90,26 +91,7 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  <div className="grid pt-8">
-                    <div className="inline-flex items-center gap-4">
-                      <CalendarStar />
-
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray">
-                          Total Event
-                        </p>
-                        <h6 className="text-[32px] font-extrabold text-black">
-                          0
-                        </h6>
-                      </div>
-
-                      <ButtonDashbaord path="/events" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid divide-y-2 divide-gray/20 pl-12">
-                  <div className="grid pb-8">
+                  <div className="grid py-8">
                     <div className="inline-flex items-center gap-4">
                       <HandHeart />
 
@@ -132,14 +114,63 @@ export default function DashboardPage() {
 
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray">
-                          Total Pelamar
+                          Total Pelamar Volunteer
+                        </p>
+                        <h6 className="text-[32px] font-extrabold text-black">
+                          0
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid divide-y-2 divide-gray/20 pl-12">
+                  <div className="grid pb-8">
+                    <div className="inline-flex items-center gap-4">
+                      <CalendarStar />
+
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray">
+                          Total Event
                         </p>
                         <h6 className="text-[32px] font-extrabold text-black">
                           0
                         </h6>
                       </div>
 
-                      <ButtonDashbaord path="/careers" />
+                      <ButtonDashbaord path="/events" />
+                    </div>
+                  </div>
+
+                  <div className="grid py-8">
+                    <div className="inline-flex items-center gap-4">
+                      <Handshake />
+
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray">
+                          Total Mitra
+                        </p>
+                        <h6 className="text-[32px] font-extrabold text-black">
+                          0
+                        </h6>
+                      </div>
+
+                      <ButtonDashbaord path="/partners" />
+                    </div>
+                  </div>
+
+                  <div className="grid pt-8">
+                    <div className="inline-flex items-center gap-4">
+                      <Users />
+
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray">
+                          Total Pelamar Karir
+                        </p>
+                        <h6 className="text-[32px] font-extrabold text-black">
+                          0
+                        </h6>
+                      </div>
                     </div>
                   </div>
                 </div>
