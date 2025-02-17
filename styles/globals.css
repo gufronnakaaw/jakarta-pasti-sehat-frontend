@@ -12,6 +12,16 @@
   @apply bg-secondary text-white;
 }
 
+.teams-container .swiper-pagination {
+  @apply static mx-auto pt-4 transition-all xs:pt-8;
+}
+.teams-container .swiper-pagination-bullet {
+  @apply transition-all;
+}
+.teams-container .swiper-pagination-bullet-active {
+  @apply h-2 w-6 rounded-full !bg-primary;
+}
+
 @layer utilities {
   .base {
     @apply grid justify-items-center pb-[200px];
