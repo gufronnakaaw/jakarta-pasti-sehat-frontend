@@ -1,7 +1,10 @@
 import EmptyData from "@/components/EmptyData";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
-import { ModalAddPosition } from "@/components/modal/ModalPosition";
+import {
+  ModalAddPosition,
+  ModalEditPosition,
+} from "@/components/modal/ModalPosition";
 import SearchInput from "@/components/SearchInput";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
@@ -20,7 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { IconContext, PencilLine, Trash } from "@phosphor-icons/react";
+import { IconContext, Trash } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
 import { Key, useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -30,9 +33,8 @@ export default function DashboardPotisionsPage() {
   const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
+  const by = "Super Admin";
   const [search, setSearch] = useState<string>("");
-  const [name, setName] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
   const { data, isLoading, mutate } = useSWR<SuccessResponse<Position[]>>({
     endpoint: "/positions",
     method: "GET",
@@ -78,9 +80,15 @@ export default function DashboardPotisionsPage() {
               }}
             >
               <div className="inline-flex w-max items-center gap-1">
-                <Button isIconOnly variant="light" size="sm">
-                  <PencilLine />
-                </Button>
+                <ModalEditPosition
+                  {...{
+                    by,
+                    mutate,
+                    token,
+                    position_id: position.position_id,
+                    position_name: position.name,
+                  }}
+                />
 
                 <ModalConfirmDelete
                   trigger={
@@ -109,35 +117,6 @@ export default function DashboardPotisionsPage() {
     [],
   );
 
-  async function handleAddPosition() {
-    setLoading(true);
-
-    try {
-      const payload = {
-        name,
-        by: "Super Admin",
-      };
-
-      await fetcher({
-        endpoint: "/positions",
-        method: "POST",
-        data: payload,
-        token: token,
-      });
-
-      mutate();
-      toast.success("Jabatan berhasil ditambahkan");
-      setName("");
-    } catch (error: any) {
-      console.error(error);
-
-      setLoading(false);
-      toast.error("Gagal menambah jabatan");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   async function handleDelete(position_id: string) {
     try {
       await fetcher({
@@ -151,7 +130,6 @@ export default function DashboardPotisionsPage() {
     } catch (error: any) {
       console.error(error);
 
-      setLoading(false);
       toast.error("Gagal menghapus jabatan");
     }
   }
@@ -181,12 +159,7 @@ export default function DashboardPotisionsPage() {
                 onClear={() => setSearch("")}
               />
 
-              <ModalAddPosition
-                name={name}
-                setName={setName}
-                loading={loading}
-                handleAddPosition={handleAddPosition}
-              />
+              <ModalAddPosition {...{ by, token, mutate }} />
             </div>
 
             <div className="overflow-x-scroll scrollbar-hide">
