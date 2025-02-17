@@ -1,6 +1,7 @@
 import EmptyData from "@/components/EmptyData";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
+import { ModalAddPosition } from "@/components/modal/ModalPosition";
 import SearchInput from "@/components/SearchInput";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
@@ -8,6 +9,7 @@ import DashboardLayout from "@/components/wrapper/DashboardLayout";
 import { SuccessResponse } from "@/types/global";
 import { Position } from "@/types/position";
 import { customStyleTable } from "@/utils/customStyleTable";
+import { fetcher } from "@/utils/fetcher";
 import { formatDate } from "@/utils/formatDate";
 import {
   Button,
@@ -18,15 +20,10 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import {
-  Eye,
-  IconContext,
-  PencilLine,
-  Plus,
-  Trash,
-} from "@phosphor-icons/react";
+import { IconContext, PencilLine, Trash } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
 import { Key, useCallback, useState } from "react";
+import toast from "react-hot-toast";
 import useSWR from "swr";
 
 export default function DashboardPotisionsPage() {
@@ -34,6 +31,8 @@ export default function DashboardPotisionsPage() {
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
+  const [name, setName] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const { data, isLoading, mutate } = useSWR<SuccessResponse<Position[]>>({
     endpoint: "/positions",
     method: "GET",
@@ -80,10 +79,6 @@ export default function DashboardPotisionsPage() {
             >
               <div className="inline-flex w-max items-center gap-1">
                 <Button isIconOnly variant="light" size="sm">
-                  <Eye />
-                </Button>
-
-                <Button isIconOnly variant="light" size="sm">
                   <PencilLine />
                 </Button>
 
@@ -94,7 +89,11 @@ export default function DashboardPotisionsPage() {
                     </Button>
                   }
                   footer={() => (
-                    <Button color="danger" className="px-6 font-bold">
+                    <Button
+                      color="danger"
+                      className="px-6 font-bold"
+                      onPress={() => handleDelete(position.position_id)}
+                    >
                       Ya, Hapus
                     </Button>
                   )}
@@ -109,6 +108,53 @@ export default function DashboardPotisionsPage() {
     },
     [],
   );
+
+  async function handleAddPosition() {
+    setLoading(true);
+
+    try {
+      const payload = {
+        name,
+        by: "Super Admin",
+      };
+
+      await fetcher({
+        endpoint: "/positions",
+        method: "POST",
+        data: payload,
+        token: token,
+      });
+
+      mutate();
+      toast.success("Jabatan berhasil ditambahkan");
+      setName("");
+    } catch (error: any) {
+      console.error(error);
+
+      setLoading(false);
+      toast.error("Gagal menambah jabatan");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDelete(position_id: string) {
+    try {
+      await fetcher({
+        endpoint: `/positions/${position_id}`,
+        method: "DELETE",
+        token: token,
+      });
+
+      mutate();
+      toast.success("Jabatan berhasil dihapus");
+    } catch (error: any) {
+      console.error(error);
+
+      setLoading(false);
+      toast.error("Gagal menghapus jabatan");
+    }
+  }
 
   const filteredPosition = data?.data.filter((position) =>
     [position.name, position.position_id].some((value) =>
@@ -135,13 +181,12 @@ export default function DashboardPotisionsPage() {
                 onClear={() => setSearch("")}
               />
 
-              <Button
-                color="primary"
-                startContent={<Plus weight="bold" size={18} />}
-                className="font-bold"
-              >
-                Tambah Jabatan
-              </Button>
+              <ModalAddPosition
+                name={name}
+                setName={setName}
+                loading={loading}
+                handleAddPosition={handleAddPosition}
+              />
             </div>
 
             <div className="overflow-x-scroll scrollbar-hide">
