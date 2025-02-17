@@ -1,16 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function CardTeam() {
+type CardTeamProps = {
+  team_id: string;
+  fullname: string;
+  image_url: string;
+  position: string;
+};
+
+export default function CardTeam(team: CardTeamProps) {
   return (
     <Link
-      href="/our-teams/asd"
+      href={`/our-teams/${team.team_id}`}
       className="group grid overflow-hidden rounded-2xl bg-white shadow-[4px_2px_18px_rgba(0,0,0,0.1)]"
     >
       <div className="relative aspect-square overflow-hidden">
         <Image
-          src="/img/testing/individual-img.png"
-          alt="thumbnail article"
+          src={team.image_url}
+          alt="team image"
           width={800}
           height={800}
           className="aspect-square scale-105 object-cover object-center transition-all group-hover:scale-110" // remove scale-105, if data already dinamis
@@ -22,10 +29,10 @@ export default function CardTeam() {
 
       <div className="grid gap-1 [padding:2rem_1.5rem]">
         <h1 className="line-clamp-2 text-[22px] font-extrabold leading-[120%] text-black group-hover:text-orange">
-          Nama Individual
+          {team.fullname}
         </h1>
         <p className="line-clamp-1 text-sm font-medium leading-[180%] text-orange">
-          Jabatan Individual
+          {team.position}
         </p>
       </div>
     </Link>
