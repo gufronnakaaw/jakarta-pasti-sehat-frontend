@@ -150,40 +150,51 @@ export default function HomePage({
           </section>
         ) : null}
 
-        <search className="grid justify-items-center pb-[100px] xl:pb-[150px]">
-          <div className="wrapper">
-            <div className="teams-container overflow-hidden">
-              <Swiper
-                loop={true}
-                slidesPerView={"auto"}
-                spaceBetween={32}
-                centeredSlides={true}
-                autoplay={{
-                  delay: 3000,
-                  disableOnInteraction: false,
-                }}
-                pagination={{
-                  clickable: true,
-                }}
-                modules={[Pagination, Autoplay]}
-              >
-                {Array.from({ length: 4 }, (_, index) => (
-                  <SwiperSlide key={index} className="w-full max-w-[850px]">
-                    <Link href="#" target="_blank" className="h-auto w-full">
-                      <Image
-                        src="/img/testing/banner-dummy.jpg"
-                        alt="banner img"
-                        width={850}
-                        height={350}
-                        className="h-full w-full rounded-2xl object-cover object-center"
-                      />
-                    </Link>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+        {data?.banners.length ? (
+          <search className="grid justify-items-center pb-[100px] xl:pb-[150px]">
+            <div className="wrapper">
+              <div className="teams-container overflow-hidden">
+                <Swiper
+                  loop={true}
+                  slidesPerView={"auto"}
+                  spaceBetween={32}
+                  centeredSlides={true}
+                  autoplay={{
+                    delay: 3000,
+                    disableOnInteraction: false,
+                  }}
+                  pagination={{
+                    clickable: true,
+                  }}
+                  modules={[Pagination, Autoplay]}
+                >
+                  {data?.banners.map((banner) => {
+                    return (
+                      <SwiperSlide
+                        key={banner.banner_id}
+                        className="w-full max-w-[850px]"
+                      >
+                        <Link
+                          href={banner.link ? banner.link : "#"}
+                          target={banner.link ? "_blank" : ""}
+                          className="h-auto w-full"
+                        >
+                          <Image
+                            src={banner.image_url}
+                            alt={banner.alt as string}
+                            width={850}
+                            height={350}
+                            className="h-full w-full rounded-2xl object-cover object-center"
+                          />
+                        </Link>
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
+              </div>
             </div>
-          </div>
-        </search>
+          </search>
+        ) : null}
 
         {data?.events.length ? (
           <section className="base">

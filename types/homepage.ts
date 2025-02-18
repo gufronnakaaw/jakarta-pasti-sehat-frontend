@@ -16,6 +16,7 @@ export type Homepage = {
     alt?: string;
     description?: string;
     image_url: string;
+    link: string;
   }[];
   events: {
     event_id: string;
