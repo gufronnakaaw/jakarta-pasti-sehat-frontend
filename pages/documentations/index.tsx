@@ -1,10 +1,48 @@
 import CardDocumentation from "@/components/card/CardDocumentation";
+import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import SelectFilterData from "@/components/select/SelectFilterData";
 import Layout from "@/components/wrapper/Layout";
+import { Documentation } from "@/types/documentation";
+import { SuccessResponse } from "@/types/global";
+import { fetcher } from "@/utils/fetcher";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { ParsedUrlQuery } from "querystring";
+import useSWR from "swr";
 
-export default function DocumentationsPage() {
+function getUrl(query: ParsedUrlQuery) {
+  if (query.filter) {
+    return `/docs?filter=${query.filter}&page=${query.page ? query.page : 1}`;
+  }
+
+  return `/docs?page=${query.page ? query.page : 1}`;
+}
+
+type DocumentationResponse = {
+  docs: Documentation[];
+  page: number;
+  total_docs: number;
+  total_pages: number;
+};
+
+export default function DocumentationsPage({
+  data,
+  error,
+  query,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { data: docs } = useSWR<SuccessResponse<DocumentationResponse>>(
+    {
+      endpoint: getUrl(query as ParsedUrlQuery),
+      method: "GET",
+    },
+    {
+      fallbackData: data,
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    },
+  );
+
   return (
     <>
       <Navbar />
@@ -32,9 +70,13 @@ export default function DocumentationsPage() {
               </div>
 
               <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-                {Array.from({ length: 4 }, (_, index) => (
-                  <CardDocumentation key={index} />
-                ))}
+                {error ? (
+                  <ErrorPage {...error} />
+                ) : (
+                  docs?.data.docs.map((doc) => {
+                    return <CardDocumentation key={doc.doc_id} {...doc} />;
+                  })
+                )}
               </div>
             </div>
           </div>
@@ -45,3 +87,29 @@ export default function DocumentationsPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  data?: SuccessResponse<DocumentationResponse>;
+  error?: any;
+  query?: ParsedUrlQuery;
+}> = async ({ query }) => {
+  try {
+    const response: SuccessResponse<DocumentationResponse> = await fetcher({
+      endpoint: getUrl(query),
+      method: "GET",
+    });
+
+    return {
+      props: {
+        data: response,
+        query,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
+};
