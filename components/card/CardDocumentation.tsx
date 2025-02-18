@@ -8,13 +8,13 @@ export default function CardDocumentation(documentation: Documentation) {
       href={`/documentations/${documentation.slug}`}
       className="group grid overflow-hidden rounded-2xl bg-white shadow-[4px_2px_18px_rgba(0,0,0,0.1)]"
     >
-      <div className="relative h-[300px] overflow-hidden">
+      <div className="relative h-[380px] overflow-hidden">
         <Image
           src={documentation.thumbnail_url}
           alt={documentation.title}
           width={800}
-          height={800}
-          className="h-full w-full object-cover object-center transition-all group-hover:scale-110 xl:h-auto"
+          height={1000}
+          className="h-full w-full object-cover object-center transition-all group-hover:scale-110"
         />
 
         <div className="absolute left-0 top-0 z-10 flex h-full w-full items-end bg-gradient-to-tr from-green/70 to-orange/70 p-6">

@@ -7,7 +7,9 @@ import Layout from "@/components/wrapper/Layout";
 import { Documentation } from "@/types/documentation";
 import { SuccessResponse } from "@/types/global";
 import { fetcher } from "@/utils/fetcher";
+import { Pagination } from "@heroui/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import useSWR from "swr";
 
@@ -31,6 +33,7 @@ export default function DocumentationsPage({
   error,
   query,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter();
   const { data: docs } = useSWR<SuccessResponse<DocumentationResponse>>(
     {
       endpoint: getUrl(query as ParsedUrlQuery),
@@ -79,6 +82,25 @@ export default function DocumentationsPage({
                 )}
               </div>
             </div>
+
+            {data?.data.docs.length ? (
+              <Pagination
+                isCompact
+                showControls
+                color="primary"
+                page={data?.data.page as number}
+                total={data?.data.total_pages as number}
+                onChange={(e) => {
+                  router.push({
+                    query: {
+                      ...router.query,
+                      page: e,
+                    },
+                  });
+                }}
+                className="justify-self-center"
+              />
+            ) : null}
           </div>
         </section>
       </Layout>
