@@ -15,6 +15,10 @@ import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import "swiper/css";
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function HomePage({
   data,
@@ -114,116 +118,146 @@ export default function HomePage({
           </div>
         </section>
 
-        <section className="base">
-          <div className="wrapper">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="grid gap-2">
-                <h1 className="title">Artikel Terbaru</h1>
-                <p className="font-medium leading-[180%] text-gray">
-                  Temukan berbagai artikel terbaru seputar kesehatan,
-                  <br />
-                  gaya hidup, dan tips menjaga kesejahteraan.
+        {data?.articles.length ? (
+          <section className="base">
+            <div className="wrapper">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div className="grid gap-2">
+                  <h1 className="title">Artikel Terbaru</h1>
+                  <p className="font-medium leading-[180%] text-gray">
+                    Temukan berbagai artikel terbaru seputar kesehatan,
+                    <br />
+                    gaya hidup, dan tips menjaga kesejahteraan.
+                  </p>
+                </div>
+
+                <Button
+                  variant="light"
+                  color="primary"
+                  endContent={<ArrowRight weight="bold" size={18} />}
+                  onPress={() => router.push("/articles")}
+                  className="font-bold capitalize"
+                >
+                  Lihat semua artikel
+                </Button>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+                {data.articles.map((article) => {
+                  return <CardArticle key={article.article_id} {...article} />;
+                })}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {data?.events.length ? (
+          <section className="base">
+            <div className="wrapper">
+              <div className="flex flex-wrap items-end justify-between gap-4">
+                <div className="grid gap-2">
+                  <h1 className="title">Event Kami</h1>
+                  <p className="font-medium leading-[180%] text-gray">
+                    Daftar event menarik yang kami selenggarakan, mulai
+                    <br />
+                    dari seminar, workshop, hingga kegiatan komunitas.
+                  </p>
+                </div>
+
+                <Button
+                  variant="light"
+                  color="primary"
+                  endContent={<ArrowRight weight="bold" size={18} />}
+                  onPress={() => router.push("/events")}
+                  className="font-bold capitalize"
+                >
+                  Lihat semua event
+                </Button>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+                {data.events.map((event) => {
+                  return <CardEvent key={event.event_id} {...event} />;
+                })}
+              </div>
+            </div>
+          </section>
+        ) : null}
+
+        {data?.teams.length ? (
+          <section className="base">
+            <div className="wrapper">
+              <div className="grid justify-items-center gap-2 text-center">
+                <h1 className="title">Tim Terbaik Kami</h1>
+                <p className="max-w-[800px] font-medium leading-[180%] text-gray">
+                  Tim kami terdiri dari individu yang berdedikasi, berkomitmen,
+                  dan peduli terhadap kesehatan warga Jakarta. Kami bekerja
+                  bersama membuat perubahan nyata yang positif untuk semua.
                 </p>
               </div>
 
-              <Button
-                variant="light"
-                color="primary"
-                endContent={<ArrowRight weight="bold" size={18} />}
-                onPress={() => router.push("/articles")}
-                className="font-bold capitalize"
-              >
-                Lihat semua artikel
-              </Button>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-              {Array.from({ length: 4 }, (_, index) => (
-                <CardArticle key={index} />
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="base">
-          <div className="wrapper">
-            <div className="flex flex-wrap items-end justify-between gap-4">
-              <div className="grid gap-2">
-                <h1 className="title">Event Kami</h1>
-                <p className="font-medium leading-[180%] text-gray">
-                  Daftar event menarik yang kami selenggarakan, mulai
-                  <br />
-                  dari seminar, workshop, hingga kegiatan komunitas.
-                </p>
+              <div className="teams-container overflow-hidden">
+                <Swiper
+                  loop={true}
+                  slidesPerView={"auto"}
+                  spaceBetween={24}
+                  centeredSlides={true}
+                  autoplay={{
+                    delay: 3000,
+                    disableOnInteraction: false,
+                  }}
+                  pagination={{
+                    clickable: true,
+                  }}
+                  modules={[Pagination, Autoplay]}
+                >
+                  {data.teams.map((team) => {
+                    return (
+                      <SwiperSlide
+                        key={team.fullname}
+                        className="max-w-[300px] xs:max-w-[330px] lg:max-w-[360px]"
+                      >
+                        <CardTeam {...team} />
+                      </SwiperSlide>
+                    );
+                  })}
+                </Swiper>
               </div>
 
               <Button
-                variant="light"
                 color="primary"
                 endContent={<ArrowRight weight="bold" size={18} />}
-                onPress={() => router.push("/events")}
-                className="font-bold capitalize"
+                onPress={() => router.push("/company/our-teams")}
+                className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
               >
-                Lihat semua event
+                Lihat semua tim
               </Button>
             </div>
+          </section>
+        ) : null}
 
-            <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-              {Array.from({ length: 4 }, (_, index) => (
-                <CardEvent key={index} />
-              ))}
+        {data?.partners.length ? (
+          <section className="base">
+            <div className="wrapper">
+              <h1 className="title text-center">Mitra Kami</h1>
+
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
+                {data.partners.map((partner) => {
+                  return <CardPartner key={partner.partner_id} {...partner} />;
+                })}
+              </div>
+
+              <Button
+                color="primary"
+                endContent={<ArrowRight weight="bold" size={18} />}
+                onPress={() => router.push("/partners")}
+                className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
+              >
+                Lihat semua mitra
+              </Button>
             </div>
-          </div>
-        </section>
-
-        <section className="base">
-          <div className="wrapper">
-            <div className="grid justify-items-center gap-2 text-center">
-              <h1 className="title">Tim Terbaik Kami</h1>
-              <p className="max-w-[800px] font-medium leading-[180%] text-gray">
-                Tim kami terdiri dari individu yang berdedikasi, berkomitmen,
-                dan peduli terhadap kesehatan warga Jakarta. Kami bekerja
-                bersama membuat perubahan nyata yang positif untuk semua.
-              </p>
-            </div>
-
-            <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-              {Array.from({ length: 4 }, (_, index) => (
-                <CardTeam key={index} />
-              ))}
-            </div>
-
-            <Button
-              color="primary"
-              endContent={<ArrowRight weight="bold" size={18} />}
-              onPress={() => router.push("/company/our-teams")}
-              className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
-            >
-              Lihat semua tim
-            </Button>
-          </div>
-        </section>
-
-        <section className="base">
-          <div className="wrapper">
-            <h1 className="title text-center">Mitra Kami</h1>
-
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
-              {Array.from({ length: 7 }, (_, index) => (
-                <CardPartner key={index} />
-              ))}
-            </div>
-
-            <Button
-              color="primary"
-              endContent={<ArrowRight weight="bold" size={18} />}
-              onPress={() => router.push("/partners")}
-              className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
-            >
-              Lihat semua mitra
-            </Button>
-          </div>
-        </section>
+          </section>
+        ) : null}
       </Layout>
 
       <Footer />
