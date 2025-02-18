@@ -119,15 +119,14 @@ export default function HomePage({
         </section>
 
         {data?.articles.length ? (
-          <section className="base">
+          <section className="grid justify-items-center pb-[100px] xl:pb-[150px]">
             <div className="wrapper">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div className="grid gap-2">
                   <h1 className="title">Artikel Terbaru</h1>
-                  <p className="font-medium leading-[180%] text-gray">
-                    Temukan berbagai artikel terbaru seputar kesehatan,
-                    <br />
-                    gaya hidup, dan tips menjaga kesejahteraan.
+                  <p className="max-w-[400px] font-medium leading-[180%] text-gray">
+                    Temukan berbagai artikel terbaru seputar kesehatan, gaya
+                    hidup, dan tips menjaga kesejahteraan.
                   </p>
                 </div>
 
@@ -151,16 +150,50 @@ export default function HomePage({
           </section>
         ) : null}
 
+        <search className="grid justify-items-center pb-[100px] xl:pb-[150px]">
+          <div className="wrapper">
+            <div className="teams-container overflow-hidden">
+              <Swiper
+                loop={true}
+                slidesPerView={"auto"}
+                spaceBetween={32}
+                centeredSlides={true}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                pagination={{
+                  clickable: true,
+                }}
+                modules={[Pagination, Autoplay]}
+              >
+                {Array.from({ length: 4 }, (_, index) => (
+                  <SwiperSlide key={index} className="w-full max-w-[850px]">
+                    <Link href="#" target="_blank" className="h-auto w-full">
+                      <Image
+                        src="/img/testing/banner-dummy.jpg"
+                        alt="banner img"
+                        width={850}
+                        height={350}
+                        className="h-full w-full rounded-2xl object-cover object-center"
+                      />
+                    </Link>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
+          </div>
+        </search>
+
         {data?.events.length ? (
           <section className="base">
             <div className="wrapper">
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div className="grid gap-2">
                   <h1 className="title">Event Kami</h1>
-                  <p className="font-medium leading-[180%] text-gray">
-                    Daftar event menarik yang kami selenggarakan, mulai
-                    <br />
-                    dari seminar, workshop, hingga kegiatan komunitas.
+                  <p className="max-w-[450px] font-medium leading-[180%] text-gray">
+                    Daftar event menarik yang kami selenggarakan, mulai dari
+                    seminar, workshop, hingga kegiatan komunitas.
                   </p>
                 </div>
 
@@ -200,7 +233,7 @@ export default function HomePage({
                 <Swiper
                   loop={true}
                   slidesPerView={"auto"}
-                  spaceBetween={24}
+                  spaceBetween={32}
                   centeredSlides={true}
                   autoplay={{
                     delay: 3000,
