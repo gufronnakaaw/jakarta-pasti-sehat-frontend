@@ -33,20 +33,20 @@ export default function ArticlesPage({
   const [searchValue] = useDebounce(search, 800);
 
   useEffect(() => {
-    if (searchValue === router.query.filter) return;
-
-    const newQuery = { ...router.query };
     if (searchValue) {
-      newQuery.filter = searchValue;
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          filter: searchValue,
+        },
+      });
     } else {
-      delete newQuery.filter;
+      router.push({
+        pathname: router.pathname,
+      });
     }
-
-    router.push({
-      pathname: router.pathname,
-      query: newQuery,
-    });
-  }, [searchValue, router.query.filter]);
+  }, [searchValue]);
 
   return (
     <>
