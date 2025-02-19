@@ -3,8 +3,15 @@ import CTAMain from "@/components/cta/CTAMain";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
+import { SuccessResponse } from "@/types/global";
+import { Team } from "@/types/team";
+import { fetcher } from "@/utils/fetcher";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-export default function OurTeamsPage() {
+export default function TeamPage({
+  data,
+  error,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Navbar />
@@ -22,9 +29,19 @@ export default function OurTeamsPage() {
             </div>
 
             <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-              {Array.from({ length: 8 }, (_, index) => (
-                <CardTeam key={index} />
-              ))}
+              {data?.map((team) => {
+                return (
+                  <CardTeam
+                    key={team.team_id}
+                    {...{
+                      fullname: team.fullname,
+                      image_url: team.image_url,
+                      position: team.position,
+                      team_id: team.team_id,
+                    }}
+                  />
+                );
+              })}
             </div>
           </div>
         </section>
@@ -46,3 +63,27 @@ export default function OurTeamsPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  data?: Team[];
+  error?: any;
+}> = async () => {
+  try {
+    const response: SuccessResponse<Team[]> = await fetcher({
+      endpoint: "/teams",
+      method: "GET",
+    });
+
+    return {
+      props: {
+        data: response.data,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
+};
