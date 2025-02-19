@@ -3,6 +3,7 @@ import CardEvent from "@/components/card/CardEvent";
 import CardPartner from "@/components/card/CardPartner";
 import CardPrinciples from "@/components/card/CardPrinciples";
 import CardTeam from "@/components/card/CardTeam";
+import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
@@ -118,190 +119,201 @@ export default function HomePage({
           </div>
         </section>
 
-        {data?.articles.length ? (
-          <section className="grid justify-items-center pb-[100px] xl:pb-[150px]">
-            <div className="wrapper">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="grid gap-2">
-                  <h1 className="title">Artikel Terbaru</h1>
-                  <p className="max-w-[400px] font-medium leading-[180%] text-gray">
-                    Temukan berbagai artikel terbaru seputar kesehatan, gaya
-                    hidup, dan tips menjaga kesejahteraan.
-                  </p>
+        {error ? (
+          <ErrorPage error={error} />
+        ) : (
+          <>
+            {data?.articles.length ? (
+              <section className="grid justify-items-center pb-[100px] xl:pb-[150px]">
+                <div className="wrapper">
+                  <div className="flex flex-wrap items-end justify-between gap-4">
+                    <div className="grid gap-2">
+                      <h1 className="title">Artikel Terbaru</h1>
+                      <p className="max-w-[400px] font-medium leading-[180%] text-gray">
+                        Temukan berbagai artikel terbaru seputar kesehatan, gaya
+                        hidup, dan tips menjaga kesejahteraan.
+                      </p>
+                    </div>
+
+                    <Button
+                      variant="light"
+                      color="primary"
+                      endContent={<ArrowRight weight="bold" size={18} />}
+                      onPress={() => router.push("/articles")}
+                      className="font-bold capitalize"
+                    >
+                      Lihat semua artikel
+                    </Button>
+                  </div>
+
+                  <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+                    {data.articles.map((article) => {
+                      return (
+                        <CardArticle key={article.article_id} {...article} />
+                      );
+                    })}
+                  </div>
                 </div>
+              </section>
+            ) : null}
 
-                <Button
-                  variant="light"
-                  color="primary"
-                  endContent={<ArrowRight weight="bold" size={18} />}
-                  onPress={() => router.push("/articles")}
-                  className="font-bold capitalize"
-                >
-                  Lihat semua artikel
-                </Button>
-              </div>
-
-              <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-                {data.articles.map((article) => {
-                  return <CardArticle key={article.article_id} {...article} />;
-                })}
-              </div>
-            </div>
-          </section>
-        ) : null}
-
-        {data?.banners.length ? (
-          <search className="grid justify-items-center pb-[100px] xl:pb-[150px]">
-            <div className="wrapper">
-              <div className="teams-container overflow-hidden">
-                <Swiper
-                  loop={true}
-                  slidesPerView={"auto"}
-                  spaceBetween={32}
-                  centeredSlides={true}
-                  autoplay={{
-                    delay: 3000,
-                    disableOnInteraction: false,
-                  }}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  modules={[Pagination, Autoplay]}
-                >
-                  {data?.banners.map((banner) => {
-                    return (
-                      <SwiperSlide
-                        key={banner.banner_id}
-                        className="w-full max-w-[850px]"
-                      >
-                        <Link
-                          href={banner.link ? banner.link : "#"}
-                          target={banner.link ? "_blank" : ""}
-                          className="h-auto w-full"
-                        >
-                          <Image
-                            src={banner.image_url}
-                            alt={banner.alt as string}
-                            width={850}
-                            height={350}
-                            className="h-full w-full rounded-2xl object-cover object-center"
-                          />
-                        </Link>
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-              </div>
-            </div>
-          </search>
-        ) : null}
-
-        {data?.events.length ? (
-          <section className="base">
-            <div className="wrapper">
-              <div className="flex flex-wrap items-end justify-between gap-4">
-                <div className="grid gap-2">
-                  <h1 className="title">Event Kami</h1>
-                  <p className="max-w-[450px] font-medium leading-[180%] text-gray">
-                    Daftar event menarik yang kami selenggarakan, mulai dari
-                    seminar, workshop, hingga kegiatan komunitas.
-                  </p>
+            {data?.banners.length ? (
+              <search className="grid justify-items-center pb-[100px] xl:pb-[150px]">
+                <div className="wrapper">
+                  <div className="teams-container overflow-hidden">
+                    <Swiper
+                      loop={true}
+                      slidesPerView={"auto"}
+                      spaceBetween={32}
+                      centeredSlides={true}
+                      autoplay={{
+                        delay: 3000,
+                        disableOnInteraction: false,
+                      }}
+                      pagination={{
+                        clickable: true,
+                      }}
+                      modules={[Pagination, Autoplay]}
+                    >
+                      {data?.banners.map((banner) => {
+                        return (
+                          <SwiperSlide
+                            key={banner.banner_id}
+                            className="w-full max-w-[850px]"
+                          >
+                            <Link
+                              href={banner.link ? banner.link : "#"}
+                              target={banner.link ? "_blank" : ""}
+                              className="h-auto w-full"
+                            >
+                              <Image
+                                src={banner.image_url}
+                                alt={banner.alt as string}
+                                width={850}
+                                height={350}
+                                className="h-full w-full rounded-2xl object-cover object-center"
+                              />
+                            </Link>
+                          </SwiperSlide>
+                        );
+                      })}
+                    </Swiper>
+                  </div>
                 </div>
+              </search>
+            ) : null}
 
-                <Button
-                  variant="light"
-                  color="primary"
-                  endContent={<ArrowRight weight="bold" size={18} />}
-                  onPress={() => router.push("/events")}
-                  className="font-bold capitalize"
-                >
-                  Lihat semua event
-                </Button>
-              </div>
+            {data?.events.length ? (
+              <section className="base">
+                <div className="wrapper">
+                  <div className="flex flex-wrap items-end justify-between gap-4">
+                    <div className="grid gap-2">
+                      <h1 className="title">Event Kami</h1>
+                      <p className="max-w-[450px] font-medium leading-[180%] text-gray">
+                        Daftar event menarik yang kami selenggarakan, mulai dari
+                        seminar, workshop, hingga kegiatan komunitas.
+                      </p>
+                    </div>
 
-              <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-                {data.events.map((event) => {
-                  return <CardEvent key={event.event_id} {...event} />;
-                })}
-              </div>
-            </div>
-          </section>
-        ) : null}
+                    <Button
+                      variant="light"
+                      color="primary"
+                      endContent={<ArrowRight weight="bold" size={18} />}
+                      onPress={() => router.push("/events")}
+                      className="font-bold capitalize"
+                    >
+                      Lihat semua event
+                    </Button>
+                  </div>
 
-        {data?.teams.length ? (
-          <section className="base">
-            <div className="wrapper">
-              <div className="grid justify-items-center gap-2 text-center">
-                <h1 className="title">Tim Terbaik Kami</h1>
-                <p className="max-w-[800px] font-medium leading-[180%] text-gray">
-                  Tim kami terdiri dari individu yang berdedikasi, berkomitmen,
-                  dan peduli terhadap kesehatan warga Jakarta. Kami bekerja
-                  bersama membuat perubahan nyata yang positif untuk semua.
-                </p>
-              </div>
+                  <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+                    {data.events.map((event) => {
+                      return <CardEvent key={event.event_id} {...event} />;
+                    })}
+                  </div>
+                </div>
+              </section>
+            ) : null}
 
-              <div className="teams-container overflow-hidden">
-                <Swiper
-                  loop={true}
-                  slidesPerView={"auto"}
-                  spaceBetween={32}
-                  centeredSlides={true}
-                  autoplay={{
-                    delay: 3000,
-                    disableOnInteraction: false,
-                  }}
-                  pagination={{
-                    clickable: true,
-                  }}
-                  modules={[Pagination, Autoplay]}
-                >
-                  {data.teams.map((team) => {
-                    return (
-                      <SwiperSlide
-                        key={team.fullname}
-                        className="max-w-[300px] xs:max-w-[330px] lg:max-w-[360px]"
-                      >
-                        <CardTeam {...team} />
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-              </div>
+            {data?.teams.length ? (
+              <section className="base">
+                <div className="wrapper">
+                  <div className="grid justify-items-center gap-2 text-center">
+                    <h1 className="title">Tim Terbaik Kami</h1>
+                    <p className="max-w-[800px] font-medium leading-[180%] text-gray">
+                      Tim kami terdiri dari individu yang berdedikasi,
+                      berkomitmen, dan peduli terhadap kesehatan warga Jakarta.
+                      Kami bekerja bersama membuat perubahan nyata yang positif
+                      untuk semua.
+                    </p>
+                  </div>
 
-              <Button
-                color="primary"
-                endContent={<ArrowRight weight="bold" size={18} />}
-                onPress={() => router.push("/team")}
-                className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
-              >
-                Lihat semua tim
-              </Button>
-            </div>
-          </section>
-        ) : null}
+                  <div className="teams-container overflow-hidden">
+                    <Swiper
+                      loop={true}
+                      slidesPerView={"auto"}
+                      spaceBetween={32}
+                      centeredSlides={true}
+                      autoplay={{
+                        delay: 3000,
+                        disableOnInteraction: false,
+                      }}
+                      pagination={{
+                        clickable: true,
+                      }}
+                      modules={[Pagination, Autoplay]}
+                    >
+                      {data.teams.map((team) => {
+                        return (
+                          <SwiperSlide
+                            key={team.fullname}
+                            className="max-w-[300px] xs:max-w-[330px] lg:max-w-[360px]"
+                          >
+                            <CardTeam {...team} />
+                          </SwiperSlide>
+                        );
+                      })}
+                    </Swiper>
+                  </div>
 
-        {data?.partners.length ? (
-          <section className="base">
-            <div className="wrapper">
-              <h1 className="title text-center">Mitra Kami</h1>
+                  <Button
+                    color="primary"
+                    endContent={<ArrowRight weight="bold" size={18} />}
+                    onPress={() => router.push("/team")}
+                    className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
+                  >
+                    Lihat semua tim
+                  </Button>
+                </div>
+              </section>
+            ) : null}
 
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
-                {data.partners.map((partner) => {
-                  return <CardPartner key={partner.partner_id} {...partner} />;
-                })}
-              </div>
+            {data?.partners.length ? (
+              <section className="base">
+                <div className="wrapper">
+                  <h1 className="title text-center">Mitra Kami</h1>
 
-              <Button
-                color="primary"
-                endContent={<ArrowRight weight="bold" size={18} />}
-                onPress={() => router.push("/partners")}
-                className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
-              >
-                Lihat semua mitra
-              </Button>
-            </div>
-          </section>
-        ) : null}
+                  <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
+                    {data.partners.map((partner) => {
+                      return (
+                        <CardPartner key={partner.partner_id} {...partner} />
+                      );
+                    })}
+                  </div>
+
+                  <Button
+                    color="primary"
+                    endContent={<ArrowRight weight="bold" size={18} />}
+                    onPress={() => router.push("/partners")}
+                    className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
+                  >
+                    Lihat semua mitra
+                  </Button>
+                </div>
+              </section>
+            ) : null}
+          </>
+        )}
       </Layout>
 
       <Footer />
@@ -325,12 +337,9 @@ export const getServerSideProps: GetServerSideProps<{
       },
     };
   } catch (error: any) {
-    console.error(error);
-
     return {
       props: {
-        error:
-          error?.message || "Telah terjadi kesalahan, mohon reload halaman!",
+        error,
       },
     };
   }
