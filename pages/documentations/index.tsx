@@ -69,7 +69,7 @@ export default function DocumentationsPage({
                   Daftar Gambar
                 </h2>
 
-                <SelectFilterData />
+                <SelectFilterData {...{ with_other: false }} />
               </div>
 
               <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">

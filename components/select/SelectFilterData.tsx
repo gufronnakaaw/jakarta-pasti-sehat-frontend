@@ -10,7 +10,11 @@ type PillarsResponse = {
   subpillars?: { name: string; slug: string }[];
 };
 
-export default function SelectFilterData() {
+export default function SelectFilterData({
+  with_other = true,
+}: {
+  with_other?: boolean;
+}) {
   const router = useRouter();
   const { data, isLoading, error } = useSWR<SuccessResponse<PillarsResponse[]>>(
     {
@@ -33,8 +37,11 @@ export default function SelectFilterData() {
   const items: PillarsResponse[] = [
     { name: "Terbaru", slug: "desc" },
     { name: "Terlama", slug: "asc" },
-    { name: "Lainnya", slug: "other" },
   ];
+
+  if (with_other) {
+    items.push({ name: "Lainnya", slug: "other" });
+  }
 
   for (const element of data?.data ? data.data : []) {
     items.push(element);
@@ -72,7 +79,7 @@ export default function SelectFilterData() {
       }}
     >
       {items.map((item, index) => {
-        return index == 0 || index == 1 || index == 2 ? (
+        return index == 0 || index == 1 || (with_other ? index == 2 : false) ? (
           <SelectItem key={item.slug}>{item.name}</SelectItem>
         ) : (
           <SelectSection showDivider title={item.name}>
