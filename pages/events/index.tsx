@@ -8,7 +8,9 @@ import { Event } from "@/types/event";
 import { SuccessResponse } from "@/types/global";
 import { fetcher } from "@/utils/fetcher";
 import { getUrl } from "@/utils/string";
+import { Pagination } from "@heroui/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 
 type EventResponse = {
@@ -22,6 +24,8 @@ export default function EventsPage({
   data,
   error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter();
+
   return (
     <>
       <Navbar />
@@ -56,6 +60,25 @@ export default function EventsPage({
                   })}
                 </div>
               )}
+
+              {data?.events.length ? (
+                <Pagination
+                  isCompact
+                  showControls
+                  color="primary"
+                  page={data?.page as number}
+                  total={data?.total_pages as number}
+                  onChange={(e) => {
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: e,
+                      },
+                    });
+                  }}
+                  className="mt-4 justify-self-center"
+                />
+              ) : null}
             </div>
           </div>
         </section>
