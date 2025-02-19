@@ -7,19 +7,12 @@ import Layout from "@/components/wrapper/Layout";
 import { Documentation } from "@/types/documentation";
 import { SuccessResponse } from "@/types/global";
 import { fetcher } from "@/utils/fetcher";
+import { getUrl } from "@/utils/string";
 import { Pagination } from "@heroui/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import useSWR from "swr";
-
-function getUrl(query: ParsedUrlQuery) {
-  if (query.filter) {
-    return `/docs?filter=${query.filter}&page=${query.page ? query.page : 1}`;
-  }
-
-  return `/docs?page=${query.page ? query.page : 1}`;
-}
 
 type DocumentationResponse = {
   docs: Documentation[];
@@ -36,7 +29,7 @@ export default function DocumentationsPage({
   const router = useRouter();
   const { data: docs } = useSWR<SuccessResponse<DocumentationResponse>>(
     {
-      endpoint: getUrl(query as ParsedUrlQuery),
+      endpoint: getUrl(query as ParsedUrlQuery, "/docs"),
       method: "GET",
     },
     {
@@ -98,7 +91,7 @@ export default function DocumentationsPage({
                     },
                   });
                 }}
-                className="justify-self-center"
+                className="mt-4 justify-self-center"
               />
             ) : null}
           </div>
@@ -117,7 +110,7 @@ export const getServerSideProps: GetServerSideProps<{
 }> = async ({ query }) => {
   try {
     const response: SuccessResponse<DocumentationResponse> = await fetcher({
-      endpoint: getUrl(query),
+      endpoint: getUrl(query as ParsedUrlQuery, "/docs"),
       method: "GET",
     });
 
