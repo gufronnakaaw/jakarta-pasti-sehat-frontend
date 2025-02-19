@@ -43,3 +43,32 @@ export function formatDayWithoutTime(date: Date) {
 
   return `${days[date.getDay()]}, ${day} ${months[month]} ${year}`;
 }
+
+export function formatEventDate(start: string, end: string): string {
+  const options: Intl.DateTimeFormatOptions = {
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+  };
+  const startDate = new Date(start).toLocaleDateString("id-ID", options);
+  const endDate = new Date(end).toLocaleDateString("id-ID", options);
+
+  return startDate === endDate
+    ? startDate
+    : startDate.split(" ")[1] === endDate.split(" ")[1] &&
+        startDate.split(" ")[2] === endDate.split(" ")[2]
+      ? `${startDate.split(" ")[0]} - ${endDate.split(" ")[0]} ${startDate.split(" ")[1]} ${startDate.split(" ")[2]}`
+      : `${startDate} - ${endDate}`;
+}
+
+export function formatEventTime(start: string, end: string): string {
+  const options: Intl.DateTimeFormatOptions = {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  };
+  const startTime = new Date(start).toLocaleTimeString("id-ID", options);
+  const endTime = new Date(end).toLocaleTimeString("id-ID", options);
+
+  return `${startTime} - ${endTime} WIB`;
+}
