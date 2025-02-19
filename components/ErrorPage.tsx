@@ -16,7 +16,7 @@ function getErrorMessage(status_code: any) {
 export default function ErrorPage({ error }: { error: any }) {
   console.error(error);
   return (
-    <section className="grid w-full justify-center gap-8 pt-8">
+    <section className="grid w-full justify-center gap-8 p-8">
       <div className="grid gap-6">
         <div className="grid gap-2">
           <h1 className="text-[42px] font-black capitalize leading-[120%] -tracking-wide text-black">
