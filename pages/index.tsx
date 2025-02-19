@@ -271,7 +271,7 @@ export default function HomePage({
               <Button
                 color="primary"
                 endContent={<ArrowRight weight="bold" size={18} />}
-                onPress={() => router.push("/company/our-teams")}
+                onPress={() => router.push("/team")}
                 className="mt-8 w-max justify-self-center px-8 font-bold capitalize"
               >
                 Lihat semua tim

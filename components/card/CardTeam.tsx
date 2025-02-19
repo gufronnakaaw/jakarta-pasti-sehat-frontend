@@ -11,7 +11,7 @@ type CardTeamProps = {
 export default function CardTeam(team: CardTeamProps) {
   return (
     <Link
-      href={`/our-teams/${team.team_id}`}
+      href={`/team/${team.team_id}`}
       className="group grid overflow-hidden rounded-2xl bg-white shadow-[4px_2px_18px_rgba(0,0,0,0.1)]"
     >
       <div className="relative aspect-square overflow-hidden">

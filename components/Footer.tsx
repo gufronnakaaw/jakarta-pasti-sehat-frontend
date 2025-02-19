@@ -8,7 +8,7 @@ const footerMenu = [
     list: [
       { url: "/about-us", label: "Tentang Kami" },
       { url: "/careers", label: "karir" },
-      { url: "/our-teams", label: "Tim Kami" },
+      { url: "/team", label: "Tim Kami" },
     ],
   },
   {
