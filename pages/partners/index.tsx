@@ -1,10 +1,18 @@
 import CardPartner from "@/components/card/CardPartner";
 import CTAMain from "@/components/cta/CTAMain";
+import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
+import { SuccessResponse } from "@/types/global";
+import { Partner } from "@/types/partner";
+import { fetcher } from "@/utils/fetcher";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-export default function PartnersPage() {
+export default function PartnersPage({
+  data,
+  error,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
     <>
       <Navbar />
@@ -14,11 +22,15 @@ export default function PartnersPage() {
           <div className="wrapper">
             <h1 className="title mb-4 text-center">Mitra Kami 🤝</h1>
 
-            <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
-              {Array.from({ length: 14 }, (_, index) => (
-                <CardPartner key={index} />
-              ))}
-            </div>
+            {error ? (
+              <ErrorPage error={error} />
+            ) : (
+              <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
+                {data?.map((partner) => (
+                  <CardPartner key={partner.partner_id} {...partner} />
+                ))}
+              </div>
+            )}
           </div>
         </section>
 
@@ -39,3 +51,27 @@ export default function PartnersPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  data?: Partner[];
+  error?: any;
+}> = async () => {
+  try {
+    const response: SuccessResponse<Partner[]> = await fetcher({
+      endpoint: "/partners",
+      method: "GET",
+    });
+
+    return {
+      props: {
+        data: response.data,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
+};
