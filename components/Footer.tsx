@@ -9,6 +9,7 @@ const footerMenu = [
       { url: "/about-us", label: "Tentang Kami" },
       { url: "/careers", label: "karir" },
       { url: "/team", label: "Tim Kami" },
+      { url: "/partners", label: "Mitra" },
     ],
   },
   {
