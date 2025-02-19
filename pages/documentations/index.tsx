@@ -12,7 +12,6 @@ import { Pagination } from "@heroui/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import useSWR from "swr";
 
 type DocumentationResponse = {
   docs: Documentation[];
@@ -24,20 +23,8 @@ type DocumentationResponse = {
 export default function DocumentationsPage({
   data,
   error,
-  query,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const { data: docs } = useSWR<SuccessResponse<DocumentationResponse>>(
-    {
-      endpoint: getUrl(query as ParsedUrlQuery, "/docs"),
-      method: "GET",
-    },
-    {
-      fallbackData: data,
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
-    },
-  );
 
   return (
     <>
@@ -69,20 +56,20 @@ export default function DocumentationsPage({
                 {error ? (
                   <ErrorPage {...error} />
                 ) : (
-                  docs?.data.docs.map((doc) => {
+                  data?.docs.map((doc) => {
                     return <CardDocumentation key={doc.doc_id} {...doc} />;
                   })
                 )}
               </div>
             </div>
 
-            {data?.data.docs.length ? (
+            {data?.docs.length ? (
               <Pagination
                 isCompact
                 showControls
                 color="primary"
-                page={data?.data.page as number}
-                total={data?.data.total_pages as number}
+                page={data?.page as number}
+                total={data?.total_pages as number}
                 onChange={(e) => {
                   router.push({
                     query: {
@@ -104,9 +91,8 @@ export default function DocumentationsPage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
-  data?: SuccessResponse<DocumentationResponse>;
+  data?: DocumentationResponse;
   error?: any;
-  query?: ParsedUrlQuery;
 }> = async ({ query }) => {
   try {
     const response: SuccessResponse<DocumentationResponse> = await fetcher({
@@ -116,8 +102,7 @@ export const getServerSideProps: GetServerSideProps<{
 
     return {
       props: {
-        data: response,
-        query,
+        data: response.data,
       },
     };
   } catch (error: any) {
