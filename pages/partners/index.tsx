@@ -25,7 +25,7 @@ export default function PartnersPage({
             {error ? (
               <ErrorPage error={error} />
             ) : (
-              <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
+              <div className="flex flex-wrap items-center justify-center gap-8">
                 {data?.map((partner) => (
                   <CardPartner key={partner.partner_id} {...partner} />
                 ))}
