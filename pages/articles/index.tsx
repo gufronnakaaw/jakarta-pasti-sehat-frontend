@@ -57,7 +57,7 @@ export default function ArticlesPage({
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">
               <h1 className="title text-center">Artikel 📰</h1>
-              <p className="max-w-[900px] font-medium leading-[180%] text-gray">
+              <p className="max-w-[600px] font-medium leading-[180%] text-gray">
                 Temukan berbagai artikel menarik yang membahas kesehatan dan
                 pola hidup sehat untuk mendukung kesehatan masyarakat Jakarta.
               </p>
