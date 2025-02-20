@@ -293,7 +293,7 @@ export default function HomePage({
                 <div className="wrapper">
                   <h1 className="title text-center">Mitra Kami</h1>
 
-                  <div className="grid grid-cols-[repeat(auto-fit,minmax(171px,1fr))] gap-8">
+                  <div className="flex flex-wrap items-center justify-center gap-8">
                     {data.partners.map((partner) => {
                       return (
                         <CardPartner key={partner.partner_id} {...partner} />
