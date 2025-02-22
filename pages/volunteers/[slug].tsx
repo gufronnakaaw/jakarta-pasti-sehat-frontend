@@ -4,10 +4,10 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { SuccessResponse } from "@/types/global";
+import { VolunteerDetail } from "@/types/volunteer";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { formatDateWithoutTime } from "@/utils/formatDate";
-import { VolunteerDetail } from "@/utils/volunteer";
 import {
   Autocomplete,
   AutocompleteItem,

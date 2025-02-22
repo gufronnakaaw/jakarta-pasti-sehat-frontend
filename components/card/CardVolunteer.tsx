@@ -1,5 +1,5 @@
+import { Volunteer } from "@/types/volunteer";
 import { formatDateWithoutTime } from "@/utils/formatDate";
-import { Volunteer } from "@/utils/volunteer";
 import { Button } from "@heroui/react";
 import { ArrowUpRight, CalendarMinus } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
