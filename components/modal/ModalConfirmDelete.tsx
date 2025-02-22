@@ -34,7 +34,7 @@ export default function ModalConfirmDelete({
 
               <ModalBody>
                 <p className="text-sm font-medium leading-[160%] text-gray">
-                  Yakin ingin menghapus data ini?
+                  Apakah anda yakin?
                   <br />
                   Data yang sudah dihapus{" "}
                   <span className="font-black text-danger">
