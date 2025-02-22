@@ -1,4 +1,5 @@
 import EmptyData from "@/components/EmptyData";
+import ErrorPage from "@/components/ErrorPage";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
 import SearchInput from "@/components/SearchInput";
@@ -43,7 +44,9 @@ export default function DashboardTeamsPage({
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
-  const { data, isLoading, mutate } = useSWR<SuccessResponse<TeamResponse>>({
+  const { data, isLoading, mutate, error } = useSWR<
+    SuccessResponse<TeamResponse>
+  >({
     endpoint: getUrl(query, "/teams"),
     method: "GET",
     role: "admin",
@@ -155,73 +158,79 @@ export default function DashboardTeamsPage({
             text="Lihat dan kelola semua tim di sini"
           />
 
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <SearchInput
-                placeholder="Cari Tim..."
-                onChange={(e) => setSearch(e.target.value)}
-                onClear={() => setSearch("")}
-              />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between gap-4">
+                <SearchInput
+                  placeholder="Cari Tim..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  onClear={() => setSearch("")}
+                />
 
-              <Button
-                color="primary"
-                startContent={<Plus weight="bold" size={18} />}
-                onPress={() => router.push("/dashboard/teams/create")}
-                className="font-bold"
-              >
-                Tambah Tim
-              </Button>
-            </div>
-
-            <div className="overflow-x-scroll scrollbar-hide">
-              <Table
-                isStriped
-                aria-label="teams table"
-                color="primary"
-                selectionMode="none"
-                classNames={customStyleTable}
-                className="scrollbar-hide"
-              >
-                <TableHeader columns={columnsTeam}>
-                  {(column) => (
-                    <TableColumn key={column.uid}>{column.name}</TableColumn>
-                  )}
-                </TableHeader>
-
-                <TableBody
-                  items={filteredTeam || []}
-                  emptyContent={<EmptyData text="Tim tidak ditemukan!" />}
+                <Button
+                  color="primary"
+                  startContent={<Plus weight="bold" size={18} />}
+                  onPress={() => router.push("/dashboard/teams/create")}
+                  className="font-bold"
                 >
-                  {(team: TeamDashboard) => (
-                    <TableRow key={team.team_id}>
-                      {(columnKey) => (
-                        <TableCell>{renderCellTeam(team, columnKey)}</TableCell>
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                  Tambah Tim
+                </Button>
+              </div>
 
-            {data?.data.teams.length ? (
-              <Pagination
-                isCompact
-                showControls
-                color="primary"
-                page={data?.data.page as number}
-                total={data?.data.total_pages as number}
-                onChange={(e) => {
-                  router.push({
-                    query: {
-                      ...router.query,
-                      page: e,
-                    },
-                  });
-                }}
-                className="justify-self-center"
-              />
-            ) : null}
-          </div>
+              <div className="overflow-x-scroll scrollbar-hide">
+                <Table
+                  isStriped
+                  aria-label="teams table"
+                  color="primary"
+                  selectionMode="none"
+                  classNames={customStyleTable}
+                  className="scrollbar-hide"
+                >
+                  <TableHeader columns={columnsTeam}>
+                    {(column) => (
+                      <TableColumn key={column.uid}>{column.name}</TableColumn>
+                    )}
+                  </TableHeader>
+
+                  <TableBody
+                    items={filteredTeam || []}
+                    emptyContent={<EmptyData text="Tim tidak ditemukan!" />}
+                  >
+                    {(team: TeamDashboard) => (
+                      <TableRow key={team.team_id}>
+                        {(columnKey) => (
+                          <TableCell>
+                            {renderCellTeam(team, columnKey)}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {data?.data.teams.length ? (
+                <Pagination
+                  isCompact
+                  showControls
+                  color="primary"
+                  page={data?.data.page as number}
+                  total={data?.data.total_pages as number}
+                  onChange={(e) => {
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: e,
+                      },
+                    });
+                  }}
+                  className="justify-self-center"
+                />
+              ) : null}
+            </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>

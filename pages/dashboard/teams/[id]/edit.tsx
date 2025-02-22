@@ -1,4 +1,5 @@
 import ButtonBack from "@/components/button/ButtonBack";
+import ErrorPage from "@/components/ErrorPage";
 import { InputImage } from "@/components/InputImage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
@@ -21,7 +22,6 @@ import {
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
@@ -49,7 +49,6 @@ export default function EditTeamPage({
   positions,
   team,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState<InputState>({
@@ -220,370 +219,377 @@ export default function EditTeamPage({
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
-          <div className="grid max-w-[900px] gap-8">
-            <div className="grid grid-cols-[300px_1fr] items-start gap-8">
-              {/* data image */}
-              <div className="grid gap-4">
-                <div className="grid gap-1">
-                  {!changeImage ? (
-                    <Image
-                      priority
-                      src={team?.image_url as string}
-                      alt="photo team"
-                      width={200}
-                      height={200}
-                      className="aspect-square size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1"
-                    />
-                  ) : (
-                    <div className="aspect-video size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1">
-                      <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
-                        <Cropper
-                          image={fileImage as string}
-                          crop={cropImage}
-                          zoom={zoomImage}
-                          aspect={1 / 1}
-                          onCropChange={setCropImage}
-                          onCropComplete={onCropComplete({
-                            setCroppedAreaPixels,
-                          })}
-                          onZoomChange={setZoomImage}
-                        />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid max-w-[900px] gap-8">
+              <div className="grid grid-cols-[300px_1fr] items-start gap-8">
+                {/* data image */}
+                <div className="grid gap-4">
+                  <div className="grid gap-1">
+                    {!changeImage ? (
+                      <Image
+                        priority
+                        src={team?.image_url as string}
+                        alt="photo team"
+                        width={200}
+                        height={200}
+                        className="aspect-square size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1"
+                      />
+                    ) : (
+                      <div className="aspect-video size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1">
+                        <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
+                          <Cropper
+                            image={fileImage as string}
+                            crop={cropImage}
+                            zoom={zoomImage}
+                            aspect={1 / 1}
+                            onCropChange={setCropImage}
+                            onCropComplete={onCropComplete({
+                              setCroppedAreaPixels,
+                            })}
+                            onZoomChange={setZoomImage}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  )}
-
-                  <p className="text-center text-sm font-medium leading-[170%] text-gray">
-                    <strong className="mr-1 text-danger">*</strong>ratio gambar
-                    1:1
-                  </p>
-                </div>
-
-                {changeImage ? <InputImage {...{ setFileImage }} /> : null}
-              </div>
-
-              {/* data form input */}
-              <div className="grid gap-8">
-                {/* main */}
-                <div className="grid gap-4">
-                  <Switch
-                    color="primary"
-                    isSelected={changeImage}
-                    onValueChange={setChangeImage}
-                    classNames={{
-                      label: "text-black font-medium text-sm",
-                    }}
-                    className="mb-4"
-                  >
-                    Aktifkan Untuk Ubah Foto
-                  </Switch>
-
-                  <Input
-                    isRequired
-                    type="text"
-                    variant="flat"
-                    label="Nama Lengkap"
-                    labelPlacement="outside"
-                    placeholder="Contoh: John Doe"
-                    name="fullname"
-                    value={input.fullname}
-                    onChange={(e) => handleInputChange(e)}
-                    classNames={{
-                      ...customStyleInput,
-                      inputWrapper: "bg-white",
-                    }}
-                  />
-
-                  <Select
-                    isRequired
-                    aria-label="select position"
-                    variant="flat"
-                    label="Pilih Jabatan"
-                    labelPlacement="outside"
-                    placeholder="Contoh: Manager"
-                    name="position"
-                    items={positions}
-                    selectedKeys={[input.position]}
-                    onChange={(e) => handleInputChange(e)}
-                    classNames={{
-                      trigger: "bg-white",
-                      value: "font-semibold text-gray",
-                    }}
-                  >
-                    {(position: Position) => (
-                      <SelectItem key={position.position_id}>
-                        {position.name}
-                      </SelectItem>
                     )}
-                  </Select>
 
-                  <Textarea
-                    isRequired
-                    type="text"
-                    variant="flat"
-                    maxRows={8}
-                    label="Deskripsi"
-                    labelPlacement="outside"
-                    placeholder="Contoh: Saya adalah seorang yang ramah dan rajin"
-                    name="description"
-                    value={input.description}
-                    onChange={(e) => handleInputChange(e)}
-                    classNames={{
-                      ...customStyleInput,
-                      inputWrapper: "bg-white",
-                    }}
-                  />
+                    <p className="text-center text-sm font-medium leading-[170%] text-gray">
+                      <strong className="mr-1 text-danger">*</strong>ratio
+                      gambar 1:1
+                    </p>
+                  </div>
+
+                  {changeImage ? <InputImage {...{ setFileImage }} /> : null}
                 </div>
 
-                {/* educations */}
-                <div className="grid gap-4">
-                  <Switch
-                    color="primary"
-                    isSelected={selected.withEducation}
-                    onValueChange={(value) =>
-                      setSelected((prev) => ({ ...prev, withEducation: value }))
-                    }
-                    classNames={{
-                      label: "text-black font-medium text-sm",
-                    }}
-                  >
-                    Tambahkan Pendidikan
-                  </Switch>
+                {/* data form input */}
+                <div className="grid gap-8">
+                  {/* main */}
+                  <div className="grid gap-4">
+                    <Switch
+                      color="primary"
+                      isSelected={changeImage}
+                      onValueChange={setChangeImage}
+                      classNames={{
+                        label: "text-black font-medium text-sm",
+                      }}
+                      className="mb-4"
+                    >
+                      Aktifkan Untuk Ubah Foto
+                    </Switch>
 
-                  {selected.withEducation && (
-                    <div className="grid gap-2">
-                      {educations.map((edu, index) => (
-                        <div
-                          key={index}
-                          className="grid grid-cols-[150px_1fr_max-content] gap-4"
-                        >
-                          <Select
-                            isRequired
-                            aria-label="select edulevel"
-                            variant="flat"
-                            labelPlacement="outside"
-                            placeholder="Tingkatan"
-                            selectedKeys={[edu.level]}
-                            onChange={(e) =>
-                              handleListChange(
-                                setEducations,
-                                index,
-                                "level",
-                                e.target.value,
-                              )
-                            }
-                            classNames={{
-                              trigger: "bg-white",
-                              value: "font-semibold text-gray",
-                            }}
+                    <Input
+                      isRequired
+                      type="text"
+                      variant="flat"
+                      label="Nama Lengkap"
+                      labelPlacement="outside"
+                      placeholder="Contoh: John Doe"
+                      name="fullname"
+                      value={input.fullname}
+                      onChange={(e) => handleInputChange(e)}
+                      classNames={{
+                        ...customStyleInput,
+                        inputWrapper: "bg-white",
+                      }}
+                    />
+
+                    <Select
+                      isRequired
+                      aria-label="select position"
+                      variant="flat"
+                      label="Pilih Jabatan"
+                      labelPlacement="outside"
+                      placeholder="Contoh: Manager"
+                      name="position"
+                      items={positions}
+                      selectedKeys={[input.position]}
+                      onChange={(e) => handleInputChange(e)}
+                      classNames={{
+                        trigger: "bg-white",
+                        value: "font-semibold text-gray",
+                      }}
+                    >
+                      {(position: Position) => (
+                        <SelectItem key={position.position_id}>
+                          {position.name}
+                        </SelectItem>
+                      )}
+                    </Select>
+
+                    <Textarea
+                      isRequired
+                      type="text"
+                      variant="flat"
+                      maxRows={8}
+                      label="Deskripsi"
+                      labelPlacement="outside"
+                      placeholder="Contoh: Saya adalah seorang yang ramah dan rajin"
+                      name="description"
+                      value={input.description}
+                      onChange={(e) => handleInputChange(e)}
+                      classNames={{
+                        ...customStyleInput,
+                        inputWrapper: "bg-white",
+                      }}
+                    />
+                  </div>
+
+                  {/* educations */}
+                  <div className="grid gap-4">
+                    <Switch
+                      color="primary"
+                      isSelected={selected.withEducation}
+                      onValueChange={(value) =>
+                        setSelected((prev) => ({
+                          ...prev,
+                          withEducation: value,
+                        }))
+                      }
+                      classNames={{
+                        label: "text-black font-medium text-sm",
+                      }}
+                    >
+                      Tambahkan Pendidikan
+                    </Switch>
+
+                    {selected.withEducation && (
+                      <div className="grid gap-2">
+                        {educations.map((edu, index) => (
+                          <div
+                            key={index}
+                            className="grid grid-cols-[150px_1fr_max-content] gap-4"
                           >
-                            {edulevels.map((edu) => (
-                              <SelectItem key={edu}>{edu}</SelectItem>
-                            ))}
-                          </Select>
+                            <Select
+                              isRequired
+                              aria-label="select edulevel"
+                              variant="flat"
+                              labelPlacement="outside"
+                              placeholder="Tingkatan"
+                              selectedKeys={[edu.level]}
+                              onChange={(e) =>
+                                handleListChange(
+                                  setEducations,
+                                  index,
+                                  "level",
+                                  e.target.value,
+                                )
+                              }
+                              classNames={{
+                                trigger: "bg-white",
+                                value: "font-semibold text-gray",
+                              }}
+                            >
+                              {edulevels.map((edu) => (
+                                <SelectItem key={edu}>{edu}</SelectItem>
+                              ))}
+                            </Select>
 
-                          <Input
-                            isRequired
-                            type="text"
-                            variant="flat"
-                            labelPlacement="outside"
-                            placeholder="Contoh: Universitas Harapan Indonesia"
-                            value={edu.name}
-                            onChange={(e) =>
-                              handleListChange(
-                                setEducations,
-                                index,
-                                "name",
-                                e.target.value,
-                              )
-                            }
-                            classNames={{
-                              ...customStyleInput,
-                              inputWrapper: "bg-white",
-                            }}
-                            className="flex-1"
-                          />
-
-                          <Button
-                            isIconOnly
-                            variant="light"
-                            color="danger"
-                            onPress={() =>
-                              handleRemoveItem(
-                                setEducations,
-                                educations,
-                                index,
-                                "education_id",
-                                "JPSEDU",
-                                () =>
-                                  handleDeleteItem(
-                                    "educations",
-                                    edu.education_id as string,
-                                    "Pendidikan",
-                                  ),
-                              )
-                            }
-                          >
-                            <Trash
-                              weight="bold"
-                              size={18}
-                              className="text-danger"
+                            <Input
+                              isRequired
+                              type="text"
+                              variant="flat"
+                              labelPlacement="outside"
+                              placeholder="Contoh: Universitas Harapan Indonesia"
+                              value={edu.name}
+                              onChange={(e) =>
+                                handleListChange(
+                                  setEducations,
+                                  index,
+                                  "name",
+                                  e.target.value,
+                                )
+                              }
+                              classNames={{
+                                ...customStyleInput,
+                                inputWrapper: "bg-white",
+                              }}
+                              className="flex-1"
                             />
-                          </Button>
-                        </div>
-                      ))}
 
-                      <Button
-                        variant="light"
-                        startContent={<Plus weight="bold" size={18} />}
-                        onPress={() =>
-                          addItem(
-                            setEducations,
-                            { name: "", level: "" },
-                            "education_id",
-                          )
-                        }
-                        className="font-bold"
-                      >
-                        Tambah
-                      </Button>
-                    </div>
-                  )}
-                </div>
+                            <Button
+                              isIconOnly
+                              variant="light"
+                              color="danger"
+                              onPress={() =>
+                                handleRemoveItem(
+                                  setEducations,
+                                  educations,
+                                  index,
+                                  "education_id",
+                                  "JPSEDU",
+                                  () =>
+                                    handleDeleteItem(
+                                      "educations",
+                                      edu.education_id as string,
+                                      "Pendidikan",
+                                    ),
+                                )
+                              }
+                            >
+                              <Trash
+                                weight="bold"
+                                size={18}
+                                className="text-danger"
+                              />
+                            </Button>
+                          </div>
+                        ))}
 
-                {/* social links */}
-                <div className="grid gap-4">
-                  <Switch
-                    color="primary"
-                    isSelected={selected.withSocialLinks}
-                    onValueChange={(value) =>
-                      setSelected((prev) => ({
-                        ...prev,
-                        withSocialLinks: value,
-                      }))
-                    }
-                    classNames={{
-                      label: "text-black font-medium text-sm",
-                    }}
-                  >
-                    Tambahkan Sosial Media
-                  </Switch>
-
-                  {selected.withSocialLinks && (
-                    <div className="grid gap-2">
-                      {socialLinks.map((social, index) => (
-                        <div
-                          key={index}
-                          className="grid grid-cols-[150px_1fr_max-content] gap-4"
+                        <Button
+                          variant="light"
+                          startContent={<Plus weight="bold" size={18} />}
+                          onPress={() =>
+                            addItem(
+                              setEducations,
+                              { name: "", level: "" },
+                              "education_id",
+                            )
+                          }
+                          className="font-bold"
                         >
-                          <Select
-                            isRequired
-                            aria-label="select social media"
-                            variant="flat"
-                            labelPlacement="outside"
-                            placeholder="Media"
-                            selectedKeys={[social.name]}
-                            onChange={(e) =>
-                              handleListChange(
-                                setSocialLinks,
-                                index,
-                                "name",
-                                e.target.value,
-                              )
-                            }
-                            classNames={{
-                              trigger: "bg-white",
-                              value: "font-semibold text-gray",
-                            }}
-                          >
-                            {socialList.map((social) => (
-                              <SelectItem key={social}>{social}</SelectItem>
-                            ))}
-                          </Select>
+                          Tambah
+                        </Button>
+                      </div>
+                    )}
+                  </div>
 
-                          <Input
-                            isRequired
-                            type="text"
-                            variant="flat"
-                            labelPlacement="outside"
-                            placeholder="Contoh: https://instagram.com/xxxxx"
-                            value={social.url}
-                            onChange={(e) =>
-                              handleListChange(
-                                setSocialLinks,
-                                index,
-                                "url",
-                                e.target.value,
-                              )
-                            }
-                            classNames={{
-                              ...customStyleInput,
-                              inputWrapper: "bg-white",
-                            }}
-                            className="flex-1"
-                          />
+                  {/* social links */}
+                  <div className="grid gap-4">
+                    <Switch
+                      color="primary"
+                      isSelected={selected.withSocialLinks}
+                      onValueChange={(value) =>
+                        setSelected((prev) => ({
+                          ...prev,
+                          withSocialLinks: value,
+                        }))
+                      }
+                      classNames={{
+                        label: "text-black font-medium text-sm",
+                      }}
+                    >
+                      Tambahkan Sosial Media
+                    </Switch>
 
-                          <Button
-                            isIconOnly
-                            variant="light"
-                            color="danger"
-                            onPress={() =>
-                              handleRemoveItem(
-                                setSocialLinks,
-                                socialLinks,
-                                index,
-                                "socmed_id",
-                                "JPSSOC",
-                                () =>
-                                  handleDeleteItem(
-                                    "socials",
-                                    social.socmed_id as string,
-                                    "Media Sosial",
-                                  ),
-                              )
-                            }
+                    {selected.withSocialLinks && (
+                      <div className="grid gap-2">
+                        {socialLinks.map((social, index) => (
+                          <div
+                            key={index}
+                            className="grid grid-cols-[150px_1fr_max-content] gap-4"
                           >
-                            <Trash
-                              weight="bold"
-                              size={18}
-                              className="text-danger"
+                            <Select
+                              isRequired
+                              aria-label="select social media"
+                              variant="flat"
+                              labelPlacement="outside"
+                              placeholder="Media"
+                              selectedKeys={[social.name]}
+                              onChange={(e) =>
+                                handleListChange(
+                                  setSocialLinks,
+                                  index,
+                                  "name",
+                                  e.target.value,
+                                )
+                              }
+                              classNames={{
+                                trigger: "bg-white",
+                                value: "font-semibold text-gray",
+                              }}
+                            >
+                              {socialList.map((social) => (
+                                <SelectItem key={social}>{social}</SelectItem>
+                              ))}
+                            </Select>
+
+                            <Input
+                              isRequired
+                              type="text"
+                              variant="flat"
+                              labelPlacement="outside"
+                              placeholder="Contoh: https://instagram.com/xxxxx"
+                              value={social.url}
+                              onChange={(e) =>
+                                handleListChange(
+                                  setSocialLinks,
+                                  index,
+                                  "url",
+                                  e.target.value,
+                                )
+                              }
+                              classNames={{
+                                ...customStyleInput,
+                                inputWrapper: "bg-white",
+                              }}
+                              className="flex-1"
                             />
-                          </Button>
-                        </div>
-                      ))}
 
-                      <Button
-                        variant="light"
-                        startContent={<Plus weight="bold" size={18} />}
-                        onPress={() =>
-                          addItem(
-                            setSocialLinks,
-                            { name: "", url: "" },
-                            "socmed_id",
-                          )
-                        }
-                        className="font-bold"
-                      >
-                        Tambah
-                      </Button>
-                    </div>
-                  )}
+                            <Button
+                              isIconOnly
+                              variant="light"
+                              color="danger"
+                              onPress={() =>
+                                handleRemoveItem(
+                                  setSocialLinks,
+                                  socialLinks,
+                                  index,
+                                  "socmed_id",
+                                  "JPSSOC",
+                                  () =>
+                                    handleDeleteItem(
+                                      "socials",
+                                      social.socmed_id as string,
+                                      "Media Sosial",
+                                    ),
+                                )
+                              }
+                            >
+                              <Trash
+                                weight="bold"
+                                size={18}
+                                className="text-danger"
+                              />
+                            </Button>
+                          </div>
+                        ))}
+
+                        <Button
+                          variant="light"
+                          startContent={<Plus weight="bold" size={18} />}
+                          onPress={() =>
+                            addItem(
+                              setSocialLinks,
+                              { name: "", url: "" },
+                              "socmed_id",
+                            )
+                          }
+                          className="font-bold"
+                        >
+                          Tambah
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <Button
-              isLoading={loading}
-              isDisabled={loading}
-              color="primary"
-              startContent={
-                loading ? null : <FloppyDisk weight="bold" size={18} />
-              }
-              onPress={handleEditTeam}
-              className="w-max justify-self-end font-bold"
-            >
-              {loading ? "Tunggu Sebentar..." : "Simpan Tim"}
-            </Button>
-          </div>
+              <Button
+                isLoading={loading}
+                isDisabled={loading}
+                color="primary"
+                startContent={
+                  loading ? null : <FloppyDisk weight="bold" size={18} />
+                }
+                onPress={handleEditTeam}
+                className="w-max justify-self-end font-bold"
+              >
+                Simpan Tim
+              </Button>
+            </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>
