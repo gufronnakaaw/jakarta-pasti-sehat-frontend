@@ -148,6 +148,8 @@ export default function EditTeamPage({
   }
 
   async function handleEditTeam() {
+    setLoading(true);
+
     try {
       const formData = new FormData();
       const by = "Super Admin";
@@ -157,8 +159,6 @@ export default function EditTeamPage({
       formData.append("description", input.description);
       formData.append("position_id", input.position);
       formData.append("by", by);
-      // formData.append("with_education", selected.withEducation as any);
-      // formData.append("with_social_links", selected.withSocialLinks as any);
 
       if (fileImage) {
         const croppedImage = await getCroppedImg(fileImage, croppedAreaPixels);
@@ -201,7 +201,10 @@ export default function EditTeamPage({
     } catch (error: any) {
       console.error(error);
 
+      setLoading(false);
       toast.error("Gagal mengubah data tim");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -569,8 +572,8 @@ export default function EditTeamPage({
             </div>
 
             <Button
-              // isLoading={loading}
-              // isDisabled={loading}
+              isLoading={loading}
+              isDisabled={loading}
               color="primary"
               startContent={
                 loading ? null : <FloppyDisk weight="bold" size={18} />
