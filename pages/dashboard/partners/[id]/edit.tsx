@@ -1,9 +1,8 @@
 import ButtonBack from "@/components/button/ButtonBack";
-import LoadingScreen from "@/components/loading/LoadingScreen";
+import { InputImage } from "@/components/InputImage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
-import { SuccessResponse } from "@/types/global";
 import { Partner } from "@/types/partner";
 import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
@@ -14,38 +13,22 @@ import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
-import useSWR from "swr";
 
 export default function EditPartnerPage({
-  params,
+  partner,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const { data, isLoading } = useSWR<SuccessResponse<Partner>>({
-    endpoint: `/partners/${params.id}`,
-    method: "GET",
-    token,
-  });
-  const [altImage, setAltImage] = useState<string>("");
+  const [altImage, setAltImage] = useState<string>(partner?.alt as string);
   const [fileImage, setFileImage] = useState<string | ArrayBuffer | null>();
-  const [selected, setSelected] = useState<boolean>(false);
+  const [changeImage, setChangeImage] = useState<boolean>(false);
 
   const [zoomImage, setZoomImage] = useState<number>(1);
   const [cropImage, setCropImage] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (!data?.data) return;
-
-    const { alt } = data.data;
-    setAltImage(alt);
-  }, [data?.data]);
 
   async function handleEditPartner() {
     setLoading(true);
@@ -54,17 +37,20 @@ export default function EditPartnerPage({
       const formData = new FormData();
       const by = "Super Admin";
 
-      const croppedImage = await getCroppedImg(fileImage, croppedAreaPixels);
-      const response = await fetch(croppedImage as string);
-      const blob = await response.blob();
-      const fileConvert = new File([blob], "partner-img.jpg", {
-        type: "image/jpg",
-      });
-
-      formData.append("partner_id", data?.data.partner_id as string);
+      formData.append("partner_id", partner?.partner_id as string);
       formData.append("alt", altImage);
-      formData.append("partner", fileConvert);
       formData.append("by", by);
+
+      if (changeImage) {
+        const croppedImage = await getCroppedImg(fileImage, croppedAreaPixels);
+        const response = await fetch(croppedImage as string);
+        const blob = await response.blob();
+        const fileConvert = new File([blob], "partner-img.jpg", {
+          type: "image/jpg",
+        });
+
+        formData.append("partner", fileConvert);
+      }
 
       await fetcher({
         endpoint: "/partners",
@@ -87,8 +73,6 @@ export default function EditPartnerPage({
     }
   }
 
-  if (isLoading) return <LoadingScreen />;
-
   return (
     <DashboardLayout title="Edit Mitra">
       <DashboardContainer>
@@ -104,10 +88,10 @@ export default function EditPartnerPage({
           <div className="grid max-w-[700px] gap-8">
             <div className="grid grid-cols-[200px_1fr] items-start gap-8">
               <div className="grid gap-1">
-                {!selected ? (
+                {!changeImage ? (
                   <Image
                     priority
-                    src={data?.data.image_url as string}
+                    src={partner?.image_url as string}
                     alt="partner img"
                     width={200}
                     height={200}
@@ -140,8 +124,8 @@ export default function EditPartnerPage({
               <div className="grid gap-4">
                 <Switch
                   color="primary"
-                  isSelected={selected}
-                  onValueChange={setSelected}
+                  isSelected={changeImage}
+                  onValueChange={setChangeImage}
                   classNames={{
                     label: "text-black font-medium text-sm",
                   }}
@@ -150,33 +134,7 @@ export default function EditPartnerPage({
                   Aktifkan Untuk Ubah Logo
                 </Switch>
 
-                <Input
-                  isRequired
-                  type="file"
-                  accept="image/jpg, image/jpeg, image/png"
-                  variant="flat"
-                  label="Logo Mitra"
-                  labelPlacement="outside"
-                  placeholder="Masukan Foto Mitra"
-                  classNames={{
-                    inputWrapper: "bg-white",
-                    input:
-                      "block w-full flex-1 text-sm text-gray file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-orange file:text-sm file:font-sans file:font-semibold file:text-white hover:file:bg-orange/80",
-                  }}
-                  onChange={(e) => {
-                    if (!e.target.value) return;
-
-                    const reader = new FileReader();
-                    reader.readAsDataURL(e.target.files?.[0] as File);
-                    reader.onload = () => {
-                      setFileImage(reader.result as string);
-                    };
-                    reader.onerror = function (error) {
-                      toast.error("Terjadi kesalahan saat memasukan gambar!");
-                      console.error(error);
-                    };
-                  }}
-                />
+                {changeImage ? <InputImage {...{ setFileImage }} /> : null}
 
                 <Input
                   isRequired
@@ -213,11 +171,26 @@ export default function EditPartnerPage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
-  params: ParsedUrlQuery;
+  partner?: Partner;
 }> = async ({ params }) => {
-  return {
-    props: {
-      params: params as ParsedUrlQuery,
-    },
-  };
+  try {
+    const response = await fetcher({
+      endpoint: `/partners/${params?.id}`,
+      method: "GET",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+    });
+
+    return {
+      props: {
+        partner: response.data as Partner,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
 };
