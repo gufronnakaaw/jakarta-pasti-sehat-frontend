@@ -7,21 +7,14 @@ import { fetcher } from "@/utils/fetcher";
 import { Button, Input } from "@heroui/react";
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function CreatePillarPage() {
   const router = useRouter();
   const [name, setName] = useState<string>("");
   const [subpillars, setSubpillars] = useState<string[]>([]);
-  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    setIsButtonDisabled(
-      !name.trim() || subpillars.some((subpillar) => !subpillar.trim()),
-    );
-  }, [name, subpillars]);
 
   function addSubPillar() {
     setSubpillars([...subpillars, ""]);
@@ -144,7 +137,7 @@ export default function CreatePillarPage() {
 
             <Button
               isLoading={isLoading}
-              isDisabled={isButtonDisabled || isLoading}
+              isDisabled={isLoading}
               color="primary"
               startContent={
                 isLoading ? null : <FloppyDisk weight="bold" size={18} />

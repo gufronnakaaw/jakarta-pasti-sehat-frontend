@@ -20,13 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import {
-  Eye,
-  IconContext,
-  PencilLine,
-  Plus,
-  Trash,
-} from "@phosphor-icons/react";
+import { IconContext, PencilLine, Plus, Trash } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
 import { Key, useCallback, useState } from "react";
 import toast from "react-hot-toast";
@@ -86,10 +80,6 @@ export default function DashboardPillarsPage() {
             }}
           >
             <div className="inline-flex w-max items-center gap-1">
-              <Button isIconOnly variant="light" size="sm">
-                <Eye />
-              </Button>
-
               <Button
                 isIconOnly
                 variant="light"

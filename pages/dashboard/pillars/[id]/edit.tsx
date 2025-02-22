@@ -1,9 +1,7 @@
 import ButtonBack from "@/components/button/ButtonBack";
-import LoadingScreen from "@/components/loading/LoadingScreen";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
-import { SuccessResponse } from "@/types/global";
 import { PillarDetails } from "@/types/pillar";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
@@ -11,10 +9,8 @@ import { Button, Input } from "@heroui/react";
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
-import useSWR from "swr";
 
 type SubPillar = {
   sub_pillar_id: string;
@@ -22,47 +18,23 @@ type SubPillar = {
 };
 
 export default function EditPillarPage({
-  params,
+  error,
+  pillars,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const [name, setName] = useState<string>("");
-  const [subpillars, setSubpillars] = useState<SubPillar[]>([
-    { sub_pillar_id: "", name: "" },
-  ]);
-  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  const { data, isLoading, mutate } = useSWR<SuccessResponse<PillarDetails>>({
-    endpoint: `/pillars/${params?.id as string}`,
-    method: "GET",
-    token: token,
-    role: "admin",
-  });
-
-  // set data to input component
-  useEffect(() => {
-    if (!data?.data) return;
-
-    const { name, subpillars } = data.data;
-
-    setName(name);
-    setSubpillars(subpillars);
-  }, [data?.data]);
-
-  // disabled button "Simpan Pilar" if all input empty
-  useEffect(() => {
-    setIsButtonDisabled(
-      !name.trim() || subpillars.some((subpillar) => !subpillar.name.trim()),
-    );
-  }, [name, subpillars]);
+  const [name, setName] = useState<string>(pillars?.name as string);
+  const [subpillars, setSubpillars] = useState<SubPillar[]>(
+    pillars?.subpillars as SubPillar[],
+  );
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function addSubPillar() {
     setSubpillars((prev) => [
       ...prev,
       {
-        sub_pillar_id: crypto.randomUUID(),
+        sub_pillar_id: "idKey-asdasd",
         name: "",
       },
     ]);
@@ -80,6 +52,16 @@ export default function EditPillarPage({
     setSubpillars(subpillars.filter((_, i) => i !== index));
   }
 
+  function handleRemoveSubPillar(index: number) {
+    const subpillar = subpillars[index];
+
+    if (subpillar.sub_pillar_id?.startsWith("JPSSPLR")) {
+      removeSubPillarServer(subpillar.sub_pillar_id);
+    } else {
+      removeSubPillarLocal(index);
+    }
+  }
+
   async function removeSubPillarServer(sub_pillar_id: string) {
     try {
       await fetcher({
@@ -88,7 +70,7 @@ export default function EditPillarPage({
         token: token,
       });
 
-      mutate();
+      window.location.reload();
       toast.success("Subpilar berhasil dihapus");
     } catch (error: any) {
       console.error(error);
@@ -98,16 +80,16 @@ export default function EditPillarPage({
   }
 
   async function handleEditPillar() {
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const formattedSubPillar = subpillars.map((subpillar) => ({
-        sub_pillar_id: subpillar.sub_pillar_id || crypto.randomUUID(),
+        sub_pillar_id: subpillar.sub_pillar_id || "idKey-asdasd",
         name: subpillar.name,
       }));
 
       const payload = {
-        pillar_id: data?.data.pillar_id,
+        pillar_id: pillars?.pillar_id,
         name: name,
         by: "Super Admin",
         subpillars: formattedSubPillar,
@@ -120,29 +102,17 @@ export default function EditPillarPage({
         token: token,
       });
 
-      mutate();
+      window.location.reload();
       toast.success("Pilar berhasil diubah");
     } catch (error: any) {
       console.error(error);
 
-      setLoading(false);
+      setIsLoading(false);
       toast.error("Gagal mengubah data pilar");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
-
-  function handleRemoveSubPillar(index: number) {
-    const subpillar = subpillars[index];
-
-    if (subpillar.sub_pillar_id?.startsWith("JPSSPLR")) {
-      removeSubPillarServer(subpillar.sub_pillar_id);
-    } else {
-      removeSubPillarLocal(index);
-    }
-  }
-
-  if (isLoading) return <LoadingScreen />;
 
   return (
     <DashboardLayout title="Edit Pilar">
@@ -228,15 +198,15 @@ export default function EditPillarPage({
 
             <Button
               isLoading={isLoading}
-              isDisabled={isButtonDisabled || isLoading}
+              isDisabled={isLoading}
               color="primary"
               startContent={
-                loading ? null : <FloppyDisk weight="bold" size={18} />
+                isLoading ? null : <FloppyDisk weight="bold" size={18} />
               }
               onPress={handleEditPillar}
               className="w-max justify-self-end font-bold"
             >
-              {loading ? "Tunggu Sebentar..." : "Simpan Pilar"}
+              {isLoading ? "Tunggu Sebentar..." : "Simpan Pilar"}
             </Button>
           </div>
         </section>
@@ -246,11 +216,28 @@ export default function EditPillarPage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
-  params: ParsedUrlQuery;
+  pillars?: PillarDetails;
+  error?: any;
 }> = async ({ params }) => {
-  return {
-    props: {
-      params: params as ParsedUrlQuery,
-    },
-  };
+  try {
+    const response = await fetcher({
+      endpoint: `/pillars/${params?.id as string}`,
+      method: "GET",
+      role: "admin",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+    });
+
+    return {
+      props: {
+        pillars: response.data as PillarDetails,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
 };
