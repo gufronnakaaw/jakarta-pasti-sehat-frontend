@@ -1,4 +1,5 @@
 import EmptyData from "@/components/EmptyData";
+import ErrorPage from "@/components/ErrorPage";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
 import SearchInput from "@/components/SearchInput";
@@ -38,11 +39,13 @@ export default function DashboardTeamsPage() {
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
-  const { data, isLoading, mutate } = useSWR<SuccessResponse<PartnerResponse>>({
+  const { data, isLoading, mutate, error } = useSWR<
+    SuccessResponse<PartnerResponse>
+  >({
     endpoint: "/partners",
     method: "GET",
-    token: token,
     role: "admin",
+    token: token,
   });
 
   const columnsPartner = [
@@ -162,56 +165,60 @@ export default function DashboardTeamsPage() {
             text="Lihat dan kelola semua mitra di sini"
           />
 
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <SearchInput
-                placeholder="Cari Mitra..."
-                onChange={(e) => setSearch(e.target.value)}
-                onClear={() => setSearch("")}
-              />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between gap-4">
+                <SearchInput
+                  placeholder="Cari Mitra..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  onClear={() => setSearch("")}
+                />
 
-              <Button
-                color="primary"
-                startContent={<Plus weight="bold" size={18} />}
-                onPress={() => router.push("/dashboard/partners/create")}
-                className="font-bold"
-              >
-                Tambah Mitra
-              </Button>
-            </div>
-
-            <div className="overflow-x-scroll scrollbar-hide">
-              <Table
-                isStriped
-                aria-label="partners table"
-                color="primary"
-                selectionMode="none"
-                classNames={customStyleTable}
-                className="scrollbar-hide"
-              >
-                <TableHeader columns={columnsPartner}>
-                  {(column) => (
-                    <TableColumn key={column.uid}>{column.name}</TableColumn>
-                  )}
-                </TableHeader>
-
-                <TableBody
-                  items={filteredPartner ?? []}
-                  emptyContent={<EmptyData text="Mitra tidak ditemukan!" />}
+                <Button
+                  color="primary"
+                  startContent={<Plus weight="bold" size={18} />}
+                  onPress={() => router.push("/dashboard/partners/create")}
+                  className="font-bold"
                 >
-                  {(partner: Partner) => (
-                    <TableRow key={partner.partner_id}>
-                      {(columnKey) => (
-                        <TableCell>
-                          {renderCellPartner(partner, columnKey)}
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  Tambah Mitra
+                </Button>
+              </div>
+
+              <div className="overflow-x-scroll scrollbar-hide">
+                <Table
+                  isStriped
+                  aria-label="partners table"
+                  color="primary"
+                  selectionMode="none"
+                  classNames={customStyleTable}
+                  className="scrollbar-hide"
+                >
+                  <TableHeader columns={columnsPartner}>
+                    {(column) => (
+                      <TableColumn key={column.uid}>{column.name}</TableColumn>
+                    )}
+                  </TableHeader>
+
+                  <TableBody
+                    items={filteredPartner ?? []}
+                    emptyContent={<EmptyData text="Mitra tidak ditemukan!" />}
+                  >
+                    {(partner: Partner) => (
+                      <TableRow key={partner.partner_id}>
+                        {(columnKey) => (
+                          <TableCell>
+                            {renderCellPartner(partner, columnKey)}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
-          </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>

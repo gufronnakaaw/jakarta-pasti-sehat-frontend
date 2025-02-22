@@ -1,4 +1,5 @@
 import ButtonBack from "@/components/button/ButtonBack";
+import ErrorPage from "@/components/ErrorPage";
 import { InputImage } from "@/components/InputImage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
@@ -19,6 +20,7 @@ import toast from "react-hot-toast";
 
 export default function EditPartnerPage({
   partner,
+  error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const [altImage, setAltImage] = useState<string>(partner?.alt as string);
@@ -85,85 +87,92 @@ export default function EditPartnerPage({
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
-          <div className="grid max-w-[700px] gap-8">
-            <div className="grid grid-cols-[200px_1fr] items-start gap-8">
-              <div className="grid gap-1">
-                {!changeImage ? (
-                  <Image
-                    priority
-                    src={partner?.image_url as string}
-                    alt="partner img"
-                    width={200}
-                    height={200}
-                    className="aspect-square size-[200px] rounded-xl border-2 border-dashed border-gray/20 p-1"
-                  />
-                ) : (
-                  <div className="aspect-video size-[200px] rounded-xl border-2 border-dashed border-gray/20 p-1">
-                    <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
-                      <Cropper
-                        image={fileImage as string}
-                        crop={cropImage}
-                        zoom={zoomImage}
-                        aspect={1 / 1}
-                        onCropChange={setCropImage}
-                        onCropComplete={onCropComplete({
-                          setCroppedAreaPixels,
-                        })}
-                        onZoomChange={setZoomImage}
-                      />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid max-w-[700px] gap-8">
+              <div className="grid grid-cols-[200px_1fr] items-start gap-8">
+                <div className="grid gap-1">
+                  {!changeImage ? (
+                    <Image
+                      priority
+                      src={partner?.image_url as string}
+                      alt="partner img"
+                      width={200}
+                      height={200}
+                      className="aspect-square size-[200px] rounded-xl border-2 border-dashed border-gray/20 p-1"
+                    />
+                  ) : (
+                    <div className="aspect-video size-[200px] rounded-xl border-2 border-dashed border-gray/20 p-1">
+                      <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
+                        <Cropper
+                          image={fileImage as string}
+                          crop={cropImage}
+                          zoom={zoomImage}
+                          aspect={1 / 1}
+                          onCropChange={setCropImage}
+                          onCropComplete={onCropComplete({
+                            setCroppedAreaPixels,
+                          })}
+                          onZoomChange={setZoomImage}
+                        />
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
 
-                <p className="text-center text-sm font-medium leading-[170%] text-gray">
-                  <strong className="mr-1 text-danger">*</strong>ratio gambar
-                  1:1
-                </p>
+                  <p className="text-center text-sm font-medium leading-[170%] text-gray">
+                    <strong className="mr-1 text-danger">*</strong>ratio gambar
+                    1:1
+                  </p>
+                </div>
+
+                <div className="grid gap-4">
+                  <Switch
+                    color="primary"
+                    isSelected={changeImage}
+                    onValueChange={setChangeImage}
+                    classNames={{
+                      label: "text-black font-medium text-sm",
+                    }}
+                    className="mb-4"
+                  >
+                    Aktifkan Untuk Ubah Logo
+                  </Switch>
+
+                  {changeImage ? <InputImage {...{ setFileImage }} /> : null}
+
+                  <Input
+                    isRequired
+                    type="text"
+                    variant="flat"
+                    label="Nama Mitra"
+                    labelPlacement="outside"
+                    placeholder="Contoh: RS. Harapan Indonesia"
+                    name="alt"
+                    value={altImage}
+                    onChange={(e) => setAltImage(e.target.value)}
+                    classNames={{
+                      ...customStyleInput,
+                      inputWrapper: "bg-white",
+                    }}
+                  />
+                </div>
               </div>
 
-              <div className="grid gap-4">
-                <Switch
-                  color="primary"
-                  isSelected={changeImage}
-                  onValueChange={setChangeImage}
-                  classNames={{
-                    label: "text-black font-medium text-sm",
-                  }}
-                  className="mb-4"
-                >
-                  Aktifkan Untuk Ubah Logo
-                </Switch>
-
-                {changeImage ? <InputImage {...{ setFileImage }} /> : null}
-
-                <Input
-                  isRequired
-                  type="text"
-                  variant="flat"
-                  label="Nama Mitra"
-                  labelPlacement="outside"
-                  placeholder="Contoh: RS. Harapan Indonesia"
-                  name="alt"
-                  value={altImage}
-                  onChange={(e) => setAltImage(e.target.value)}
-                  classNames={{ ...customStyleInput, inputWrapper: "bg-white" }}
-                />
-              </div>
+              <Button
+                isLoading={loading}
+                isDisabled={loading}
+                color="primary"
+                startContent={
+                  loading ? null : <FloppyDisk weight="bold" size={18} />
+                }
+                onPress={handleEditPartner}
+                className="w-max justify-self-end font-bold"
+              >
+                Simpan Mitra
+              </Button>
             </div>
-
-            <Button
-              isLoading={loading}
-              isDisabled={loading}
-              color="primary"
-              startContent={
-                loading ? null : <FloppyDisk weight="bold" size={18} />
-              }
-              onPress={handleEditPartner}
-              className="w-max justify-self-end font-bold"
-            >
-              {loading ? "Tunggu Sebentar..." : "Simpan Mitra"}
-            </Button>
-          </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>
@@ -172,6 +181,7 @@ export default function EditPartnerPage({
 
 export const getServerSideProps: GetServerSideProps<{
   partner?: Partner;
+  error?: any;
 }> = async ({ params }) => {
   try {
     const response = await fetcher({

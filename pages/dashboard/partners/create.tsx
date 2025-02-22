@@ -10,7 +10,7 @@ import { onCropComplete } from "@/utils/onCropComplete";
 import { Button, Input } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
 
@@ -23,11 +23,6 @@ export default function CreatePartnerPage() {
   const [cropImage, setCropImage] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
-
-  useEffect(() => {
-    setIsButtonDisabled(!altImage || !fileImage);
-  }, [altImage, fileImage]);
 
   async function handleCreatePartner() {
     setIsLoading(true);
@@ -123,7 +118,7 @@ export default function CreatePartnerPage() {
 
             <Button
               isLoading={isLoading}
-              isDisabled={isButtonDisabled || isLoading}
+              isDisabled={isLoading}
               color="primary"
               startContent={
                 isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -131,7 +126,7 @@ export default function CreatePartnerPage() {
               onPress={handleCreatePartner}
               className="w-max justify-self-end font-bold"
             >
-              {isLoading ? "Tunggu Sebentar..." : "Simpan Mitra"}
+              Simpan Mitra
             </Button>
           </div>
         </section>
