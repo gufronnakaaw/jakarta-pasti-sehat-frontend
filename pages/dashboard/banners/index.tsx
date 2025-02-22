@@ -1,4 +1,5 @@
 import EmptyData from "@/components/EmptyData";
+import ErrorPage from "@/components/ErrorPage";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
 import TitleText from "@/components/TitleText";
@@ -51,12 +52,7 @@ type BannerResponse = {
 
 export default function DashboardBannersPage() {
   const router = useRouter();
-  const {
-    onOpen: onOpenCreate,
-    isOpen: isOpenCreate,
-    onOpenChange: onOpenChangeCreate,
-    onClose: onCloseCreate,
-  } = useDisclosure();
+  const { onOpen, isOpen, onOpenChange, onClose } = useDisclosure();
 
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -67,11 +63,16 @@ export default function DashboardBannersPage() {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const [typeModal, setTypeModal] = useState<"create" | "edit">("create");
+  const [bannerId, setBannerId] = useState("");
+
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const by = "Super Admin";
 
-  const { data, isLoading, mutate } = useSWR<SuccessResponse<BannerResponse>>({
+  const { data, isLoading, mutate, error } = useSWR<
+    SuccessResponse<BannerResponse>
+  >({
     endpoint: "/banners",
     method: "GET",
     token: token,
@@ -104,12 +105,8 @@ export default function DashboardBannersPage() {
               alt={banner.alt}
               width={800}
               height={500}
-              className={`aspect-square h-16 w-24 rounded-lg object-cover object-center ${banner.link ? "cursor-pointer" : ""}`}
-              onClick={() => {
-                if (banner.link) {
-                  window.open(banner.image_url, "_blank");
-                }
-              }}
+              className="aspect-square h-16 w-24 cursor-pointer rounded-lg object-cover object-center"
+              onClick={() => window.open(banner.image_url, "_blank")}
             />
           );
         case "description":
@@ -149,9 +146,18 @@ export default function DashboardBannersPage() {
                   isIconOnly
                   variant="light"
                   size="sm"
-                  onPress={() =>
-                    router.push(`/dashboard/admins/${banner.banner_id}/edit`)
-                  }
+                  onPress={() => {
+                    onOpen();
+                    setTypeModal("edit");
+
+                    setInput({
+                      description: banner.description,
+                      link: banner.link,
+                    });
+
+                    setFile(banner.image_url);
+                    setBannerId(banner.banner_id);
+                  }}
                 >
                   <PencilLine />
                 </Button>
@@ -222,12 +228,13 @@ export default function DashboardBannersPage() {
       mutate();
 
       toast.success("Berhasil menyimpan banner");
-      onCloseCreate();
+      onClose();
       setLoading(false);
     } catch (error) {
-      setLoading(false);
       console.log(error);
       toast.error("Terjadi kesalahan saat menyimpan banner");
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -247,6 +254,60 @@ export default function DashboardBannersPage() {
     }
   }
 
+  async function handleEditBanner() {
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+
+      formData.append("banner_id", bannerId);
+      formData.append("alt", input.description);
+      formData.append("description", input.description);
+      formData.append("link", input.link);
+      formData.append("by", by);
+
+      if (filename) {
+        const croppedImage = await getCroppedImg(file, croppedAreaPixels);
+
+        const response = await fetch(croppedImage as string);
+        const blob = await response.blob();
+
+        const fileConvert = new File([blob], `${filename}`, {
+          type,
+        });
+
+        formData.append("banner", fileConvert);
+      }
+
+      await fetcher({
+        endpoint: "/banners",
+        method: "PATCH",
+        file: true,
+        token,
+        data: formData,
+      });
+
+      setCrop({ x: 0, y: 0 });
+      setZoom(1);
+      setFile(null);
+      setFilename("");
+      setType("");
+      setInput({ description: "", link: "" });
+      setCroppedAreaPixels(null);
+      setBannerId("");
+
+      mutate();
+      toast.success("Berhasil mengedit banner");
+
+      onClose();
+    } catch (error) {
+      console.log(error);
+      toast.error("Terjadi kesalahan saat mengedit banner");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   if (isLoading) return <LoadingScreen />;
 
   return (
@@ -258,224 +319,261 @@ export default function DashboardBannersPage() {
             text="Lihat dan kelola semua banner di sini"
           />
 
-          <div className="grid gap-4">
-            <Button
-              color="primary"
-              startContent={<Plus weight="bold" size={18} />}
-              onPress={onOpenCreate}
-              className="justify-self-end font-bold"
-            >
-              Tambah Banner
-            </Button>
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid gap-4">
+              <Button
+                color="primary"
+                startContent={<Plus weight="bold" size={18} />}
+                onPress={() => {
+                  onOpen();
+                  setTypeModal("create");
+                }}
+                className="justify-self-end font-bold"
+              >
+                Tambah Banner
+              </Button>
 
-            <Modal
-              placement="center"
-              isOpen={isOpenCreate}
-              onOpenChange={onOpenChangeCreate}
-              size="3xl"
-            >
-              <ModalContent>
-                {(onClose) => (
-                  <>
-                    <ModalHeader className="font-extrabold text-black">
-                      Tambah Banner
-                    </ModalHeader>
+              <Modal
+                placement="center"
+                isOpen={isOpen}
+                onOpenChange={onOpenChange}
+                size="3xl"
+                onClose={() => {
+                  setCrop({ x: 0, y: 0 });
+                  setZoom(1);
+                  setFile(null);
+                  setFilename("");
+                  setType("");
+                  setInput({ description: "", link: "" });
+                  setCroppedAreaPixels(null);
+                  setBannerId("");
+                }}
+              >
+                <ModalContent>
+                  {(onClose) => (
+                    <>
+                      <ModalHeader className="font-extrabold text-black">
+                        {typeModal == "create" ? "Tambah" : "Edit"} Banner
+                      </ModalHeader>
 
-                    <ModalBody>
-                      <div className="grid max-w-[250px] gap-4">
-                        <div className="inline-flex gap-2">
-                          <div className="aspect-video h-[200px] w-full rounded-[20px] border-[2px] border-dashed border-foreground-200 p-2">
-                            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-foreground-200">
-                              <Cropper
-                                image={file as string}
-                                crop={crop}
-                                zoom={zoom}
-                                aspect={16 / 9}
-                                onCropChange={setCrop}
-                                onCropComplete={(
-                                  croppedArea: any,
-                                  croppedAreaPixels: any,
-                                ) => {
-                                  setCroppedAreaPixels(croppedAreaPixels);
-                                }}
-                                onZoomChange={setZoom}
-                              />
+                      <ModalBody>
+                        <div className="grid max-w-[250px] gap-4">
+                          <div className="inline-flex gap-2">
+                            <div className="aspect-video h-[200px] w-full rounded-[20px] border-[2px] border-dashed border-foreground-200 p-2">
+                              <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-foreground-200">
+                                <Cropper
+                                  image={file as string}
+                                  crop={crop}
+                                  zoom={zoom}
+                                  aspect={16 / 9}
+                                  onCropChange={setCrop}
+                                  onCropComplete={(
+                                    croppedArea: any,
+                                    croppedAreaPixels: any,
+                                  ) => {
+                                    setCroppedAreaPixels(croppedAreaPixels);
+                                  }}
+                                  onZoomChange={setZoom}
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <p className="mt-1.5 text-[12px] font-medium italic text-foreground-600">
-                          * Preview banner
-                        </p>
+                          <p className="mt-1.5 text-[12px] font-medium italic text-foreground-600">
+                            * Preview banner
+                          </p>
 
-                        <div className="grid gap-4">
-                          <div className="grid gap-1.5">
-                            <span className="inline-flex text-sm after:ml-[2px] after:text-danger after:content-['*']">
-                              Cari Gambar
-                            </span>
-                            <input
-                              type="file"
-                              accept=".jpg, .jpeg, .png"
-                              className="rounded-xl bg-foreground-200 px-2 py-2 text-small text-foreground-600 file:mr-4 file:rounded-md file:border-0 file:bg-foreground-100 file:px-2 file:py-[2px] file:text-sm file:font-medium file:text-emerald-600 hover:file:bg-foreground-200"
-                              onChange={(e) => {
-                                if (!e.target.files) {
-                                  setFile(null);
-                                  setFilename("");
-                                  setType("");
-                                  return;
-                                }
+                          <div className="grid gap-4">
+                            <div className="grid gap-1.5">
+                              <span className="inline-flex text-sm after:ml-[2px] after:text-danger after:content-['*']">
+                                Cari Gambar
+                              </span>
+                              <input
+                                type="file"
+                                accept=".jpg, .jpeg, .png"
+                                className="rounded-xl bg-foreground-200 px-2 py-2 text-small text-foreground-600 file:mr-4 file:rounded-md file:border-0 file:bg-foreground-100 file:px-2 file:py-[2px] file:text-sm file:font-medium file:text-emerald-600 hover:file:bg-foreground-200"
+                                onChange={(e) => {
+                                  if (!e.target.files) {
+                                    setFile(null);
+                                    setFilename("");
+                                    setType("");
+                                    return;
+                                  }
 
-                                const validTypes = [
-                                  "image/png",
-                                  "image/jpg",
-                                  "image/jpeg",
-                                ];
+                                  const validTypes = [
+                                    "image/png",
+                                    "image/jpg",
+                                    "image/jpeg",
+                                  ];
 
-                                if (
-                                  !validTypes.includes(e.target.files[0].type)
-                                ) {
-                                  toast.error(
-                                    "Ekstensi file harus png, jpg, atau jpeg",
-                                  );
-                                  setFile(null);
-                                  setFilename("");
-                                  setType("");
-                                  return;
-                                }
+                                  if (
+                                    !validTypes.includes(e.target.files[0].type)
+                                  ) {
+                                    toast.error(
+                                      "Ekstensi file harus png, jpg, atau jpeg",
+                                    );
+                                    setFile(null);
+                                    setFilename("");
+                                    setType("");
+                                    return;
+                                  }
 
-                                setType(e.target.files[0].type);
-                                setFilename(e.target.files[0].name);
-                                const reader = new FileReader();
-                                reader.readAsDataURL(e.target.files[0]);
+                                  setType(e.target.files[0].type);
+                                  setFilename(e.target.files[0].name);
+                                  const reader = new FileReader();
+                                  reader.readAsDataURL(e.target.files[0]);
 
-                                reader.onload = function () {
-                                  setFile(reader.result);
-                                };
+                                  reader.onload = function () {
+                                    setFile(reader.result);
+                                  };
 
-                                reader.onerror = function (error) {
-                                  setFile(null);
-                                  setFilename("");
-                                  setType("");
+                                  reader.onerror = function (error) {
+                                    setFile(null);
+                                    setFilename("");
+                                    setType("");
 
-                                  toast.error(
-                                    "Terjadi kesalahan saat meload gambar",
-                                  );
+                                    toast.error(
+                                      "Terjadi kesalahan saat meload gambar",
+                                    );
 
-                                  console.log(error);
-                                };
-                              }}
+                                    console.log(error);
+                                  };
+                                }}
+                              />
+                            </div>
+
+                            <Input
+                              value={input.description}
+                              type="text"
+                              variant="flat"
+                              labelPlacement="outside"
+                              placeholder="Contoh: Banner Kegiatan"
+                              label="Deskripsi"
+                              classNames={customStyleInput}
+                              onChange={(e) =>
+                                setInput({
+                                  ...input,
+                                  description: e.target.value,
+                                })
+                              }
+                            />
+
+                            <Input
+                              value={input.link}
+                              type="text"
+                              variant="flat"
+                              labelPlacement="outside"
+                              placeholder="Contoh: https://jakartapastisehat.com"
+                              label="Link (optional)"
+                              classNames={customStyleInput}
+                              onChange={(e) =>
+                                setInput({ ...input, link: e.target.value })
+                              }
                             />
                           </div>
-
-                          <Input
-                            value={input.description}
-                            type="text"
-                            variant="flat"
-                            labelPlacement="outside"
-                            placeholder="Contoh: Banner Kegiatan"
-                            label="Deskripsi"
-                            classNames={customStyleInput}
-                            onChange={(e) =>
-                              setInput({
-                                ...input,
-                                description: e.target.value,
-                              })
-                            }
-                          />
-
-                          <Input
-                            value={input.link}
-                            type="text"
-                            variant="flat"
-                            labelPlacement="outside"
-                            placeholder="Contoh: https://jakartapastisehat.com"
-                            label="Link (optional)"
-                            classNames={customStyleInput}
-                            onChange={(e) =>
-                              setInput({ ...input, link: e.target.value })
-                            }
-                          />
                         </div>
-                      </div>
-                    </ModalBody>
+                      </ModalBody>
 
-                    <ModalFooter>
-                      <div className="inline-flex items-center gap-2">
-                        <Button
-                          color="danger"
-                          variant="light"
-                          onPress={onClose}
-                          className="px-6 font-bold"
-                        >
-                          Tutup
-                        </Button>
+                      <ModalFooter>
+                        <div className="inline-flex items-center gap-2">
+                          <Button
+                            color="danger"
+                            variant="light"
+                            onPress={() => {
+                              setCrop({ x: 0, y: 0 });
+                              setZoom(1);
+                              setFile(null);
+                              setFilename("");
+                              setType("");
+                              setInput({ description: "", link: "" });
+                              setCroppedAreaPixels(null);
+                              setBannerId("");
+                              onClose();
+                            }}
+                            className="px-6 font-bold"
+                          >
+                            Tutup
+                          </Button>
 
-                        <Button
-                          color="primary"
-                          className="px-6 font-bold"
-                          onPress={handleSaveBanner}
-                          isLoading={loading}
-                          isDisabled={!file || !input.description || loading}
-                        >
-                          Simpan
-                        </Button>
-                      </div>
-                    </ModalFooter>
-                  </>
-                )}
-              </ModalContent>
-            </Modal>
-
-            <div className="overflow-x-scroll scrollbar-hide">
-              <Table
-                isStriped
-                aria-label="banner table"
-                color="primary"
-                selectionMode="none"
-                classNames={customStyleTable}
-                className="scrollbar-hide"
-              >
-                <TableHeader columns={columnsBanner}>
-                  {(column) => (
-                    <TableColumn key={column.uid}>{column.name}</TableColumn>
+                          <Button
+                            color="primary"
+                            className="px-6 font-bold"
+                            onPress={() => {
+                              if (typeModal == "create") {
+                                handleSaveBanner();
+                              } else {
+                                handleEditBanner();
+                              }
+                            }}
+                            isLoading={loading}
+                            isDisabled={
+                              typeModal == "create"
+                                ? !file || !input.description || loading
+                                : undefined
+                            }
+                          >
+                            Simpan
+                          </Button>
+                        </div>
+                      </ModalFooter>
+                    </>
                   )}
-                </TableHeader>
+                </ModalContent>
+              </Modal>
 
-                <TableBody
-                  items={data?.data.banners}
-                  emptyContent={<EmptyData text="Banner tidak ditemukan!" />}
+              <div className="overflow-x-scroll scrollbar-hide">
+                <Table
+                  isStriped
+                  aria-label="banner table"
+                  color="primary"
+                  selectionMode="none"
+                  classNames={customStyleTable}
+                  className="scrollbar-hide"
                 >
-                  {(banner: Banner) => (
-                    <TableRow key={banner.banner_id}>
-                      {(columnKey) => (
-                        <TableCell>
-                          {renderCellBanner(banner, columnKey)}
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                  <TableHeader columns={columnsBanner}>
+                    {(column) => (
+                      <TableColumn key={column.uid}>{column.name}</TableColumn>
+                    )}
+                  </TableHeader>
 
-            {data?.data.banners.length ? (
-              <Pagination
-                isCompact
-                showControls
-                color="primary"
-                page={data.data.page as number}
-                total={data.data.total_pages as number}
-                onChange={(e) => {
-                  router.push({
-                    query: {
-                      ...router.query,
-                      page: e,
-                    },
-                  });
-                }}
-                className="justify-self-center"
-              />
-            ) : null}
-          </div>
+                  <TableBody
+                    items={data?.data.banners}
+                    emptyContent={<EmptyData text="Banner tidak ditemukan!" />}
+                  >
+                    {(banner: Banner) => (
+                      <TableRow key={banner.banner_id}>
+                        {(columnKey) => (
+                          <TableCell>
+                            {renderCellBanner(banner, columnKey)}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {data?.data.banners.length ? (
+                <Pagination
+                  isCompact
+                  showControls
+                  color="primary"
+                  page={data.data.page as number}
+                  total={data.data.total_pages as number}
+                  onChange={(e) => {
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: e,
+                      },
+                    });
+                  }}
+                  className="justify-self-center"
+                />
+              ) : null}
+            </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>
