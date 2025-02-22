@@ -1,4 +1,5 @@
 import ButtonBack from "@/components/button/ButtonBack";
+import ErrorPage from "@/components/ErrorPage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
@@ -8,7 +9,6 @@ import { fetcher } from "@/utils/fetcher";
 import { Button, Input } from "@heroui/react";
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -21,7 +21,6 @@ export default function EditPillarPage({
   error,
   pillars,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [name, setName] = useState<string>(pillars?.name as string);
@@ -48,7 +47,7 @@ export default function EditPillarPage({
     );
   }
 
-  function removeSubPillarLocal(index: number) {
+  function removeSubPillar(index: number) {
     setSubpillars(subpillars.filter((_, i) => i !== index));
   }
 
@@ -56,13 +55,13 @@ export default function EditPillarPage({
     const subpillar = subpillars[index];
 
     if (subpillar.sub_pillar_id?.startsWith("JPSSPLR")) {
-      removeSubPillarServer(subpillar.sub_pillar_id);
+      handleDeleteSubPillar(subpillar.sub_pillar_id);
     } else {
-      removeSubPillarLocal(index);
+      removeSubPillar(index);
     }
   }
 
-  async function removeSubPillarServer(sub_pillar_id: string) {
+  async function handleDeleteSubPillar(sub_pillar_id: string) {
     try {
       await fetcher({
         endpoint: `/pillars/subpillar/${sub_pillar_id}`,
@@ -126,89 +125,93 @@ export default function EditPillarPage({
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
-          <div className="grid max-w-[700px] gap-8">
-            <Input
-              isRequired
-              type="text"
-              variant="flat"
-              label="Nama Pilar"
-              labelPlacement="outside"
-              placeholder="Contoh: Pilar 1"
-              name="title"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              classNames={{ ...customStyleInput, inputWrapper: "bg-white" }}
-            />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid max-w-[700px] gap-8">
+              <Input
+                isRequired
+                type="text"
+                variant="flat"
+                label="Nama Pilar"
+                labelPlacement="outside"
+                placeholder="Contoh: Pilar 1"
+                name="title"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                classNames={{ ...customStyleInput, inputWrapper: "bg-white" }}
+              />
 
-            <div className="grid gap-4">
-              <h2 className="text-lg font-extrabold text-black">
-                Daftar Subpilar
-              </h2>
+              <div className="grid gap-4">
+                <h2 className="text-lg font-extrabold text-black">
+                  Daftar Subpilar
+                </h2>
 
-              {subpillars.length > 0 && (
-                <div className="grid gap-2">
-                  {subpillars.map((subpillar, index) => (
-                    <div
-                      key={subpillar.sub_pillar_id || index}
-                      className="flex items-end gap-4"
-                    >
-                      <Input
-                        isRequired
-                        type="text"
-                        variant="flat"
-                        labelPlacement="outside"
-                        placeholder="Contoh: Penyakit Tidak Menular"
-                        value={subpillar.name}
-                        onChange={(e) =>
-                          updateSubPillar(index, "name", e.target.value)
-                        }
-                        classNames={{
-                          ...customStyleInput,
-                          inputWrapper: "bg-white",
-                        }}
-                        className="flex-1"
-                      />
-
-                      <Button
-                        isIconOnly
-                        variant="light"
-                        color="danger"
-                        onPress={() => handleRemoveSubPillar(index)}
+                {subpillars.length > 0 && (
+                  <div className="grid gap-2">
+                    {subpillars.map((subpillar, index) => (
+                      <div
+                        key={subpillar.sub_pillar_id || index}
+                        className="flex items-end gap-4"
                       >
-                        <Trash
-                          weight="bold"
-                          size={18}
-                          className="text-danger"
+                        <Input
+                          isRequired
+                          type="text"
+                          variant="flat"
+                          labelPlacement="outside"
+                          placeholder="Contoh: Penyakit Tidak Menular"
+                          value={subpillar.name}
+                          onChange={(e) =>
+                            updateSubPillar(index, "name", e.target.value)
+                          }
+                          classNames={{
+                            ...customStyleInput,
+                            inputWrapper: "bg-white",
+                          }}
+                          className="flex-1"
                         />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
+
+                        <Button
+                          isIconOnly
+                          variant="light"
+                          color="danger"
+                          onPress={() => handleRemoveSubPillar(index)}
+                        >
+                          <Trash
+                            weight="bold"
+                            size={18}
+                            className="text-danger"
+                          />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <Button
+                  variant="light"
+                  startContent={<Plus weight="bold" size={18} />}
+                  onPress={addSubPillar}
+                  className="font-bold"
+                >
+                  Tambah Subpilar
+                </Button>
+              </div>
 
               <Button
-                variant="light"
-                startContent={<Plus weight="bold" size={18} />}
-                onPress={addSubPillar}
-                className="font-bold"
+                isLoading={isLoading}
+                isDisabled={isLoading}
+                color="primary"
+                startContent={
+                  isLoading ? null : <FloppyDisk weight="bold" size={18} />
+                }
+                onPress={handleEditPillar}
+                className="w-max justify-self-end font-bold"
               >
-                Tambah Subpilar
+                Simpan Pilar
               </Button>
             </div>
-
-            <Button
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              color="primary"
-              startContent={
-                isLoading ? null : <FloppyDisk weight="bold" size={18} />
-              }
-              onPress={handleEditPillar}
-              className="w-max justify-self-end font-bold"
-            >
-              {isLoading ? "Tunggu Sebentar..." : "Simpan Pilar"}
-            </Button>
-          </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>

@@ -145,7 +145,7 @@ export default function CreatePillarPage() {
               onPress={handleCreatePillar}
               className="w-max justify-self-end font-bold"
             >
-              {isLoading ? "Tunggu Sebentar..." : "Simpan Pilar"}
+              Simpan Pilar
             </Button>
           </div>
         </section>

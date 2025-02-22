@@ -1,4 +1,5 @@
 import EmptyData from "@/components/EmptyData";
+import ErrorPage from "@/components/ErrorPage";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
 import SearchInput from "@/components/SearchInput";
@@ -10,6 +11,7 @@ import { Pillar } from "@/types/pillar";
 import { customStyleTable } from "@/utils/customStyleTable";
 import { fetcher } from "@/utils/fetcher";
 import { formatDate } from "@/utils/formatDate";
+import { getUrl } from "@/utils/string";
 import {
   Button,
   Pagination,
@@ -21,7 +23,9 @@ import {
   TableRow,
 } from "@heroui/react";
 import { IconContext, PencilLine, Plus, Trash } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
 import { Key, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
@@ -33,16 +37,20 @@ export type PillarResponse = {
   total_pages: number;
 };
 
-export default function DashboardPillarsPage() {
+export default function DashboardPillarsPage({
+  query,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
-  const { data, isLoading, mutate } = useSWR<SuccessResponse<PillarResponse>>({
-    endpoint: "/pillars",
+  const { data, isLoading, mutate, error } = useSWR<
+    SuccessResponse<PillarResponse>
+  >({
+    endpoint: getUrl(query, "/pillars"),
     method: "GET",
-    token: token,
     role: "admin",
+    token: token,
   });
 
   const columnsPillar = [
@@ -152,77 +160,91 @@ export default function DashboardPillarsPage() {
             text="Lihat dan kelola semua pilar di sini"
           />
 
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <SearchInput
-                placeholder="Cari Pillar..."
-                onChange={(e) => setSearch(e.target.value)}
-                onClear={() => setSearch("")}
-              />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between gap-4">
+                <SearchInput
+                  placeholder="Cari Pillar..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  onClear={() => setSearch("")}
+                />
 
-              <Button
-                color="primary"
-                startContent={<Plus weight="bold" size={18} />}
-                onPress={() => router.push("/dashboard/pillars/create")}
-                className="font-bold"
-              >
-                Tambah Pillar
-              </Button>
-            </div>
-
-            <div className="overflow-x-scroll scrollbar-hide">
-              <Table
-                isStriped
-                aria-label="pillar table"
-                color="primary"
-                selectionMode="none"
-                classNames={customStyleTable}
-                className="scrollbar-hide"
-              >
-                <TableHeader columns={columnsPillar}>
-                  {(column) => (
-                    <TableColumn key={column.uid}>{column.name}</TableColumn>
-                  )}
-                </TableHeader>
-
-                <TableBody
-                  items={filteredPillar ?? []}
-                  emptyContent={<EmptyData text="Pilar tidak ditemukan!" />}
+                <Button
+                  color="primary"
+                  startContent={<Plus weight="bold" size={18} />}
+                  onPress={() => router.push("/dashboard/pillars/create")}
+                  className="font-bold"
                 >
-                  {(pillar: Pillar) => (
-                    <TableRow key={pillar.pillar_id}>
-                      {(columnKey) => (
-                        <TableCell>
-                          {renderCellPillar(pillar, columnKey)}
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
+                  Tambah Pillar
+                </Button>
+              </div>
 
-            {data?.data.pillars.length ? (
-              <Pagination
-                isCompact
-                showControls
-                color="primary"
-                page={data?.data.page as number}
-                total={data?.data.total_pages as number}
-                onChange={(e) => {
-                  router.push({
-                    query: {
-                      ...router.query,
-                      page: e,
-                    },
-                  });
-                }}
-                className="justify-self-center"
-              />
-            ) : null}
-          </div>
+              <div className="overflow-x-scroll scrollbar-hide">
+                <Table
+                  isStriped
+                  aria-label="pillar table"
+                  color="primary"
+                  selectionMode="none"
+                  classNames={customStyleTable}
+                  className="scrollbar-hide"
+                >
+                  <TableHeader columns={columnsPillar}>
+                    {(column) => (
+                      <TableColumn key={column.uid}>{column.name}</TableColumn>
+                    )}
+                  </TableHeader>
+
+                  <TableBody
+                    items={filteredPillar || []}
+                    emptyContent={<EmptyData text="Pilar tidak ditemukan!" />}
+                  >
+                    {(pillar: Pillar) => (
+                      <TableRow key={pillar.pillar_id}>
+                        {(columnKey) => (
+                          <TableCell>
+                            {renderCellPillar(pillar, columnKey)}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {data?.data.pillars.length ? (
+                <Pagination
+                  isCompact
+                  showControls
+                  color="primary"
+                  page={data?.data.page as number}
+                  total={data?.data.total_pages as number}
+                  onChange={(e) => {
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: e,
+                      },
+                    });
+                  }}
+                  className="justify-self-center"
+                />
+              ) : null}
+            </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  query: ParsedUrlQuery;
+}> = async ({ query }) => {
+  return {
+    props: {
+      query: query as ParsedUrlQuery,
+    },
+  };
+};
