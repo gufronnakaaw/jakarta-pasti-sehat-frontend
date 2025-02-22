@@ -158,7 +158,7 @@ export default function CreateAdminPage() {
               onPress={handleCreateAdmin}
               className="w-max justify-self-end font-bold"
             >
-              {isLoading ? "Tunggu Sebentar..." : "Simpan Admin"}
+              Simpan Admin
             </Button>
           </div>
         </section>

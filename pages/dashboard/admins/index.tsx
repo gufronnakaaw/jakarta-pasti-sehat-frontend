@@ -1,4 +1,5 @@
 import EmptyData from "@/components/EmptyData";
+import ErrorPage from "@/components/ErrorPage";
 import LoadingScreen from "@/components/loading/LoadingScreen";
 import ModalConfirmDelete from "@/components/modal/ModalConfirmDelete";
 import SearchInput from "@/components/SearchInput";
@@ -30,7 +31,7 @@ export default function DashboardAminssPage() {
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
-  const { data, isLoading, mutate } = useSWR<SuccessResponse<Admin[]>>({
+  const { data, isLoading, mutate, error } = useSWR<SuccessResponse<Admin[]>>({
     endpoint: "/admin",
     method: "GET",
     role: "admin",
@@ -143,56 +144,60 @@ export default function DashboardAminssPage() {
             text="Lihat dan kelola semua admin di sini"
           />
 
-          <div className="grid gap-4">
-            <div className="flex items-center justify-between gap-4">
-              <SearchInput
-                placeholder="Cari Admin..."
-                onChange={(e) => setSearch(e.target.value)}
-                onClear={() => setSearch("")}
-              />
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid gap-4">
+              <div className="flex items-center justify-between gap-4">
+                <SearchInput
+                  placeholder="Cari Admin..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  onClear={() => setSearch("")}
+                />
 
-              <Button
-                color="primary"
-                startContent={<Plus weight="bold" size={18} />}
-                onPress={() => router.push("/dashboard/admins/create")}
-                className="font-bold"
-              >
-                Tambah Admin
-              </Button>
-            </div>
-
-            <div className="overflow-x-scroll scrollbar-hide">
-              <Table
-                isStriped
-                aria-label="admin table"
-                color="primary"
-                selectionMode="none"
-                classNames={customStyleTable}
-                className="scrollbar-hide"
-              >
-                <TableHeader columns={columnsAdmin}>
-                  {(column) => (
-                    <TableColumn key={column.uid}>{column.name}</TableColumn>
-                  )}
-                </TableHeader>
-
-                <TableBody
-                  items={filteredAdmin ?? []}
-                  emptyContent={<EmptyData text="Admin tidak ditemukan!" />}
+                <Button
+                  color="primary"
+                  startContent={<Plus weight="bold" size={18} />}
+                  onPress={() => router.push("/dashboard/admins/create")}
+                  className="font-bold"
                 >
-                  {(admin: Admin) => (
-                    <TableRow key={admin.admin_id}>
-                      {(columnKey) => (
-                        <TableCell>
-                          {renderCellAdmin(admin, columnKey)}
-                        </TableCell>
-                      )}
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
+                  Tambah Admin
+                </Button>
+              </div>
+
+              <div className="overflow-x-scroll scrollbar-hide">
+                <Table
+                  isStriped
+                  aria-label="admin table"
+                  color="primary"
+                  selectionMode="none"
+                  classNames={customStyleTable}
+                  className="scrollbar-hide"
+                >
+                  <TableHeader columns={columnsAdmin}>
+                    {(column) => (
+                      <TableColumn key={column.uid}>{column.name}</TableColumn>
+                    )}
+                  </TableHeader>
+
+                  <TableBody
+                    items={filteredAdmin ?? []}
+                    emptyContent={<EmptyData text="Admin tidak ditemukan!" />}
+                  >
+                    {(admin: Admin) => (
+                      <TableRow key={admin.admin_id}>
+                        {(columnKey) => (
+                          <TableCell>
+                            {renderCellAdmin(admin, columnKey)}
+                          </TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
             </div>
-          </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>

@@ -1,4 +1,5 @@
 import ButtonBack from "@/components/button/ButtonBack";
+import ErrorPage from "@/components/ErrorPage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
@@ -21,6 +22,7 @@ type InputState = {
 
 export default function EditAdminPage({
   admins,
+  error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const token =
@@ -81,18 +83,56 @@ export default function EditAdminPage({
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
-          <div className="grid max-w-[700px] gap-8">
-            <div className="grid gap-6">
-              <div className="grid grid-cols-2 gap-4">
+          {error ? (
+            <ErrorPage error={error} />
+          ) : (
+            <div className="grid max-w-[700px] gap-8">
+              <div className="grid gap-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <Input
+                    isRequired
+                    type="text"
+                    variant="flat"
+                    label="Nama Lengkap"
+                    labelPlacement="outside"
+                    placeholder="Masukan Nama Lengkap"
+                    name="fullname"
+                    value={input.fullname}
+                    onChange={(e) => handleInputChange(e)}
+                    classNames={{
+                      ...customStyleInput,
+                      inputWrapper: "bg-white",
+                    }}
+                  />
+
+                  <Select
+                    isRequired
+                    aria-label="select role"
+                    variant="flat"
+                    label="Role"
+                    labelPlacement="outside"
+                    placeholder="Pilih Role"
+                    name="role"
+                    selectedKeys={[input.role]}
+                    onChange={(e) => handleInputChange(e)}
+                    classNames={{
+                      trigger: "bg-white",
+                      value: "font-semibold text-gray",
+                    }}
+                  >
+                    <SelectItem key="admin">Admin</SelectItem>
+                    <SelectItem key="superadmin">Superadmin</SelectItem>
+                  </Select>
+                </div>
+
                 <Input
                   isRequired
                   type="text"
                   variant="flat"
-                  label="Nama Lengkap"
+                  label="Kata Sandi"
                   labelPlacement="outside"
-                  placeholder="Masukan Nama Lengkap"
-                  name="fullname"
-                  value={input.fullname}
+                  placeholder="Masukan Kata Sandi"
+                  name="password"
                   onChange={(e) => handleInputChange(e)}
                   classNames={{
                     ...customStyleInput,
@@ -100,70 +140,36 @@ export default function EditAdminPage({
                   }}
                 />
 
-                <Select
+                <Input
                   isRequired
-                  aria-label="select role"
+                  type="password"
                   variant="flat"
-                  label="Role"
+                  label="Kunci Akses"
                   labelPlacement="outside"
-                  placeholder="Pilih Role"
-                  name="role"
-                  selectedKeys={[input.role]}
+                  placeholder="Masukan Kunci Akses"
+                  name="access_key"
                   onChange={(e) => handleInputChange(e)}
                   classNames={{
-                    trigger: "bg-white",
-                    value: "font-semibold text-gray",
+                    ...customStyleInput,
+                    inputWrapper: "bg-white",
                   }}
-                >
-                  <SelectItem key="admin">Admin</SelectItem>
-                  <SelectItem key="superadmin">Superadmin</SelectItem>
-                </Select>
+                />
               </div>
 
-              <Input
-                isRequired
-                type="text"
-                variant="flat"
-                label="Kata Sandi"
-                labelPlacement="outside"
-                placeholder="Masukan Kata Sandi"
-                name="password"
-                onChange={(e) => handleInputChange(e)}
-                classNames={{
-                  ...customStyleInput,
-                  inputWrapper: "bg-white",
-                }}
-              />
-
-              <Input
-                isRequired
-                type="password"
-                variant="flat"
-                label="Kunci Akses"
-                labelPlacement="outside"
-                placeholder="Masukan Kunci Akses"
-                name="access_key"
-                onChange={(e) => handleInputChange(e)}
-                classNames={{
-                  ...customStyleInput,
-                  inputWrapper: "bg-white",
-                }}
-              />
+              <Button
+                isLoading={isLoading}
+                isDisabled={isLoading}
+                color="primary"
+                startContent={
+                  isLoading ? null : <FloppyDisk weight="bold" size={18} />
+                }
+                onPress={handleEditAdmin}
+                className="w-max justify-self-end font-bold"
+              >
+                Simpan Admin
+              </Button>
             </div>
-
-            <Button
-              isLoading={isLoading}
-              isDisabled={isLoading}
-              color="primary"
-              startContent={
-                isLoading ? null : <FloppyDisk weight="bold" size={18} />
-              }
-              onPress={handleEditAdmin}
-              className="w-max justify-self-end font-bold"
-            >
-              {isLoading ? "Tunggu Sebentar..." : "Simpan Admin"}
-            </Button>
-          </div>
+          )}
         </section>
       </DashboardContainer>
     </DashboardLayout>
@@ -172,6 +178,7 @@ export default function EditAdminPage({
 
 export const getServerSideProps: GetServerSideProps<{
   admins?: Admin;
+  error?: any;
 }> = async ({ params }) => {
   try {
     const response = await fetcher({
