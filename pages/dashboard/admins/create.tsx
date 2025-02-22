@@ -150,10 +150,7 @@ export default function CreateAdminPage() {
 
             <Button
               isLoading={isLoading}
-              isDisabled={
-                !Object.values(input).every((value) => value.trim() !== "") ||
-                isLoading
-              }
+              isDisabled={isLoading}
               color="primary"
               startContent={
                 isLoading ? null : <FloppyDisk weight="bold" size={18} />

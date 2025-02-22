@@ -1,20 +1,16 @@
 import ButtonBack from "@/components/button/ButtonBack";
-import LoadingScreen from "@/components/loading/LoadingScreen";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
 import { Admin } from "@/types/admin";
-import { SuccessResponse } from "@/types/global";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
-import useSWR from "swr";
 
 type InputState = {
   fullname: string;
@@ -24,40 +20,18 @@ type InputState = {
 };
 
 export default function EditAdminPage({
-  params,
+  admins,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const { data, isLoading } = useSWR<SuccessResponse<Admin>>({
-    endpoint: `/admin/${params.id as string}`,
-    method: "GET",
-    role: "admin",
-    token,
-  });
   const [input, setInput] = useState<InputState>({
-    fullname: "",
-    role: "",
+    fullname: admins?.fullname as string,
+    role: admins?.role as string,
     password: "",
     access_key: "",
   });
-  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
-  const [loading, setLoading] = useState<boolean>(false);
-
-  // set data to input component
-  useEffect(() => {
-    if (!data?.data) return;
-
-    const { fullname, role } = data.data;
-    setInput((prev) => ({ ...prev, fullname, role }));
-  }, [data]);
-
-  // disabled button "Simpan Admin" if all input empty
-  useEffect(() => {
-    const isInputValid =
-      input.fullname && input.role && input.password && input.access_key;
-    setIsButtonDisabled(!isInputValid);
-  }, [input]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function handleInputChange(
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
@@ -68,12 +42,12 @@ export default function EditAdminPage({
   }
 
   async function handleEditAdmin() {
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const payload = {
         ...input,
-        admin_id: data?.data.admin_id,
+        admin_id: admins?.admin_id,
       };
 
       await fetcher({
@@ -89,13 +63,11 @@ export default function EditAdminPage({
       console.error(error);
 
       toast.error("Gagal mengubah data admin");
-      setLoading(false);
+      setIsLoading(false);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
-
-  if (isLoading) return <LoadingScreen />;
 
   return (
     <DashboardLayout title="Edit Admin">
@@ -180,8 +152,8 @@ export default function EditAdminPage({
             </div>
 
             <Button
-              isLoading={loading}
-              isDisabled={isButtonDisabled || loading}
+              isLoading={isLoading}
+              isDisabled={isLoading}
               color="primary"
               startContent={
                 isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -189,7 +161,7 @@ export default function EditAdminPage({
               onPress={handleEditAdmin}
               className="w-max justify-self-end font-bold"
             >
-              {loading ? "Tunggu Sebentar..." : "Simpan Admin"}
+              {isLoading ? "Tunggu Sebentar..." : "Simpan Admin"}
             </Button>
           </div>
         </section>
@@ -199,11 +171,27 @@ export default function EditAdminPage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
-  params: ParsedUrlQuery;
+  admins?: Admin;
 }> = async ({ params }) => {
-  return {
-    props: {
-      params: params as ParsedUrlQuery,
-    },
-  };
+  try {
+    const response = await fetcher({
+      endpoint: `/admin/${params?.id as string}`,
+      method: "GET",
+      role: "admin",
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+    });
+
+    return {
+      props: {
+        admins: response.data as Admin,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
 };

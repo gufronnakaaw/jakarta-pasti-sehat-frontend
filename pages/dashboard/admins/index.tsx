@@ -29,7 +29,6 @@ export default function DashboardAminssPage() {
   const router = useRouter();
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const by = "Super Admin";
   const [search, setSearch] = useState<string>("");
   const { data, isLoading, mutate } = useSWR<SuccessResponse<Admin[]>>({
     endpoint: "/admin",
