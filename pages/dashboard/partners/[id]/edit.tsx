@@ -90,8 +90,8 @@ export default function EditPartnerPage({
           {error ? (
             <ErrorPage error={error} />
           ) : (
-            <div className="grid max-w-[700px] gap-8">
-              <div className="grid grid-cols-[200px_1fr] items-start gap-8">
+            <div className="grid max-w-[900px] gap-8">
+              <div className="grid grid-cols-[300px_1fr] items-start gap-8">
                 <div className="grid gap-1">
                   {!changeImage ? (
                     <Image
@@ -100,10 +100,10 @@ export default function EditPartnerPage({
                       alt="partner img"
                       width={200}
                       height={200}
-                      className="aspect-square size-[200px] rounded-xl border-2 border-dashed border-gray/20 p-1"
+                      className="aspect-square size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1"
                     />
                   ) : (
-                    <div className="aspect-video size-[200px] rounded-xl border-2 border-dashed border-gray/20 p-1">
+                    <div className="aspect-video size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1">
                       <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
                         <Cropper
                           image={fileImage as string}
