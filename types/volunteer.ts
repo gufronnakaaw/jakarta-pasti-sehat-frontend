@@ -17,3 +17,17 @@ export type VolunteerDetail = {
   pillar: string;
   subpillar: string;
 };
+
+export type VolunteerDashboard = {
+  volunteer_id: string;
+  slug: string;
+  title: string;
+  created_at: string;
+  pillar: {
+    name: string;
+  };
+  subpillar: {
+    name: string;
+  };
+  total_volappls: number;
+};
