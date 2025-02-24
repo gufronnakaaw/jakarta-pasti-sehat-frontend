@@ -103,7 +103,7 @@ export default function CreateArticlePage({
           {error ? (
             <ErrorPage error={error} />
           ) : (
-            <div className="grid max-w-[1150px] gap-8">
+            <div className="grid max-w-[900px] gap-8">
               <div className="grid grid-cols-[300px_1fr] items-start gap-8">
                 <div className="grid gap-4">
                   <div className="grid gap-1">

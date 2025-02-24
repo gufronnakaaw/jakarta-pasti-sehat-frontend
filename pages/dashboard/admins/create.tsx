@@ -80,7 +80,7 @@ export default function CreateAdminPage() {
           />
 
           <div className="grid max-w-[700px] gap-8">
-            <div className="grid gap-6">
+            <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <Input
                   isRequired

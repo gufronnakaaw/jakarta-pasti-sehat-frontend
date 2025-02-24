@@ -217,6 +217,7 @@ export default function DashboardVolunteersPage({
                 <Button
                   color="primary"
                   startContent={<Plus weight="bold" size={18} />}
+                  onPress={() => router.push(`/dashboard/volunteers/create`)}
                   className="font-bold"
                 >
                   Tambah Volunteer
