@@ -12,6 +12,33 @@
   @apply bg-secondary text-white;
 }
 
+.preventive-list ul {
+  @apply list-outside list-disc pl-8;
+}
+.preventive-list ol {
+  @apply list-outside list-decimal pl-8;
+}
+.preventive-list li {
+  @apply list-outside;
+}
+
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred,
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused {
+  @apply px-8;
+}
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred
+  ul,
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused
+  ul {
+  @apply pl-4;
+}
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred
+  ol,
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused
+  ol {
+  @apply pl-4;
+}
+
 .teams-container .swiper-pagination {
   @apply static mx-auto pt-4 transition-all xs:pt-8;
 }
