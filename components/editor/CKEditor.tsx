@@ -32,6 +32,7 @@ export default function CKEditor({ value, onChange, token }: CKEditorProps) {
     <CKEditorComponent
       editor={ClassicEditor}
       config={{
+        licenseKey: "GPL",
         toolbar: {
           items: [
             "undo",
@@ -71,7 +72,7 @@ export default function CKEditor({ value, onChange, token }: CKEditorProps) {
           ImageResizeHandles,
         ],
         simpleUpload: {
-          uploadUrl: `https://${process.env.NEXT_PUBLIC_MODE === "production" ? "api" : "dev"}.ruangobat.id/api/general/questions/image`,
+          uploadUrl: `https://${process.env.NEXT_PUBLIC_MODE === "production" ? "api" : "dev"}.jakartapastisehat.com/api/contents/image`,
           headers: {
             Authorization: `Bearer ${token}`,
           },
