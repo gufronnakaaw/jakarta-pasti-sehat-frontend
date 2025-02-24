@@ -46,7 +46,7 @@ export default function DetailTeamPage({
                     {data?.fullname}
                   </h1>
                   <p className="text-xl font-medium -tracking-[1px] text-orange">
-                    {data?.position}
+                    {data?.position.name}
                   </p>
                 </div>
 
@@ -56,7 +56,7 @@ export default function DetailTeamPage({
                   </h1>
 
                   <div
-                    className="font-medium leading-[180%] text-gray"
+                    className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray"
                     dangerouslySetInnerHTML={{
                       __html: data?.description as string,
                     }}

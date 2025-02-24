@@ -11,24 +11,21 @@ import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { onCropComplete } from "@/utils/onCropComplete";
-import {
-  Button,
-  Input,
-  Select,
-  SelectItem,
-  Switch,
-  Textarea,
-} from "@heroui/react";
+import { Button, Input, Select, SelectItem, Switch } from "@heroui/react";
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import { ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
 
+const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
+  ssr: false,
+});
+
 type InputState = {
   fullname: string;
-  description: string;
   position: string;
 };
 
@@ -53,9 +50,11 @@ export default function EditTeamPage({
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState<InputState>({
     fullname: team?.fullname as string,
-    description: team?.description as string,
     position: team?.position.position_id as string,
   });
+  const [description, setDescription] = useState<string>(
+    team?.description as string,
+  );
   const [selected, setSelected] = useState({
     withEducation: team?.educations.length ? true : false,
     withSocialLinks: team?.social_links.length ? true : false,
@@ -73,13 +72,6 @@ export default function EditTeamPage({
   const [cropImage, setCropImage] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
-
-  function handleInputChange(
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
-  ) {
-    const { name, value } = e.target;
-    setInput((prev) => ({ ...prev, [name]: value }));
-  }
 
   function handleListChange<T>(
     setter: Dispatch<SetStateAction<T[]>>,
@@ -155,7 +147,7 @@ export default function EditTeamPage({
 
       formData.append("team_id", team?.team_id as string);
       formData.append("fullname", input.fullname);
-      formData.append("description", input.description);
+      formData.append("description", description);
       formData.append("position_id", input.position);
       formData.append("by", by);
 
@@ -288,7 +280,9 @@ export default function EditTeamPage({
                       placeholder="Contoh: John Doe"
                       name="fullname"
                       value={input.fullname}
-                      onChange={(e) => handleInputChange(e)}
+                      onChange={(e) =>
+                        setInput({ ...input, fullname: e.target.value })
+                      }
                       classNames={{
                         ...customStyleInput,
                         inputWrapper: "bg-white",
@@ -305,7 +299,9 @@ export default function EditTeamPage({
                       name="position"
                       items={positions}
                       selectedKeys={[input.position]}
-                      onChange={(e) => handleInputChange(e)}
+                      onChange={(e) =>
+                        setInput({ ...input, position: e.target.value })
+                      }
                       classNames={{
                         trigger: "bg-white",
                         value: "font-semibold text-gray",
@@ -318,22 +314,17 @@ export default function EditTeamPage({
                       )}
                     </Select>
 
-                    <Textarea
-                      isRequired
-                      type="text"
-                      variant="flat"
-                      maxRows={8}
-                      label="Deskripsi"
-                      labelPlacement="outside"
-                      placeholder="Contoh: Saya adalah seorang yang ramah dan rajin"
-                      name="description"
-                      value={input.description}
-                      onChange={(e) => handleInputChange(e)}
-                      classNames={{
-                        ...customStyleInput,
-                        inputWrapper: "bg-white",
-                      }}
-                    />
+                    <div className="grid gap-2">
+                      <p className="text-sm text-black">
+                        Deskripsi<strong className="text-danger">*</strong>
+                      </p>
+
+                      <CKEditor
+                        value={description}
+                        onChange={setDescription}
+                        token={token as string}
+                      />
+                    </div>
                   </div>
 
                   {/* educations */}
