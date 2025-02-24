@@ -23,7 +23,13 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { IconContext, PencilLine, Plus, Trash } from "@phosphor-icons/react";
+import {
+  Eye,
+  IconContext,
+  PencilLine,
+  Plus,
+  Trash,
+} from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
@@ -115,7 +121,29 @@ export default function DashboardVolunteersPage({
               }}
             >
               <div className="inline-flex w-max items-center gap-1">
-                <Button isIconOnly variant="light" size="sm">
+                <Button
+                  isIconOnly
+                  variant="light"
+                  size="sm"
+                  onPress={() =>
+                    router.push(
+                      `/dashboard/volunteers/${encodeURIComponent(vols.volunteer_id)}`,
+                    )
+                  }
+                >
+                  <Eye />
+                </Button>
+
+                <Button
+                  isIconOnly
+                  variant="light"
+                  size="sm"
+                  onPress={() =>
+                    router.push(
+                      `/dashboard/volunteers/${encodeURIComponent(vols.volunteer_id)}/edit`,
+                    )
+                  }
+                >
                   <PencilLine />
                 </Button>
 
