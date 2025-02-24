@@ -7,7 +7,7 @@ export type Pillar = {
 export type PillarDetails = {
   pillar_id: string;
   name: string;
-  created_at: Date;
+  created_at: string;
   subpillars: {
     sub_pillar_id: string;
     name: string;

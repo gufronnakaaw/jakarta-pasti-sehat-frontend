@@ -10,4 +10,5 @@ export type Article = {
   created_at: string;
   created_by: string;
   reading_time: string;
+  is_active: boolean;
 };

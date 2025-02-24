@@ -12,6 +12,7 @@ import { customStyleInput } from "@/utils/customStyleInput";
 import { customStyleTable } from "@/utils/customStyleTable";
 import { fetcher } from "@/utils/fetcher";
 import { formatDate } from "@/utils/formatDate";
+import { getUrl } from "@/utils/string";
 import {
   Button,
   Input,
@@ -36,8 +37,10 @@ import {
   Plus,
   Trash,
 } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
 import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
@@ -50,7 +53,9 @@ type BannerResponse = {
   total_pages: number;
 };
 
-export default function DashboardBannersPage() {
+export default function DashboardBannersPage({
+  query,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { onOpen, isOpen, onOpenChange, onClose } = useDisclosure();
 
@@ -73,7 +78,7 @@ export default function DashboardBannersPage() {
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<BannerResponse>
   >({
-    endpoint: "/banners",
+    endpoint: getUrl(query, "/banners"),
     method: "GET",
     token: token,
   });
@@ -579,3 +584,13 @@ export default function DashboardBannersPage() {
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  query: ParsedUrlQuery;
+}> = async ({ query }) => {
+  return {
+    props: {
+      query,
+    },
+  };
+};

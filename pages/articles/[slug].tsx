@@ -1,6 +1,7 @@
 import ButtonBack from "@/components/button/ButtonBack";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
+import LoadingScreen from "@/components/loading/LoadingScreen";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { Article } from "@/types/article";
@@ -10,12 +11,25 @@ import { formatDateWithoutTime } from "@/utils/formatDate";
 import { CalendarMinus, Clock, User } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 export default function ArticleDetailsPage({
   data,
   error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+
+    return () => {
+      setMounted(false);
+    };
+  }, []);
+
+  if (!mounted) return <LoadingScreen />;
+
   return (
     <>
       <Navbar />
