@@ -344,7 +344,7 @@ export default function DashboardBannersPage({
                 placement="center"
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                size="3xl"
+                size="xl"
                 onClose={() => {
                   setCrop({ x: 0, y: 0 });
                   setZoom(1);
@@ -364,8 +364,8 @@ export default function DashboardBannersPage({
                       </ModalHeader>
 
                       <ModalBody>
-                        <div className="grid max-w-[250px] gap-4">
-                          <div className="inline-flex gap-2">
+                        <div className="grid gap-4">
+                          <div className="grid gap-1">
                             <div className="aspect-video h-[200px] w-full rounded-[20px] border-[2px] border-dashed border-foreground-200 p-2">
                               <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-foreground-200">
                                 <Cropper
@@ -384,71 +384,76 @@ export default function DashboardBannersPage({
                                 />
                               </div>
                             </div>
+
+                            <p className="text-center text-sm font-medium leading-[170%] text-gray">
+                              * Preview banner
+                            </p>
                           </div>
-                          <p className="mt-1.5 text-[12px] font-medium italic text-foreground-600">
-                            * Preview banner
-                          </p>
 
                           <div className="grid gap-4">
-                            <div className="grid gap-1.5">
-                              <span className="inline-flex text-sm after:ml-[2px] after:text-danger after:content-['*']">
-                                Cari Gambar
-                              </span>
-                              <input
-                                type="file"
-                                accept=".jpg, .jpeg, .png"
-                                className="rounded-xl bg-foreground-200 px-2 py-2 text-small text-foreground-600 file:mr-4 file:rounded-md file:border-0 file:bg-foreground-100 file:px-2 file:py-[2px] file:text-sm file:font-medium file:text-emerald-600 hover:file:bg-foreground-200"
-                                onChange={(e) => {
-                                  if (!e.target.files) {
-                                    setFile(null);
-                                    setFilename("");
-                                    setType("");
-                                    return;
-                                  }
+                            <Input
+                              isRequired
+                              type="file"
+                              accept=".jpg, .jpeg, .png"
+                              variant="flat"
+                              label="Cari Gambar"
+                              labelPlacement="outside"
+                              classNames={{
+                                inputWrapper: "bg-white",
+                                input:
+                                  "block w-full flex-1 text-sm text-gray file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-orange file:text-sm file:font-sans file:font-semibold file:text-white hover:file:bg-orange/80",
+                              }}
+                              onChange={(e) => {
+                                if (!e.target.files) {
+                                  setFile(null);
+                                  setFilename("");
+                                  setType("");
+                                  return;
+                                }
 
-                                  const validTypes = [
-                                    "image/png",
-                                    "image/jpg",
-                                    "image/jpeg",
-                                  ];
+                                const validTypes = [
+                                  "image/png",
+                                  "image/jpg",
+                                  "image/jpeg",
+                                ];
 
-                                  if (
-                                    !validTypes.includes(e.target.files[0].type)
-                                  ) {
-                                    toast.error(
-                                      "Ekstensi file harus png, jpg, atau jpeg",
-                                    );
-                                    setFile(null);
-                                    setFilename("");
-                                    setType("");
-                                    return;
-                                  }
+                                if (
+                                  !validTypes.includes(e.target.files[0].type)
+                                ) {
+                                  toast.error(
+                                    "Ekstensi file harus png, jpg, atau jpeg",
+                                  );
+                                  setFile(null);
+                                  setFilename("");
+                                  setType("");
+                                  return;
+                                }
 
-                                  setType(e.target.files[0].type);
-                                  setFilename(e.target.files[0].name);
-                                  const reader = new FileReader();
-                                  reader.readAsDataURL(e.target.files[0]);
+                                setType(e.target.files[0].type);
+                                setFilename(e.target.files[0].name);
+                                const reader = new FileReader();
+                                reader.readAsDataURL(e.target.files[0]);
 
-                                  reader.onload = function () {
-                                    setFile(reader.result);
-                                  };
+                                reader.onload = function () {
+                                  setFile(reader.result);
+                                };
 
-                                  reader.onerror = function (error) {
-                                    setFile(null);
-                                    setFilename("");
-                                    setType("");
+                                reader.onerror = function (error) {
+                                  setFile(null);
+                                  setFilename("");
+                                  setType("");
 
-                                    toast.error(
-                                      "Terjadi kesalahan saat meload gambar",
-                                    );
+                                  toast.error(
+                                    "Terjadi kesalahan saat meload gambar",
+                                  );
 
-                                    console.log(error);
-                                  };
-                                }}
-                              />
-                            </div>
+                                  console.log(error);
+                                };
+                              }}
+                            />
 
                             <Input
+                              isRequired
                               value={input.description}
                               type="text"
                               variant="flat"

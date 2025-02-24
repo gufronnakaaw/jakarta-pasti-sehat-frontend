@@ -1,6 +1,5 @@
 import ButtonBack from "@/components/button/ButtonBack";
 import ErrorPage from "@/components/ErrorPage";
-
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
@@ -17,6 +16,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
+
 const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
   ssr: false,
 });
@@ -105,27 +105,29 @@ export default function CreateArticlePage({
           ) : (
             <div className="grid max-w-[1150px] gap-8">
               <div className="grid grid-cols-[300px_1fr] items-start gap-8">
-                <div className="grid gap-1">
-                  <div className="aspect-video size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1">
-                    <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
-                      <Cropper
-                        image={file as string}
-                        crop={cropImage}
-                        zoom={zoomImage}
-                        aspect={1 / 1}
-                        onCropChange={setCropImage}
-                        onCropComplete={onCropComplete({
-                          setCroppedAreaPixels,
-                        })}
-                        onZoomChange={setZoomImage}
-                      />
+                <div className="grid gap-4">
+                  <div className="grid gap-1">
+                    <div className="aspect-video size-[300px] rounded-xl border-2 border-dashed border-gray/20 p-1">
+                      <div className="relative flex h-full items-center justify-center overflow-hidden rounded-xl bg-gray/20">
+                        <Cropper
+                          image={file as string}
+                          crop={cropImage}
+                          zoom={zoomImage}
+                          aspect={1 / 1}
+                          onCropChange={setCropImage}
+                          onCropComplete={onCropComplete({
+                            setCroppedAreaPixels,
+                          })}
+                          onZoomChange={setZoomImage}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  <p className="text-center text-sm font-medium leading-[170%] text-gray">
-                    <strong className="mr-1 text-danger">*</strong>ratio gambar
-                    1:1
-                  </p>
+                    <p className="text-center text-sm font-medium leading-[170%] text-gray">
+                      <strong className="mr-1 text-danger">*</strong>ratio
+                      gambar 1:1
+                    </p>
+                  </div>
 
                   <Input
                     isRequired

@@ -257,6 +257,7 @@ export default function DashboardEventsPage({
                   Tambah Dokumentasi
                 </Button>
               </div>
+
               <div className="overflow-x-scroll scrollbar-hide">
                 <Table
                   isStriped
