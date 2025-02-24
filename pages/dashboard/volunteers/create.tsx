@@ -49,19 +49,19 @@ export default function CreateVolunteerPage({
     setIsLoading(true);
 
     try {
-      const formData = new FormData();
-
-      formData.append("title", input.title);
-      formData.append("requirements", input.requirements);
-      formData.append("responsibilities", input.responsibilities);
-      formData.append("pillar_id", pillar);
-      formData.append("sub_pillar_id", subpillar);
-      formData.append("by", by);
+      const payload = {
+        title: input.title,
+        requirements: input.requirements,
+        responsibilities: input.responsibilities,
+        pillar_id: pillar,
+        sub_pillar_id: subpillar,
+        by: "Super Admin",
+      };
 
       await fetcher({
         endpoint: "/volunteers",
         method: "POST",
-        data: formData,
+        data: payload,
         token,
       });
 
