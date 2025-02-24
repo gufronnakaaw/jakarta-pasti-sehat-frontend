@@ -22,6 +22,47 @@
   @apply h-2 w-6 rounded-full !bg-primary;
 }
 
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred,
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused {
+  @apply px-8;
+}
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred
+  ul,
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused
+  ul {
+  @apply pl-4;
+}
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred
+  ol,
+.ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused
+  ol {
+  @apply pl-4;
+}
+
+.preventive-table table {
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+}
+.preventive-table table tr:first-child td {
+  font-weight: bold;
+  border: 2px solid black;
+  padding: 8px;
+}
+.preventive-table table td {
+  border: 2px solid black;
+  padding: 8px;
+}
+.preventive-list ul {
+  @apply list-outside list-disc pl-8;
+}
+.preventive-list ol {
+  @apply list-outside list-decimal pl-8;
+}
+.preventive-list li {
+  @apply list-outside;
+}
+
 @layer utilities {
   .base {
     @apply grid justify-items-center pb-[200px];
