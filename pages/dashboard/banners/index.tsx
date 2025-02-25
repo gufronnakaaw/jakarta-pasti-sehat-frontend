@@ -84,8 +84,8 @@ export default function DashboardBannersPage({
   });
 
   const columnsBanner = [
-    { name: "ID Banner", uid: "banner_id" },
     { name: "Gambar", uid: "image" },
+    { name: "ID Banner", uid: "banner_id" },
     { name: "Deskripsi", uid: "description" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Aksi", uid: "action" },
@@ -96,12 +96,6 @@ export default function DashboardBannersPage({
       const cellValue = banner[columnKey as keyof Banner];
 
       switch (columnKey) {
-        case "banner_id":
-          return (
-            <div className="w-max font-medium text-black">
-              {banner.banner_id}
-            </div>
-          );
         case "image":
           return (
             <Image
@@ -114,9 +108,15 @@ export default function DashboardBannersPage({
               onClick={() => window.open(banner.image_url, "_blank")}
             />
           );
-        case "description":
+        case "banner_id":
           return (
             <div className="w-max font-medium text-black">
+              {banner.banner_id}
+            </div>
+          );
+        case "description":
+          return (
+            <div className="w-full max-w-[300px] font-medium text-black">
               {banner.description}
             </div>
           );

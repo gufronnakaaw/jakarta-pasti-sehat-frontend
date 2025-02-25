@@ -49,8 +49,8 @@ export default function DashboardTeamsPage() {
   });
 
   const columnsPartner = [
-    { name: "Preview Logo", uid: "image_url" },
-    { name: "Nama Logo", uid: "alt" },
+    { name: "Logo", uid: "image_url" },
+    { name: "Nama Mitra", uid: "alt" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Aksi", uid: "action" },
   ];
@@ -61,15 +61,13 @@ export default function DashboardTeamsPage() {
     switch (columnKey) {
       case "image_url":
         return (
-          <div className="flex size-[80px] w-max items-center overflow-hidden font-medium text-black">
-            <Image
-              src={partner.image_url}
-              alt={partner.alt}
-              width={150}
-              height={150}
-              className="h-auto w-[80px]"
-            />
-          </div>
+          <Image
+            src={partner.image_url}
+            alt={partner.alt}
+            width={150}
+            height={150}
+            className="aspect-square size-16 rounded-lg object-cover object-center"
+          />
         );
       case "alt":
         return (
@@ -171,7 +169,7 @@ export default function DashboardTeamsPage() {
             <div className="grid gap-4">
               <div className="flex items-center justify-between gap-4">
                 <SearchInput
-                  placeholder="Cari Mitra..."
+                  placeholder="Cari Nama Mitra..."
                   onChange={(e) => setSearch(e.target.value)}
                   onClear={() => setSearch("")}
                 />

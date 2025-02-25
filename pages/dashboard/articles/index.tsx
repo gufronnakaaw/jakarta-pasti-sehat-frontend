@@ -85,8 +85,7 @@ export default function DashboardArticlesPage({
   const columnsArticle = [
     { name: "Gambar", uid: "image" },
     { name: "Pilar", uid: "pillar" },
-    { name: "Judul", uid: "title" },
-    { name: "Deskripsi", uid: "description" },
+    { name: "Judul Artikel", uid: "title" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Status", uid: "status" },
     { name: "Aksi", uid: "action" },
@@ -105,26 +104,20 @@ export default function DashboardArticlesPage({
               alt={`image ${article.title}`}
               width={500}
               height={500}
-              className="aspect-square w-16 cursor-pointer rounded-lg object-cover object-center"
+              className="aspect-square size-16 cursor-pointer rounded-lg object-cover object-center"
               onClick={() => window.open(article.image_url, "_blank")}
             />
           );
         case "pillar":
           return (
-            <div className="w-[125px] font-medium text-black">
+            <div className="w-max font-medium text-black">
               {article.pillar} - {article.subpillar}
             </div>
           );
         case "title":
           return (
-            <div className="w-[180px] font-medium text-black">
+            <div className="w-full max-w-[300px] font-medium text-black">
               {article.title}
-            </div>
-          );
-        case "description":
-          return (
-            <div className="w-[180px] font-medium text-black">
-              {article.description}
             </div>
           );
         case "created_at":
@@ -244,7 +237,7 @@ export default function DashboardArticlesPage({
             <div className="grid gap-4">
               <div className="flex items-center justify-between gap-4">
                 <SearchInput
-                  placeholder="Cari Judul..."
+                  placeholder="Cari Judul Artikel..."
                   defaultValue={query.q as string}
                   onChange={(e) => setSearch(e.target.value)}
                   onClear={() => setSearch("")}

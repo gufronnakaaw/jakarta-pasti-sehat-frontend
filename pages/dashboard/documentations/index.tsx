@@ -85,8 +85,7 @@ export default function DashboardEventsPage({
   const columnsDoc = [
     { name: "Gambar", uid: "image" },
     { name: "Pilar", uid: "pillar" },
-    { name: "Judul", uid: "title" },
-    { name: "Deskripsi", uid: "description" },
+    { name: "Judul Dokumentasi", uid: "title" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Status", uid: "status" },
     { name: "Aksi", uid: "action" },
@@ -97,10 +96,6 @@ export default function DashboardEventsPage({
       const cellValue = doc[columnKey as keyof DocumentationAdmin];
 
       switch (columnKey) {
-        case "doc_id":
-          return (
-            <div className="w-max font-medium text-black">{doc.doc_id}</div>
-          );
         case "image":
           return (
             <Image
@@ -109,7 +104,7 @@ export default function DashboardEventsPage({
               alt={`image ${doc.title}`}
               width={500}
               height={500}
-              className="aspect-square w-16 cursor-pointer rounded-lg object-cover object-center"
+              className="aspect-square size-16 cursor-pointer rounded-lg object-cover object-center"
               onClick={() => window.open(doc.thumbnail_url, "_blank")}
             />
           );
@@ -121,7 +116,9 @@ export default function DashboardEventsPage({
           );
         case "title":
           return (
-            <div className="w-max font-medium text-black">{doc.title}</div>
+            <div className="w-full max-w-[300px] font-medium text-black">
+              {doc.title}
+            </div>
           );
         case "created_at":
           return (
@@ -240,7 +237,7 @@ export default function DashboardEventsPage({
             <div className="grid gap-4">
               <div className="flex items-center justify-between gap-4">
                 <SearchInput
-                  placeholder="Cari Judul..."
+                  placeholder="Cari Judul Dokumentasi..."
                   defaultValue={query.q as string}
                   onChange={(e) => setSearch(e.target.value)}
                   onClear={() => setSearch("")}

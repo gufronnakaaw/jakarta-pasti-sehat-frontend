@@ -80,8 +80,9 @@ export default function DashboardVolunteersPage({
 
   const columnsVolunteer = [
     { name: "ID Volunteer", uid: "volunteer_id" },
-    { name: "Nama Volunteer", uid: "title" },
     { name: "Pilar", uid: "pillar" },
+    { name: "Judul Volunteer", uid: "title" },
+    { name: "Total Pelamar", uid: "total_volappls" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Aksi", uid: "action" },
   ];
@@ -97,15 +98,23 @@ export default function DashboardVolunteersPage({
               {vols.volunteer_id}
             </div>
           );
-        case "title":
-          return (
-            <div className="w-[300px] font-medium text-black">{vols.title}</div>
-          );
         case "pillar":
           return (
             <div className="w-max font-medium text-black">
               {vols.pillar ? vols.pillar.name : "Lainnya"} -{" "}
               {vols.subpillar ? vols.subpillar.name : "Lainnya"}
+            </div>
+          );
+        case "title":
+          return (
+            <div className="w-full max-w-[300px] font-medium text-black">
+              {vols.title}
+            </div>
+          );
+        case "total_volappls":
+          return (
+            <div className="w-max font-extrabold text-orange">
+              {vols.total_volappls}
             </div>
           );
         case "created_at":
@@ -211,7 +220,7 @@ export default function DashboardVolunteersPage({
             <div className="grid gap-4">
               <div className="flex items-center justify-between gap-4">
                 <SearchInput
-                  placeholder="Cari Nama Volunteer..."
+                  placeholder="Cari Judul Volunteer..."
                   defaultValue={query.q as string}
                   onChange={(e) => setSearch(e.target.value)}
                   onClear={() => setSearch("")}

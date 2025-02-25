@@ -199,7 +199,7 @@ export default function DashboardKeysPage() {
             <div className="grid gap-4">
               <div className="flex items-center justify-between gap-4">
                 <SearchInput
-                  placeholder="Cari Kunci Akses..."
+                  placeholder="Cari Nama Akses..."
                   onChange={(e) => setSearch(e.target.value)}
                   onClear={() => setSearch("")}
                 />
