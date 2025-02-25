@@ -270,7 +270,7 @@ export default function DetailsVolunteerPage({
 
                 <Modal
                   isDismissable={false}
-                  size="2xl"
+                  size="xl"
                   scrollBehavior="inside"
                   placement="center"
                   isOpen={isOpenDetailsApplicant}

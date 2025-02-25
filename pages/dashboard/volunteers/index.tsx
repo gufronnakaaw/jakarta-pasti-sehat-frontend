@@ -60,6 +60,8 @@ export default function DashboardVolunteersPage({
     token: token,
   });
 
+  console.log(data?.data);
+
   useEffect(() => {
     if (searchValue) {
       router.push({
@@ -97,12 +99,13 @@ export default function DashboardVolunteersPage({
           );
         case "title":
           return (
-            <div className="w-max font-medium text-black">{vols.title}</div>
+            <div className="w-[300px] font-medium text-black">{vols.title}</div>
           );
         case "pillar":
           return (
             <div className="w-max font-medium text-black">
-              {vols.pillar.name}
+              {vols.pillar ? vols.pillar.name : "Lainnya"} -{" "}
+              {vols.subpillar ? vols.subpillar.name : "Lainnya"}
             </div>
           );
         case "created_at":
