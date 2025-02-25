@@ -7,7 +7,7 @@ import { Pillar, PillarDetails } from "@/types/pillar";
 import { VolunteerDashboardDetails } from "@/types/volunteer";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
-import { Button, Input, Select, SelectItem } from "@heroui/react";
+import { Button, Input, Select, SelectItem, Switch } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
@@ -39,6 +39,9 @@ export default function EditVolunteerPage({
   );
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
 
+  const [selectedPillar, setSelectedPillar] = useState({
+    pillar: volunteer?.pillar.pillar_id ? true : false,
+  });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleEditVolunteer() {
@@ -50,9 +53,11 @@ export default function EditVolunteerPage({
         title: input.title,
         requirements: input.requirements,
         responsibilities: input.responsibilities,
-        pillar_id: pillar,
-        sub_pillar_id: subpillar,
         by: "Super Admin",
+        ...(selectedPillar.pillar && {
+          pillar_id: pillar,
+          sub_pillar_id: subpillar,
+        }),
       };
 
       await fetcher({
@@ -109,52 +114,75 @@ export default function EditVolunteerPage({
                   }}
                 />
 
-                <Select
-                  isRequired
-                  aria-label="select pillar"
-                  variant="flat"
-                  label="Pilih Pilar"
-                  labelPlacement="outside"
-                  placeholder="Contoh: Pilar 1"
-                  name="pillar"
-                  items={pillars}
-                  selectedKeys={[pillar]}
-                  onChange={(e) => setPillar(e.target.value)}
+                <Switch
+                  color="primary"
+                  isSelected={selectedPillar.pillar}
+                  onValueChange={(value) =>
+                    setSelectedPillar((prev) => ({
+                      ...prev,
+                      pillar: value,
+                    }))
+                  }
                   classNames={{
-                    trigger: "bg-white",
-                    value: "font-semibold text-gray",
+                    label: "text-black font-medium text-sm",
                   }}
                 >
-                  {(pillar: Pillar) => (
-                    <SelectItem key={pillar.pillar_id}>
-                      {pillar.name}
-                    </SelectItem>
-                  )}
-                </Select>
+                  Aktifkan Pilar
+                </Switch>
 
-                {pillar ? (
-                  <Select
-                    isRequired
-                    aria-label="select subpillar"
-                    variant="flat"
-                    label="Pilih Subpilar"
-                    labelPlacement="outside"
-                    placeholder="Contoh: Hepatitis"
-                    name="subpillar"
-                    items={subPillars?.subpillars}
-                    selectedKeys={[subpillar]}
-                    onChange={(e) => setSubpillar(e.target.value)}
-                    classNames={{
-                      trigger: "bg-white",
-                      value: "font-semibold text-gray",
-                    }}
-                  >
-                    {(subpillar: { name: string; sub_pillar_id: string }) => (
-                      <SelectItem key={subpillar.sub_pillar_id}>
-                        {subpillar.name}
-                      </SelectItem>
-                    )}
-                  </Select>
+                {selectedPillar.pillar ? (
+                  <>
+                    <Select
+                      isRequired
+                      aria-label="select pillar"
+                      variant="flat"
+                      label="Pilih Pilar"
+                      labelPlacement="outside"
+                      placeholder="Contoh: Pilar 1"
+                      name="pillar"
+                      items={pillars}
+                      selectedKeys={[pillar]}
+                      onChange={(e) => setPillar(e.target.value)}
+                      classNames={{
+                        trigger: "bg-white",
+                        value: "font-semibold text-gray",
+                      }}
+                    >
+                      {(pillar: Pillar) => (
+                        <SelectItem key={pillar.pillar_id}>
+                          {pillar.name}
+                        </SelectItem>
+                      )}
+                    </Select>
+
+                    {pillar ? (
+                      <Select
+                        isRequired
+                        aria-label="select subpillar"
+                        variant="flat"
+                        label="Pilih Subpilar"
+                        labelPlacement="outside"
+                        placeholder="Contoh: Hepatitis"
+                        name="subpillar"
+                        items={subPillars?.subpillars}
+                        selectedKeys={[subpillar]}
+                        onChange={(e) => setSubpillar(e.target.value)}
+                        classNames={{
+                          trigger: "bg-white",
+                          value: "font-semibold text-gray",
+                        }}
+                      >
+                        {(subpillar: {
+                          name: string;
+                          sub_pillar_id: string;
+                        }) => (
+                          <SelectItem key={subpillar.sub_pillar_id}>
+                            {subpillar.name}
+                          </SelectItem>
+                        )}
+                      </Select>
+                    ) : null}
+                  </>
                 ) : null}
 
                 <div className="grid gap-2">
