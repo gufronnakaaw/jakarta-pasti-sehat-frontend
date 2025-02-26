@@ -21,12 +21,15 @@ import {
 } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function EventDetailsPage({
   data,
   error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [client, setClient] = useState(false);
+
   async function handleShareLink() {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -55,6 +58,12 @@ export default function EventDetailsPage({
       "_blank",
     );
   }
+
+  useEffect(() => {
+    setClient(true);
+  }, []);
+
+  if (!client) return;
 
   return (
     <>
@@ -105,9 +114,7 @@ export default function EventDetailsPage({
                             )}
                           </p>
                         </div>
-                      </div>
 
-                      <div className="grid gap-2 text-gray">
                         <div className="inline-flex items-center gap-2">
                           <Clock />
 
@@ -118,17 +125,13 @@ export default function EventDetailsPage({
                             )}
                           </p>
                         </div>
-                      </div>
 
-                      <div className="grid gap-2 text-gray">
                         <div className="inline-flex items-center gap-2">
                           <MapPin />
                           <p className="flex-1 font-medium">{data?.location}</p>
                         </div>
-                      </div>
 
-                      {data?.map_url ? (
-                        <div className="grid gap-2 text-gray">
+                        {data?.map_url ? (
                           <div className="inline-flex items-center gap-2">
                             <MapPinArea />
 
@@ -140,11 +143,9 @@ export default function EventDetailsPage({
                               Link Maps
                             </a>
                           </div>
-                        </div>
-                      ) : null}
+                        ) : null}
 
-                      {data?.payment_url ? (
-                        <div className="grid gap-2 text-gray">
+                        {data?.payment_url ? (
                           <div className="inline-flex items-center gap-2">
                             <Money />
 
@@ -156,8 +157,8 @@ export default function EventDetailsPage({
                               Link Pembayaran
                             </a>
                           </div>
-                        </div>
-                      ) : null}
+                        ) : null}
+                      </div>
                     </IconContext.Provider>
 
                     <div className="mt-6 flex h-[40px] items-center justify-center rounded-xl border-2 border-gray/20 text-sm font-bold">
