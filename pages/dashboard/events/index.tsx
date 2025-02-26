@@ -145,7 +145,14 @@ export default function DashboardEventsPage({
                   <Link />
                 </Button>
 
-                <Button isIconOnly variant="light" size="sm">
+                <Button
+                  isIconOnly
+                  variant="light"
+                  size="sm"
+                  onPress={() =>
+                    router.push(`/dashboard/events/${event.event_id}/edit`)
+                  }
+                >
                   <PencilLine />
                 </Button>
 

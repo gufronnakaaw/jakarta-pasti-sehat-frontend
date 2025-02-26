@@ -207,7 +207,7 @@ export default function EditTeamPage({
 
           <TitleText
             title="Edit Tim 👥"
-            text="BuaEdit dan kelola data tim dengan mudah"
+            text="Edit dan kelola data tim dengan mudah"
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
