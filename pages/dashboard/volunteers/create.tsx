@@ -35,7 +35,7 @@ export default function CreateVolunteerPage({
   const [subpillar, setSubpillar] = useState("");
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
 
-  const [selectedPillar, setSelectedPillar] = useState<boolean>(false);
+  const [changePillar, setChangePillar] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleCreateVolunteer() {
@@ -47,7 +47,7 @@ export default function CreateVolunteerPage({
         requirements: input.requirements,
         responsibilities: input.responsibilities,
         by: "Super Admin",
-        ...(selectedPillar && { pillar_id: pillar, sub_pillar_id: subpillar }),
+        ...(changePillar && { pillar_id: pillar, sub_pillar_id: subpillar }),
       };
 
       await fetcher({
@@ -106,8 +106,12 @@ export default function CreateVolunteerPage({
 
                 <Switch
                   color="primary"
-                  isSelected={selectedPillar}
-                  onValueChange={setSelectedPillar}
+                  isSelected={changePillar}
+                  onValueChange={(e) => {
+                    setChangePillar(e);
+                    setPillar("");
+                    setSubpillar("");
+                  }}
                   classNames={{
                     label: "text-black font-medium text-sm",
                   }}
@@ -115,7 +119,7 @@ export default function CreateVolunteerPage({
                   Aktifkan Pilar
                 </Switch>
 
-                {selectedPillar ? (
+                {changePillar ? (
                   <>
                     <Select
                       isRequired

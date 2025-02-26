@@ -39,14 +39,8 @@ export type VolunteerDashboardDetails = {
   requirements: string;
   responsibilities: null | string;
   created_at: string;
-  pillar: {
-    pillar_id: string;
-    name: string;
-  };
-  subpillar: {
-    sub_pillar_id: string;
-    name: string;
-  };
+  pillar: string | { pillar_id: string; name: string };
+  subpillar: string | { sub_pillar_id: string; name: string };
   volappls: VolunteerApplicant[];
 };
 

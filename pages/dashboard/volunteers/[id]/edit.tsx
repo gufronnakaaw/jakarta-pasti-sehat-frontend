@@ -7,11 +7,11 @@ import { Pillar, PillarDetails } from "@/types/pillar";
 import { VolunteerDashboardDetails } from "@/types/volunteer";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
+import { getPillarId, getSubPillarId } from "@/utils/pillar";
 import { Button, Input, Select, SelectItem, Switch } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -24,8 +24,6 @@ export default function EditVolunteerPage({
   pillars,
   volunteer,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const router = useRouter();
-
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState({
@@ -33,15 +31,15 @@ export default function EditVolunteerPage({
     requirements: volunteer?.requirements as string,
     responsibilities: volunteer?.responsibilities as string,
   });
-  const [pillar, setPillar] = useState(volunteer?.pillar.pillar_id as string);
+  const [pillar, setPillar] = useState(getPillarId(volunteer?.pillar));
   const [subpillar, setSubpillar] = useState(
-    volunteer?.subpillar.sub_pillar_id as string,
+    getSubPillarId(volunteer?.subpillar),
   );
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
 
-  const [selectedPillar, setSelectedPillar] = useState({
-    pillar: volunteer?.pillar.pillar_id ? true : false,
-  });
+  const [changePillar, setChangePillar] = useState<boolean>(
+    volunteer?.pillar == "Lainnya" ? false : true,
+  );
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function handleEditVolunteer() {
@@ -54,7 +52,7 @@ export default function EditVolunteerPage({
         requirements: input.requirements,
         responsibilities: input.responsibilities,
         by: "Super Admin",
-        ...(selectedPillar.pillar && {
+        ...(changePillar && {
           pillar_id: pillar,
           sub_pillar_id: subpillar,
         }),
@@ -116,13 +114,12 @@ export default function EditVolunteerPage({
 
                 <Switch
                   color="primary"
-                  isSelected={selectedPillar.pillar}
-                  onValueChange={(value) =>
-                    setSelectedPillar((prev) => ({
-                      ...prev,
-                      pillar: value,
-                    }))
-                  }
+                  isSelected={changePillar}
+                  onValueChange={(e) => {
+                    setChangePillar(e);
+                    setPillar("");
+                    setSubpillar("");
+                  }}
                   classNames={{
                     label: "text-black font-medium text-sm",
                   }}
@@ -130,7 +127,7 @@ export default function EditVolunteerPage({
                   Aktifkan Pilar
                 </Switch>
 
-                {selectedPillar.pillar ? (
+                {changePillar ? (
                   <>
                     <Select
                       isRequired
@@ -141,7 +138,7 @@ export default function EditVolunteerPage({
                       placeholder="Contoh: Pilar 1"
                       name="pillar"
                       items={pillars}
-                      selectedKeys={[pillar]}
+                      selectedKeys={[pillar as string]}
                       onChange={(e) => setPillar(e.target.value)}
                       classNames={{
                         trigger: "bg-white",
@@ -165,7 +162,7 @@ export default function EditVolunteerPage({
                         placeholder="Contoh: Hepatitis"
                         name="subpillar"
                         items={subPillars?.subpillars}
-                        selectedKeys={[subpillar]}
+                        selectedKeys={[subpillar as string]}
                         onChange={(e) => setSubpillar(e.target.value)}
                         classNames={{
                           trigger: "bg-white",
