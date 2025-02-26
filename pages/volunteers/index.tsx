@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import SearchInput from "@/components/SearchInput";
 import SelectFilterData from "@/components/select/SelectFilterData";
 import Layout from "@/components/wrapper/Layout";
+import { useSearch } from "@/hooks/useSearch";
 import { SuccessResponse } from "@/types/global";
 import { Volunteer } from "@/types/volunteer";
 import { fetcher } from "@/utils/fetcher";
@@ -13,8 +14,7 @@ import { Pagination } from "@heroui/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import { useEffect, useState } from "react";
-import { useDebounce } from "use-debounce";
+import { useEffect } from "react";
 
 type VolunteerResponse = {
   vols: Volunteer[];
@@ -29,8 +29,7 @@ export default function VolunteersPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
-  const [search, setSearch] = useState("");
-  const [searchValue] = useDebounce(search, 800);
+  const { searchValue, search, setSearch } = useSearch(800);
 
   useEffect(() => {
     if (searchValue) {
