@@ -56,11 +56,10 @@ export default function CreateEventPage({
     location: "",
   });
   const [pillar, setPillar] = useState<string>("");
-
   const [subpillar, setSubpillar] = useState<string>("");
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
 
-  const [selectedPillar, setSelectedPillar] = useState<boolean>(false);
+  const [changePillar, setChangePillar] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [fileImage, setFileImage] = useState<string | ArrayBuffer | null>();
@@ -90,7 +89,7 @@ export default function CreateEventPage({
       formData.append("location", input.location);
       formData.append("by", "Super Admin");
 
-      if (selectedPillar) {
+      if (changePillar) {
         formData.append("pillar_id", pillar);
         formData.append("sub_pillar_id", subpillar);
       }
@@ -129,7 +128,7 @@ export default function CreateEventPage({
           {error ? (
             <ErrorPage error={error} />
           ) : (
-            <div className="grid max-w-[900px] gap-8">
+            <div className="grid w-full gap-8">
               <div className="grid grid-cols-[300px_1fr] items-start gap-8">
                 <div className="grid gap-4">
                   <div className="grid gap-1">
@@ -179,8 +178,12 @@ export default function CreateEventPage({
 
                   <Switch
                     color="primary"
-                    isSelected={selectedPillar}
-                    onValueChange={setSelectedPillar}
+                    isSelected={changePillar}
+                    onValueChange={(e) => {
+                      setChangePillar(e);
+                      setPillar("");
+                      setSubpillar("");
+                    }}
                     classNames={{
                       label: "text-black font-medium text-sm",
                     }}
@@ -188,7 +191,7 @@ export default function CreateEventPage({
                     Aktifkan Pilar
                   </Switch>
 
-                  {selectedPillar ? (
+                  {changePillar ? (
                     <>
                       <Select
                         isRequired

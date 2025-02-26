@@ -71,11 +71,10 @@ export default function EditEventPage({
     location: event?.location as string,
   });
   const [pillar, setPillar] = useState(getPillarId(event?.pillar));
-
   const [subpillar, setSubpillar] = useState(getSubPillarId(event?.subpillar));
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
 
-  const [selectedPillar, setSelectedPillar] = useState(
+  const [changePillar, setChangePillar] = useState(
     event?.pillar == "Lainnya" ? false : true,
   );
   const [changeImage, setChangeImage] = useState<boolean>(false);
@@ -112,12 +111,12 @@ export default function EditEventPage({
       formData.append("location", input.location);
       formData.append("by", "Super Admin");
 
-      if (event?.pillar == "Lainnya" && selectedPillar) {
+      if (event?.pillar == "Lainnya" && changePillar) {
         formData.append("pillar_id", pillar as string);
         formData.append("sub_pillar_id", subpillar as string);
       }
 
-      if (event?.pillar != "Lainnya" && selectedPillar) {
+      if (event?.pillar != "Lainnya" && changePillar) {
         formData.append("pillar_id", pillar as string);
         formData.append("sub_pillar_id", subpillar as string);
       }
@@ -229,9 +228,9 @@ export default function EditEventPage({
 
                   <Switch
                     color="primary"
-                    isSelected={selectedPillar}
+                    isSelected={changePillar}
                     onValueChange={(value) => {
-                      setSelectedPillar(value);
+                      setChangePillar(value);
                       setPillar("");
                       setSubpillar("");
                     }}
@@ -239,7 +238,7 @@ export default function EditEventPage({
                     Aktifkan Pilar
                   </Switch>
 
-                  {selectedPillar ? (
+                  {changePillar ? (
                     <>
                       <Select
                         isRequired
