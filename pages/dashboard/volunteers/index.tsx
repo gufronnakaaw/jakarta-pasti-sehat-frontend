@@ -60,8 +60,6 @@ export default function DashboardVolunteersPage({
     token: token,
   });
 
-  console.log(data?.data);
-
   useEffect(() => {
     if (searchValue) {
       router.push({
