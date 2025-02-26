@@ -173,7 +173,14 @@ export default function DashboardArticlesPage({
                   <Link />
                 </Button>
 
-                <Button isIconOnly variant="light" size="sm">
+                <Button
+                  isIconOnly
+                  variant="light"
+                  size="sm"
+                  onPress={() =>
+                    router.push(`/dashboard/articles/${article.slug}`)
+                  }
+                >
                   <PencilLine />
                 </Button>
 

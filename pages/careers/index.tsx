@@ -1,11 +1,52 @@
 import CardCareer from "@/components/card/CardCareer";
+import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import SearchInput from "@/components/SearchInput";
 import SelectFilterData from "@/components/select/SelectFilterData";
 import Layout from "@/components/wrapper/Layout";
+import { useSearch } from "@/hooks/useSearch";
+import { PublicCareer } from "@/types/career";
+import { SuccessResponse } from "@/types/global";
+import { fetcher } from "@/utils/fetcher";
+import { getUrl } from "@/utils/string";
+import { Pagination } from "@heroui/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
+import { ParsedUrlQuery } from "querystring";
+import { useEffect } from "react";
 
-export default function CareersPage() {
+type VolunteerResponse = {
+  careers: PublicCareer[];
+  page: number;
+  total_careers: number;
+  total_pages: number;
+};
+
+export default function CareersPage({
+  data,
+  error,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const router = useRouter();
+
+  const { searchValue, search, setSearch } = useSearch(800);
+
+  useEffect(() => {
+    if (searchValue) {
+      router.push({
+        pathname: router.pathname,
+        query: {
+          ...router.query,
+          filter: searchValue,
+        },
+      });
+    } else {
+      router.push({
+        pathname: router.pathname,
+      });
+    }
+  }, [searchValue]);
+
   return (
     <>
       <Navbar />
@@ -26,16 +67,44 @@ export default function CareersPage() {
 
             <div className="grid gap-4">
               <div className="flex flex-wrap items-end justify-between gap-4">
-                <SearchInput placeholder="Cari Posisi (Contoh: Admin)..." />
+                <SearchInput
+                  placeholder="Cari Posisi (Contoh: Admin)..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  value={search}
+                  onClear={() => setSearch("")}
+                />
 
                 <SelectFilterData />
               </div>
 
-              <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-8">
-                {Array.from({ length: 4 }, (_, index) => (
-                  <CardCareer key={index} />
-                ))}
-              </div>
+              {error ? (
+                <ErrorPage error={error} />
+              ) : (
+                <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-8">
+                  {data?.careers.map((career) => {
+                    return <CardCareer key={career.slug} {...career} />;
+                  })}
+                </div>
+              )}
+
+              {data?.careers.length ? (
+                <Pagination
+                  isCompact
+                  showControls
+                  color="primary"
+                  page={data.page as number}
+                  total={data.total_pages as number}
+                  onChange={(e) => {
+                    router.push({
+                      query: {
+                        ...router.query,
+                        page: e,
+                      },
+                    });
+                  }}
+                  className="mt-4 justify-self-center"
+                />
+              ) : null}
             </div>
           </div>
         </section>
@@ -45,3 +114,27 @@ export default function CareersPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  data?: VolunteerResponse;
+  error?: any;
+}> = async ({ query }) => {
+  try {
+    const response: SuccessResponse<VolunteerResponse> = await fetcher({
+      endpoint: getUrl(query as ParsedUrlQuery, "/careers"),
+      method: "GET",
+    });
+
+    return {
+      props: {
+        data: response.data,
+      },
+    };
+  } catch (error: any) {
+    return {
+      props: {
+        error,
+      },
+    };
+  }
+};

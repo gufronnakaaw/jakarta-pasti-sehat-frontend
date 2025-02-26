@@ -3,6 +3,7 @@ import ErrorPage from "@/components/ErrorPage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
+import { AdminArticle } from "@/types/article";
 import { Pillar, PillarDetails } from "@/types/pillar";
 import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
@@ -16,12 +17,24 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
-
 const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
   ssr: false,
 });
 
-export default function CreateArticlePage({
+function getPillarId(
+  pillar: string | { pillar_id: string; name: string } | undefined,
+) {
+  return typeof pillar === "object" ? pillar.pillar_id : null;
+}
+
+function getSubPillarId(
+  subpillar: string | { sub_pillar_id: string; name: string } | undefined,
+) {
+  return typeof subpillar === "object" ? subpillar.sub_pillar_id : null;
+}
+
+export default function EditArticlePage({
+  article,
   pillars,
   error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -29,79 +42,98 @@ export default function CreateArticlePage({
 
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const by = "Super Admin";
 
-  const [file, setFile] = useState<string | ArrayBuffer | null>();
+  const [file, setFile] = useState<string | ArrayBuffer | null>(
+    article?.image_url as string,
+  );
   const [filename, setFilename] = useState("");
   const [type, setType] = useState("");
   const [input, setInput] = useState({
-    title: "",
-    description: "",
-    content: "",
+    title: article?.title,
+    description: article?.description,
+    content: article?.content,
   });
-  const [pillar, setPillar] = useState("");
-  const [subpillar, setSubpillar] = useState("");
+  const [status, setStatus] = useState(article?.is_active as boolean);
+
+  const [pillar, setPillar] = useState(getPillarId(article?.pillar));
+  const [subpillar, setSubpillar] = useState(
+    getSubPillarId(article?.subpillar),
+  );
+
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
-  const [changePillar, setChangePillar] = useState(false);
+  const [changePillar, setChangePillar] = useState(
+    article?.pillar == "Lainnya" ? false : true,
+  );
 
   const [zoomImage, setZoomImage] = useState<number>(1);
   const [cropImage, setCropImage] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleSaveArticle() {
+  async function handleUpdateArticle() {
     setLoading(true);
 
     try {
       const formData = new FormData();
-      const croppedImage = await getCroppedImg(file, croppedAreaPixels);
 
-      const response = await fetch(croppedImage as string);
-      const blob = await response.blob();
+      if (filename) {
+        const croppedImage = await getCroppedImg(file, croppedAreaPixels);
 
-      const fileConvert = new File([blob], `${filename}`, {
-        type,
-      });
+        const response = await fetch(croppedImage as string);
+        const blob = await response.blob();
 
-      if (changePillar) {
-        formData.append("pillar_id", pillar);
-        formData.append("sub_pillar_id", subpillar);
+        const fileConvert = new File([blob], `${filename}`, {
+          type,
+        });
+
+        formData.append("articles", fileConvert);
       }
 
-      formData.append("articles", fileConvert);
-      formData.append("title", input.title);
-      formData.append("description", input.description);
-      formData.append("content", input.content);
+      if (article?.pillar == "Lainnya" && changePillar) {
+        formData.append("pillar_id", pillar as string);
+        formData.append("sub_pillar_id", subpillar as string);
+      }
 
-      formData.append("by", by);
+      if (article?.pillar != "Lainnya" && changePillar) {
+        formData.append("pillar_id", pillar as string);
+        formData.append("sub_pillar_id", subpillar as string);
+      }
+
+      formData.append("article_id", article?.article_id as string);
+      formData.append("title", input?.title as string);
+      formData.append("description", input?.description as string);
+      formData.append("content", input?.content as string);
+      formData.append("is_active", `${status}`);
+
+      formData.append("by", "Super Admin");
 
       await fetcher({
         endpoint: "/articles",
-        method: "POST",
+        method: "PATCH",
         file: true,
         token,
         data: formData,
       });
 
       router.back();
-      toast.success("Berhasil membuat artikel");
+      toast.success("Berhasil mengedit artikel");
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat membuat artikel");
+      toast.error("Terjadi kesalahan saat mengedit artikel");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <DashboardLayout title="Buat Artikel">
+    <DashboardLayout title="Edit Artikel">
       <DashboardContainer>
         <section className="base-dashboard">
           <ButtonBack className="mt-0" />
 
           <TitleText
-            title="Buat Artikel 🤝"
-            text="Buat dan kelola artikel terbaru"
+            title="Edit Artikel 🤝"
+            text="Edit dan kelola artikel terbaru"
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
@@ -217,7 +249,7 @@ export default function CreateArticlePage({
                         placeholder="Contoh: Pilar 1"
                         name="pillar"
                         items={pillars}
-                        selectedKeys={[pillar]}
+                        selectedKeys={[pillar as string]}
                         onChange={(e) => setPillar(e.target.value)}
                         classNames={{
                           trigger: "bg-white",
@@ -241,7 +273,7 @@ export default function CreateArticlePage({
                           placeholder="Contoh: Hepatitis"
                           name="subpillar"
                           items={subPillars?.subpillars}
-                          selectedKeys={[subpillar]}
+                          selectedKeys={[subpillar as string]}
                           onChange={(e) => setSubpillar(e.target.value)}
                           classNames={{
                             trigger: "bg-white",
@@ -301,34 +333,39 @@ export default function CreateArticlePage({
                     <p className="font-medium text-black">Konten</p>
 
                     <CKEditor
-                      value={input.content}
-                      onChange={(text) => {
+                      value={input.content as string}
+                      onChange={(text: string) => {
                         setInput({ ...input, content: text });
                       }}
                       token={token}
                     />
                   </div>
+
+                  <Switch
+                    color="primary"
+                    isSelected={status}
+                    onValueChange={(e) => setStatus(e)}
+                    classNames={{
+                      label: "text-black font-medium text-sm",
+                    }}
+                    className="mb-4"
+                  >
+                    Status
+                  </Switch>
                 </div>
               </div>
 
               <Button
                 isLoading={loading}
-                isDisabled={
-                  loading ||
-                  !file ||
-                  !Object.values(input).every((value) => value.trim() !== "") ||
-                  changePillar
-                    ? !pillar || !subpillar
-                    : false
-                }
+                isDisabled={loading}
                 color="primary"
                 startContent={
                   loading ? null : <FloppyDisk weight="bold" size={18} />
                 }
                 className="w-max justify-self-end font-bold"
-                onPress={handleSaveArticle}
+                onPress={handleUpdateArticle}
               >
-                Simpan
+                Update
               </Button>
             </div>
           )}
@@ -339,18 +376,29 @@ export default function CreateArticlePage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
+  article?: AdminArticle;
   pillars?: PillarDetails[];
   error?: any;
-}> = async () => {
+}> = async ({ params }) => {
   try {
-    const response = await fetcher({
-      endpoint: "/pillars",
-      method: "GET",
-    });
+    const [article, pillar] = await Promise.all([
+      fetcher({
+        endpoint: `/articles/${params?.slug}`,
+        method: "GET",
+        token:
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+        role: "admin",
+      }),
+      fetcher({
+        endpoint: "/pillars",
+        method: "GET",
+      }),
+    ]);
 
     return {
       props: {
-        pillars: response.data as PillarDetails[],
+        article: article.data as AdminArticle,
+        pillars: pillar.data as PillarDetails[],
       },
     };
   } catch (error: any) {
