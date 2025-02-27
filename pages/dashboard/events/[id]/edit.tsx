@@ -10,6 +10,7 @@ import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { onCropComplete } from "@/utils/onCropComplete";
+import { getPillarId, getSubPillarId } from "@/utils/pillar";
 import {
   Button,
   DatePicker,
@@ -40,18 +41,6 @@ type InputState = {
   type: string;
   location: string;
 };
-
-function getPillarId(
-  pillar: string | { pillar_id: string; name: string } | undefined,
-) {
-  return typeof pillar === "object" ? pillar.pillar_id : null;
-}
-
-function getSubPillarId(
-  subpillar: string | { sub_pillar_id: string; name: string } | undefined,
-) {
-  return typeof subpillar === "object" ? subpillar.sub_pillar_id : null;
-}
 
 export default function EditEventPage({
   error,
