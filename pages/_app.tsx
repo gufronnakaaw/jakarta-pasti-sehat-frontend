@@ -4,12 +4,16 @@ import "@/styles/globals.css";
 import { fetcher } from "@/utils/fetcher";
 import { HeroUIProvider } from "@heroui/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { SessionProvider } from "next-auth/react";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
 import { SWRConfig } from "swr";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return process.env.NEXT_PUBLIC_MODE == "production" ? (
     <UnderConstruction />
   ) : (
@@ -30,9 +34,11 @@ export default function App({ Component, pageProps }: AppProps) {
           revalidateOnFocus: false,
         }}
       >
-        <AppProvider>
-          <Component {...pageProps} />
-        </AppProvider>
+        <SessionProvider session={session}>
+          <AppProvider>
+            <Component {...pageProps} />
+          </AppProvider>
+        </SessionProvider>
       </SWRConfig>
       <GoogleAnalytics gaId="G-4J7582YYQ6" />
     </HeroUIProvider>

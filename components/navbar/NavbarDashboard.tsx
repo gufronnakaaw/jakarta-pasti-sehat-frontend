@@ -5,12 +5,12 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
-  useDisclosure,
 } from "@heroui/react";
 import { CaretUpDown, SignOut } from "@phosphor-icons/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function NavbarDashboard() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data, status } = useSession();
 
   const formatName = (name: string): string => {
     const parts: string[] = name.split(" ");
@@ -47,10 +47,12 @@ export default function NavbarDashboard() {
 
                 <div>
                   <h6 className="text-sm font-bold text-black">
-                    {formatName("Fajar Fadillah Agustian")}
+                    {status == "authenticated"
+                      ? formatName(data.user.fullname)
+                      : "-"}
                   </h6>
                   <p className="text-[12px] font-semibold uppercase text-gray">
-                    JPS123456
+                    {status == "authenticated" ? data.user.admin_id : "-"}
                   </p>
                 </div>
               </div>
@@ -74,6 +76,11 @@ export default function NavbarDashboard() {
                 color="danger"
                 startContent={<SignOut weight="bold" size={18} />}
                 className="text-danger-600"
+                onPress={() => {
+                  if (confirm("Apakah anda yakin?")) {
+                    signOut();
+                  }
+                }}
               >
                 Logout
               </DropdownItem>

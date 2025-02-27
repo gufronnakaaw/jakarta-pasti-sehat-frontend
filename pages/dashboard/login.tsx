@@ -10,14 +10,13 @@ import {
   Lock,
   User,
 } from "@phosphor-icons/react";
+import { signIn } from "next-auth/react";
 import Head from "next/head";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [input, setInput] = useState<{
     admin_id: string;
     access_key: string;
@@ -30,8 +29,25 @@ export default function LoginPage() {
   const [passwordType, setPasswordType] = useState("password");
   const [loading, setLoading] = useState(false);
 
-  function handleLogin() {
-    toast.success("Yeay, anda berhasil login");
+  async function handleLogin() {
+    setLoading(true);
+
+    const response = await signIn("credentials", {
+      ...input,
+      redirect: false,
+    });
+
+    if (response?.error) {
+      setLoading(false);
+      const { error } = JSON.parse(response?.error);
+
+      toast.error(error.message);
+    }
+
+    if (response?.ok) {
+      toast.success("Anda Berhasil Login");
+      return (window.location.href = "/dashboard");
+    }
   }
 
   return (
@@ -50,7 +66,6 @@ export default function LoginPage() {
             className="h-full w-full object-cover object-right"
           />
 
-          {/* === overlay === */}
           <div className="absolute left-0 top-0 z-10 h-full w-full bg-gradient-to-tr from-green/80 to-orange" />
         </div>
 
