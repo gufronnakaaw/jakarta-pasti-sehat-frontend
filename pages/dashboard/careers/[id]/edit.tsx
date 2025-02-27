@@ -31,9 +31,9 @@ export default function EditCareerPage({
   error,
   pillars,
   career,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState<InputState>({
     title: career?.title as string,
     location: career?.location as string,
@@ -56,13 +56,9 @@ export default function EditCareerPage({
     try {
       const payload = {
         career_id: career?.career_id,
-        title: input.title,
-        location: input.location,
-        type: input.type,
-        requirements: input.requirements,
-        responsibilities: input.responsibilities,
-        by: "Super Admin",
+        ...input,
         ...(changePillar && { pillar_id: pillar, sub_pillar_id: subpillar }),
+        by,
       };
 
       await fetcher({
@@ -247,7 +243,7 @@ export default function EditCareerPage({
                     onChange={(text) => {
                       setInput({ ...input, requirements: text });
                     }}
-                    token={token}
+                    token={token as string}
                   />
                 </div>
 
@@ -261,14 +257,17 @@ export default function EditCareerPage({
                     onChange={(text) => {
                       setInput({ ...input, responsibilities: text });
                     }}
-                    token={token}
+                    token={token as string}
                   />
                 </div>
               </div>
 
               <Button
                 isLoading={isLoading}
-                isDisabled={isLoading}
+                isDisabled={
+                  isLoading ||
+                  !Object.values(input).every((item) => item.trim() !== "")
+                }
                 color="primary"
                 startContent={
                   isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -290,7 +289,11 @@ export const getServerSideProps: GetServerSideProps<{
   pillars?: PillarDetails[];
   career?: CareerDashboardDetails;
   error?: any;
-}> = async ({ params }) => {
+  token?: string;
+  by?: string;
+}> = async ({ params, req }) => {
+  const token = req.headers["access_token"] as string;
+
   try {
     const [responsePillars, responseCareer] = await Promise.all([
       fetcher({
@@ -302,8 +305,7 @@ export const getServerSideProps: GetServerSideProps<{
         endpoint: `/careers/${params?.id}`,
         method: "GET",
         role: "admin",
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+        token,
       }),
     ]);
 
@@ -311,6 +313,8 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         pillars: responsePillars.data as PillarDetails[],
         career: responseCareer.data as CareerDashboardDetails,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {

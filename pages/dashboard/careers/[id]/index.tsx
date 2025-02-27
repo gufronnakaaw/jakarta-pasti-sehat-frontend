@@ -41,9 +41,8 @@ import { twMerge } from "tailwind-merge";
 
 export default function DetailsCareerPage({
   params,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const { data, isLoading, error } = useSWR<
     SuccessResponse<CareerDashboardDetails>
   >({
@@ -430,10 +429,12 @@ export default function DetailsCareerPage({
 
 export const getServerSideProps: GetServerSideProps<{
   params: ParsedUrlQuery;
-}> = async ({ params }) => {
+  token: string;
+}> = async ({ params, req }) => {
   return {
     props: {
       params: params as ParsedUrlQuery,
+      token: req.headers["access_token"] as string,
     },
   };
 };

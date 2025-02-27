@@ -29,11 +29,10 @@ type InputState = {
 export default function CreateCareerPage({
   error,
   pillars,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState<InputState>({
     title: "",
     location: "",
@@ -53,13 +52,9 @@ export default function CreateCareerPage({
 
     try {
       const payload = {
-        title: input.title,
-        location: input.location,
-        type: input.type,
-        requirements: input.requirements,
-        responsibilities: input.responsibilities,
-        by: "Super Admin",
+        ...input,
         ...(changePillar && { pillar_id: pillar, sub_pillar_id: subpillar }),
+        by,
       };
 
       await fetcher({
@@ -244,7 +239,7 @@ export default function CreateCareerPage({
                     onChange={(text) => {
                       setInput({ ...input, requirements: text });
                     }}
-                    token={token}
+                    token={token as string}
                   />
                 </div>
 
@@ -258,14 +253,17 @@ export default function CreateCareerPage({
                     onChange={(text) => {
                       setInput({ ...input, responsibilities: text });
                     }}
-                    token={token}
+                    token={token as string}
                   />
                 </div>
               </div>
 
               <Button
                 isLoading={isLoading}
-                isDisabled={isLoading}
+                isDisabled={
+                  isLoading ||
+                  !Object.values(input).every((item) => item.trim() !== "")
+                }
                 color="primary"
                 startContent={
                   isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -286,7 +284,9 @@ export default function CreateCareerPage({
 export const getServerSideProps: GetServerSideProps<{
   pillars?: PillarDetails[];
   error?: any;
-}> = async () => {
+  token?: string;
+  by?: string;
+}> = async ({ req }) => {
   try {
     const response = await fetcher({
       endpoint: "/pillars",
@@ -296,6 +296,8 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         pillars: response.data as PillarDetails[],
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {
