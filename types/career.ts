@@ -35,6 +35,8 @@ export type CareerDashboardDetails = {
   career_id: string;
   slug: string;
   title: string;
+  location: string;
+  type: string;
   requirements: string;
   responsibilities: string;
   created_at: string;

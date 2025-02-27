@@ -310,7 +310,6 @@ export default function DetailsVolunteerPage({
                                     isExternal
                                     showAnchorIcon
                                     href={selectedApplicant?.cv_url as string}
-                                    target="_blank"
                                     anchorIcon={
                                       <DownloadSimple
                                         weight="bold"
