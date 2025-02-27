@@ -5,11 +5,8 @@ import LoadingScreen from "@/components/loading/LoadingScreen";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
+import { CareerApplicant, CareerDashboardDetails } from "@/types/career";
 import { SuccessResponse } from "@/types/global";
-import {
-  VolunteerApplicant,
-  VolunteerDashboardDetails,
-} from "@/types/volunteer";
 import { customStyleTable } from "@/utils/customStyleTable";
 import { formatDate, formatDateWithoutTime } from "@/utils/formatDate";
 import { getPillarName, getSubPillarName } from "@/utils/pillar";
@@ -41,15 +38,15 @@ import { Key, useCallback, useState } from "react";
 import useSWR from "swr";
 import { twMerge } from "tailwind-merge";
 
-export default function DetailsVolunteerPage({
+export default function DetailsCareerPage({
   params,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const { data, isLoading, error } = useSWR<
-    SuccessResponse<VolunteerDashboardDetails>
+    SuccessResponse<CareerDashboardDetails>
   >({
-    endpoint: `/volunteers/${params?.id as string}`,
+    endpoint: `/careers/${params?.id as string}`,
     method: "GET",
     role: "admin",
     token,
@@ -57,48 +54,48 @@ export default function DetailsVolunteerPage({
   const [isOpenDetailsApplicant, setIsOpenDetailsApplicant] =
     useState<boolean>(false);
   const [selectedApplicant, setSelectedApplicant] =
-    useState<VolunteerApplicant | null>(null);
+    useState<CareerApplicant | null>(null);
 
-  const columnsVolunteerApplicant = [
-    { name: "ID Pelamar", uid: "vol_appl_id" },
+  const columnsCareerApplicant = [
+    { name: "ID Pelamar", uid: "car_appl_id" },
     { name: "Nama Pelamar", uid: "fullname" },
     { name: "Email", uid: "email" },
-    { name: "Asal Kampus", uid: "institution" },
+    { name: "Nomor Telepon", uid: "phone_number" },
     { name: "Diunggah Pada", uid: "uploaded_at" },
     { name: "Aksi", uid: "action" },
   ];
 
-  const renderCellVolunteerApplicant = useCallback(
-    (volappl: VolunteerApplicant, columnKey: Key) => {
-      const cellValue = volappl[columnKey as keyof VolunteerApplicant];
+  const renderCellCareerApplicant = useCallback(
+    (carappl: CareerApplicant, columnKey: Key) => {
+      const cellValue = carappl[columnKey as keyof CareerApplicant];
 
       switch (columnKey) {
-        case "vol_appl_id":
+        case "car_appl_id":
           return (
             <div className="w-max font-medium text-black">
-              {volappl.vol_appl_id}
+              {carappl.car_appl_id}
             </div>
           );
         case "fullname":
           return (
             <div className="w-max font-medium text-black">
-              {volappl.fullname}
+              {carappl.fullname}
             </div>
           );
         case "email":
           return (
-            <div className="w-max font-medium text-black">{volappl.email}</div>
+            <div className="w-max font-medium text-black">{carappl.email}</div>
           );
-        case "institution":
+        case "phone_number":
           return (
             <div className="w-max font-medium text-black">
-              {volappl.institution}
+              {carappl.phone_number}
             </div>
           );
         case "uploaded_at":
           return (
             <div className="w-max font-medium text-black">
-              {formatDate(volappl.uploaded_at)}
+              {formatDate(carappl.uploaded_at)}
             </div>
           );
         case "action":
@@ -115,7 +112,7 @@ export default function DetailsVolunteerPage({
                 color="primary"
                 variant="light"
                 startContent={<Eye className="text-orange" />}
-                onPress={() => handleOpenDetailsApplicant(volappl)}
+                onPress={() => handleOpenDetailsApplicant(carappl)}
                 className="font-bold"
               >
                 Detail
@@ -130,7 +127,7 @@ export default function DetailsVolunteerPage({
     [],
   );
 
-  function handleOpenDetailsApplicant(prepClass: VolunteerApplicant) {
+  function handleOpenDetailsApplicant(prepClass: CareerApplicant) {
     setSelectedApplicant(prepClass);
     setIsOpenDetailsApplicant(true);
   }
@@ -138,14 +135,14 @@ export default function DetailsVolunteerPage({
   if (isLoading) return <LoadingScreen />;
 
   return (
-    <DashboardLayout title="Detail Volunteer">
+    <DashboardLayout title="Detail Karir">
       <DashboardContainer>
         <section className="base-dashboard">
           <ButtonBack className="mt-0" />
 
           <TitleText
-            title="Detail Volunteer 🧡"
-            text="Lihat detail data volunteer di sini"
+            title="Detail Karir 🧳"
+            text="Lihat detail data karir di sini"
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
@@ -230,7 +227,7 @@ export default function DetailsVolunteerPage({
                   <p className="font-medium leading-[180%] text-gray">
                     Total Pelamar:{" "}
                     <span className="font-black text-orange">
-                      {data?.data.volappls.length}
+                      {data?.data.carappls.length}
                     </span>
                   </p>
                 </div>
@@ -238,13 +235,13 @@ export default function DetailsVolunteerPage({
                 <div className="mt-2 overflow-x-scroll scrollbar-hide">
                   <Table
                     isStriped
-                    aria-label="volunteer table"
+                    aria-label="career table"
                     color="primary"
                     selectionMode="none"
                     classNames={customStyleTable}
                     className="scrollbar-hide"
                   >
-                    <TableHeader columns={columnsVolunteerApplicant}>
+                    <TableHeader columns={columnsCareerApplicant}>
                       {(column) => (
                         <TableColumn key={column.uid}>
                           {column.name}
@@ -253,16 +250,16 @@ export default function DetailsVolunteerPage({
                     </TableHeader>
 
                     <TableBody
-                      items={data?.data.volappls}
+                      items={data?.data.carappls}
                       emptyContent={
                         <EmptyData text="Pelamar tidak ditemukan!" />
                       }
                     >
-                      {(volappl: VolunteerApplicant) => (
-                        <TableRow key={volappl.vol_appl_id}>
+                      {(carappl: CareerApplicant) => (
+                        <TableRow key={carappl.car_appl_id}>
                           {(columnKey) => (
                             <TableCell>
-                              {renderCellVolunteerApplicant(volappl, columnKey)}
+                              {renderCellCareerApplicant(carappl, columnKey)}
                             </TableCell>
                           )}
                         </TableRow>
@@ -287,91 +284,102 @@ export default function DetailsVolunteerPage({
                         </ModalHeader>
 
                         <ModalBody>
-                          <div className="grid gap-8">
-                            <div className="grid gap-1">
-                              {[
-                                [
-                                  "Nama Lengkap",
-                                  `${selectedApplicant?.fullname}`,
-                                ],
-                                ["Email", `${selectedApplicant?.email}`],
-                                [
-                                  "Asal Kampus",
-                                  `${selectedApplicant?.institution}`,
-                                ],
-                                ["Tingkatan", `${selectedApplicant?.level}`],
-                                [
-                                  "Jurusan",
-                                  `${selectedApplicant?.study_program}`,
-                                ],
-                                [
-                                  "CV / Resume",
-                                  <Link
-                                    isExternal
-                                    showAnchorIcon
-                                    href={selectedApplicant?.cv_url as string}
-                                    target="_blank"
-                                    anchorIcon={
-                                      <DownloadSimple
-                                        weight="bold"
-                                        size={16}
-                                        className="ml-1"
-                                      />
-                                    }
-                                    className="text-sm font-bold text-orange hover:underline"
-                                  >
-                                    Download CV
-                                  </Link>,
-                                ],
-                                [
-                                  "Bukti Follow",
-                                  <Link
-                                    isExternal
-                                    showAnchorIcon
-                                    href="#"
-                                    onPress={() =>
-                                      window.open(
-                                        selectedApplicant?.follow_url as string,
-                                        "_blank",
-                                      )
-                                    }
-                                    anchorIcon={
-                                      <ArrowSquareOut
-                                        weight="bold"
-                                        size={16}
-                                        className="ml-1"
-                                      />
-                                    }
-                                    className="text-sm font-bold text-orange hover:underline"
-                                  >
-                                    Lihat Bukti
-                                  </Link>,
-                                ],
-                                [
-                                  "Diunggah Pada",
-                                  `${formatDate(selectedApplicant?.uploaded_at as string)}`,
-                                ],
-                              ].map(([label, value], index) => (
-                                <div
-                                  key={index}
-                                  className="grid grid-cols-[120px_2px_1fr] gap-4 text-sm font-medium text-black"
+                          <div className="grid gap-1">
+                            {[
+                              [
+                                "Nama Lengkap",
+                                `${selectedApplicant?.fullname}`,
+                              ],
+                              ["Email", `${selectedApplicant?.email}`],
+                              [
+                                "Nomor Telepon",
+                                `${selectedApplicant?.phone_number}`,
+                              ],
+                              [
+                                "Alamat Lengkap",
+                                `${selectedApplicant?.address}`,
+                              ],
+                              [
+                                "Instagram",
+                                <Link
+                                  isExternal
+                                  showAnchorIcon
+                                  href="#"
+                                  onPress={() =>
+                                    window.open(
+                                      selectedApplicant?.instagram_url as string,
+                                      "_blank",
+                                    )
+                                  }
+                                  anchorIcon={
+                                    <ArrowSquareOut
+                                      weight="bold"
+                                      size={16}
+                                      className="ml-1"
+                                    />
+                                  }
+                                  className="text-sm font-bold text-orange hover:underline"
                                 >
-                                  <p>{label}</p>
-                                  <span>:</span>
-                                  <p className="font-bold">{value}</p>
-                                </div>
-                              ))}
-                            </div>
-
-                            <div className="grid gap-1">
-                              <h4 className="font-extrabold text-black">
-                                Alasan Join:
-                              </h4>
-
-                              <p className="font-medium text-gray">
-                                {selectedApplicant?.reason}
-                              </p>
-                            </div>
+                                  Lihat Instagram
+                                </Link>,
+                              ],
+                              [
+                                "Portofolio",
+                                <Link
+                                  isExternal
+                                  showAnchorIcon
+                                  href="#"
+                                  onPress={() =>
+                                    window.open(
+                                      selectedApplicant?.portofolio_url as string,
+                                      "_blank",
+                                    )
+                                  }
+                                  anchorIcon={
+                                    <ArrowSquareOut
+                                      weight="bold"
+                                      size={16}
+                                      className="ml-1"
+                                    />
+                                  }
+                                  className="text-sm font-bold text-orange hover:underline"
+                                >
+                                  Lihat Portofolio
+                                </Link>,
+                              ],
+                              [
+                                "CV / Resume",
+                                <Link
+                                  isExternal
+                                  showAnchorIcon
+                                  href={selectedApplicant?.cv_url as string}
+                                  target="_blank"
+                                  anchorIcon={
+                                    <DownloadSimple
+                                      weight="bold"
+                                      size={16}
+                                      className="ml-1"
+                                    />
+                                  }
+                                  className="text-sm font-bold text-orange hover:underline"
+                                >
+                                  Download CV
+                                </Link>,
+                              ],
+                              [
+                                "Diunggah Pada",
+                                `${formatDate(selectedApplicant?.uploaded_at as string)}`,
+                              ],
+                            ].map(([label, value], index) => (
+                              <div
+                                key={index}
+                                className="grid grid-cols-[120px_2px_1fr] gap-4 text-sm font-medium text-black"
+                              >
+                                <p>{label}</p>
+                                <span>:</span>
+                                <p className="font-bold">{value}</p>
+                              </div>
+                            ))}
                           </div>
                         </ModalBody>
 

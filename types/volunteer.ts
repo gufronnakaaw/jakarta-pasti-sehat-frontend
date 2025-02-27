@@ -23,12 +23,8 @@ export type VolunteerDashboard = {
   slug: string;
   title: string;
   created_at: string;
-  pillar: {
-    name: string;
-  };
-  subpillar: {
-    name: string;
-  };
+  pillar: { name: string };
+  subpillar: { name: string };
   total_volappls: number;
 };
 
