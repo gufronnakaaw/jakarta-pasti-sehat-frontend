@@ -1,6 +1,7 @@
 import ButtonBack from "@/components/button/ButtonBack";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
+import LoadingScreen from "@/components/loading/LoadingScreen";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { EventDetail } from "@/types/event";
@@ -28,7 +29,7 @@ export default function EventDetailsPage({
   data,
   error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const [client, setClient] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   async function handleShareLink() {
     try {
@@ -60,10 +61,14 @@ export default function EventDetailsPage({
   }
 
   useEffect(() => {
-    setClient(true);
+    setMounted(true);
+
+    return () => {
+      setMounted(false);
+    };
   }, []);
 
-  if (!client) return;
+  if (!mounted) return <LoadingScreen />;
 
   return (
     <>

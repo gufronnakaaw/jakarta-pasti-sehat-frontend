@@ -1,6 +1,7 @@
 import ButtonBack from "@/components/button/ButtonBack";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
+import LoadingScreen from "@/components/loading/LoadingScreen";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { PublicDetailCareer } from "@/types/career";
@@ -16,7 +17,7 @@ import {
   PaperPlaneTilt,
 } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { twMerge } from "tailwind-merge";
 
@@ -26,6 +27,7 @@ export default function CareerDetailsPage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   const [input, setInput] = useState({
     fullname: "",
@@ -35,6 +37,16 @@ export default function CareerDetailsPage({
     instagram_url: "",
     portofolio_url: "",
   });
+
+  useEffect(() => {
+    setMounted(true);
+
+    return () => {
+      setMounted(false);
+    };
+  }, []);
+
+  if (!mounted) return <LoadingScreen />;
 
   async function handleSaveCareerApplicant() {
     setLoading(true);
