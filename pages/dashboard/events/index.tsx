@@ -15,6 +15,7 @@ import { formatDate } from "@/utils/formatDate";
 import { getUrl } from "@/utils/string";
 import {
   Button,
+  Chip,
   Pagination,
   Table,
   TableBody,
@@ -24,11 +25,13 @@ import {
   TableRow,
 } from "@heroui/react";
 import {
+  CheckCircle,
   IconContext,
   Link,
   PencilLine,
   Plus,
   Trash,
+  XCircle,
 } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
@@ -47,10 +50,9 @@ type EventResponse = {
 
 export default function DashboardEventsPage({
   query,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const { searchValue, setSearch } = useSearch(800);
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<EventResponse>
@@ -82,7 +84,7 @@ export default function DashboardEventsPage({
     { name: "Pilar", uid: "pillar" },
     { name: "Judul Event", uid: "title" },
     { name: "Dibuat Pada", uid: "created_at" },
-    { name: "status", uid: "status" },
+    { name: "Status", uid: "status" },
     { name: "Aksi", uid: "action" },
   ];
 
@@ -119,6 +121,29 @@ export default function DashboardEventsPage({
           return (
             <div className="w-max font-medium text-black">
               {formatDate(event.created_at)}
+            </div>
+          );
+        case "status":
+          return (
+            <div className="w-max font-medium text-black">
+              <Chip
+                variant="flat"
+                size="sm"
+                color={event.is_active ? "success" : "danger"}
+                startContent={
+                  event.is_active ? (
+                    <CheckCircle weight="fill" size={16} />
+                  ) : (
+                    <XCircle weight="fill" size={16} />
+                  )
+                }
+                classNames={{
+                  base: "px-2 gap-1",
+                  content: "font-bold capitalize",
+                }}
+              >
+                {event.is_active ? "Aktif" : "Tidak Aktif"}
+              </Chip>
             </div>
           );
         case "action":
@@ -293,9 +318,11 @@ export default function DashboardEventsPage({
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
-}> = async ({ query }) => {
+  token: string;
+}> = async ({ query, req }) => {
   return {
     props: {
+      token: req.headers["access_token"] as string,
       query,
     },
   };
