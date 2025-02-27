@@ -21,22 +21,23 @@ import {
   TableRow,
 } from "@heroui/react";
 import { IconContext, PencilLine, Plus, Trash } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 
-export default function DashboardAminssPage() {
+export default function DashboardAminssPage({
+  token,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const [search, setSearch] = useState<string>("");
   const { data, isLoading, mutate, error } = useSWR<SuccessResponse<Admin[]>>({
     endpoint: "/admin",
     method: "GET",
     role: "admin",
-    token: token,
+    token,
   });
+  const [search, setSearch] = useState<string>("");
 
   const columnsAdmin = [
     { name: "ID Admin", uid: "admin_id" },
@@ -203,3 +204,13 @@ export default function DashboardAminssPage() {
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  token: string;
+}> = async ({ req }) => {
+  return {
+    props: {
+      token: req.headers["access_token"] as string,
+    },
+  };
+};
