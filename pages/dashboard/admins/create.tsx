@@ -6,8 +6,9 @@ import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 type InputState = {
@@ -17,10 +18,10 @@ type InputState = {
   access_key: string;
 };
 
-export default function CreateAdminPage() {
+export default function CreateAdminPage({
+  token,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState<InputState>({
     fullname: "",
     role: "",
@@ -29,29 +30,14 @@ export default function CreateAdminPage() {
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  function handleInputChange(
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
-  ) {
-    const { name, value } = e.target;
-
-    setInput((prev) => ({ ...prev, [name]: value }));
-  }
-
   async function handleCreateAdmin() {
     setIsLoading(true);
 
     try {
-      const payload = {
-        fullname: input.fullname,
-        role: input.role,
-        password: input.password,
-        access_key: input.access_key,
-      };
-
       await fetcher({
         endpoint: "/admin",
         method: "POST",
-        data: payload,
+        data: { ...input },
         token,
       });
 
@@ -90,7 +76,9 @@ export default function CreateAdminPage() {
                   labelPlacement="outside"
                   placeholder="Masukan Nama Lengkap"
                   name="fullname"
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={(e) =>
+                    setInput({ ...input, fullname: e.target.value })
+                  }
                   classNames={{
                     ...customStyleInput,
                     inputWrapper: "bg-white",
@@ -106,7 +94,7 @@ export default function CreateAdminPage() {
                   placeholder="Pilih Role"
                   name="role"
                   selectedKeys={[input.role]}
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={(e) => setInput({ ...input, role: e.target.value })}
                   classNames={{
                     trigger: "bg-white",
                     value: "font-semibold text-gray",
@@ -125,7 +113,9 @@ export default function CreateAdminPage() {
                 labelPlacement="outside"
                 placeholder="Masukan Kata Sandi"
                 name="password"
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) =>
+                  setInput({ ...input, password: e.target.value })
+                }
                 classNames={{
                   ...customStyleInput,
                   inputWrapper: "bg-white",
@@ -140,7 +130,9 @@ export default function CreateAdminPage() {
                 labelPlacement="outside"
                 placeholder="Masukan Kunci Akses"
                 name="access_key"
-                onChange={(e) => handleInputChange(e)}
+                onChange={(e) =>
+                  setInput({ ...input, access_key: e.target.value })
+                }
                 classNames={{
                   ...customStyleInput,
                   inputWrapper: "bg-white",
@@ -150,7 +142,10 @@ export default function CreateAdminPage() {
 
             <Button
               isLoading={isLoading}
-              isDisabled={isLoading}
+              isDisabled={
+                isLoading ||
+                !Object.values(input).every((item) => item.trim() !== "")
+              }
               color="primary"
               startContent={
                 isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -166,3 +161,13 @@ export default function CreateAdminPage() {
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  token: string;
+}> = async ({ req }) => {
+  return {
+    props: {
+      token: req.headers["access_token"] as string,
+    },
+  };
+};

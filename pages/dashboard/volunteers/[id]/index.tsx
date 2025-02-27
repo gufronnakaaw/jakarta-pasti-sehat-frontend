@@ -43,9 +43,8 @@ import { twMerge } from "tailwind-merge";
 
 export default function DetailsVolunteerPage({
   params,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const { data, isLoading, error } = useSWR<
     SuccessResponse<VolunteerDashboardDetails>
   >({
@@ -310,7 +309,6 @@ export default function DetailsVolunteerPage({
                                     isExternal
                                     showAnchorIcon
                                     href={selectedApplicant?.cv_url as string}
-                                    target="_blank"
                                     anchorIcon={
                                       <DownloadSimple
                                         weight="bold"
@@ -400,10 +398,12 @@ export default function DetailsVolunteerPage({
 
 export const getServerSideProps: GetServerSideProps<{
   params: ParsedUrlQuery;
-}> = async ({ params }) => {
+  token: string;
+}> = async ({ params, req }) => {
   return {
     props: {
       params: params as ParsedUrlQuery,
+      token: req.headers["access_token"] as string,
     },
   };
 };

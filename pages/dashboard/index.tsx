@@ -1,10 +1,10 @@
 import ButtonDashbaord from "@/components/button/ButtonDashboard";
 import ErrorPage from "@/components/ErrorPage";
+import LoadingScreen from "@/components/loading/LoadingScreen";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
 import { SuccessResponse } from "@/types/global";
-import { fetcher } from "@/utils/fetcher";
 import { formatDayWithoutTime } from "@/utils/formatDate";
 import {
   CalendarStar,
@@ -17,6 +17,7 @@ import {
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 type Dashboard = {
   total_articles: number;
@@ -28,9 +29,13 @@ type Dashboard = {
 };
 
 export default function DashboardPage({
-  data,
-  error,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { data, isLoading, error } = useSWR<SuccessResponse<Dashboard>>({
+    endpoint: "/dashboard",
+    method: "GET",
+    token,
+  });
   const [time, setTime] = useState(new Date());
   const [client, setClient] = useState<boolean>(false);
   const formatTime = (num: number) => String(num).padStart(2, "0");
@@ -48,6 +53,8 @@ export default function DashboardPage({
   if (!client) {
     return;
   }
+
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <DashboardLayout title="Dashboard" className="scrollbar-hide">
@@ -102,7 +109,7 @@ export default function DashboardPage({
                             Total Artikel
                           </p>
                           <h6 className="text-[32px] font-extrabold text-black">
-                            {data?.total_articles}
+                            {data?.data.total_articles}
                           </h6>
                         </div>
 
@@ -119,7 +126,7 @@ export default function DashboardPage({
                             Total Volunteer
                           </p>
                           <h6 className="text-[32px] font-extrabold text-black">
-                            {data?.total_volunteers}
+                            {data?.data.total_volunteers}
                           </h6>
                         </div>
 
@@ -136,7 +143,7 @@ export default function DashboardPage({
                             Total Pelamar Volunteer
                           </p>
                           <h6 className="text-[32px] font-extrabold text-black">
-                            {data?.total_volappls}
+                            {data?.data.total_volappls}
                           </h6>
                         </div>
                       </div>
@@ -153,7 +160,7 @@ export default function DashboardPage({
                             Total Event
                           </p>
                           <h6 className="text-[32px] font-extrabold text-black">
-                            {data?.total_events}
+                            {data?.data.total_events}
                           </h6>
                         </div>
 
@@ -170,7 +177,7 @@ export default function DashboardPage({
                             Total Mitra
                           </p>
                           <h6 className="text-[32px] font-extrabold text-black">
-                            {data?.total_partners}
+                            {data?.data.total_partners}
                           </h6>
                         </div>
 
@@ -187,7 +194,7 @@ export default function DashboardPage({
                             Total Pelamar Karir
                           </p>
                           <h6 className="text-[32px] font-extrabold text-black">
-                            {data?.total_crrappls}
+                            {data?.data.total_crrappls}
                           </h6>
                         </div>
                       </div>
@@ -204,27 +211,11 @@ export default function DashboardPage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
-  data?: Dashboard;
-  error?: any;
-}> = async () => {
-  try {
-    const response: SuccessResponse<Dashboard> = await fetcher({
-      endpoint: "/dashboard",
-      method: "GET",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
-    });
-
-    return {
-      props: {
-        data: response.data,
-      },
-    };
-  } catch (error: any) {
-    return {
-      props: {
-        error,
-      },
-    };
-  }
+  token: string;
+}> = async ({ req }) => {
+  return {
+    props: {
+      token: req.headers["access_token"] as string,
+    },
+  };
 };

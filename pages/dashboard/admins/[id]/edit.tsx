@@ -10,7 +10,7 @@ import { Button, Input, Select, SelectItem } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 
 type InputState = {
@@ -23,10 +23,9 @@ type InputState = {
 export default function EditAdminPage({
   admins,
   error,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState<InputState>({
     fullname: admins?.fullname as string,
     role: admins?.role as string,
@@ -34,14 +33,6 @@ export default function EditAdminPage({
     access_key: "",
   });
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  function handleInputChange(
-    e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLSelectElement>,
-  ) {
-    const { name, value } = e.target;
-
-    setInput((prev) => ({ ...prev, [name]: value }));
-  }
 
   async function handleEditAdmin() {
     setIsLoading(true);
@@ -98,7 +89,9 @@ export default function EditAdminPage({
                     placeholder="Masukan Nama Lengkap"
                     name="fullname"
                     value={input.fullname}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) =>
+                      setInput({ ...input, fullname: e.target.value })
+                    }
                     classNames={{
                       ...customStyleInput,
                       inputWrapper: "bg-white",
@@ -114,7 +107,9 @@ export default function EditAdminPage({
                     placeholder="Pilih Role"
                     name="role"
                     selectedKeys={[input.role]}
-                    onChange={(e) => handleInputChange(e)}
+                    onChange={(e) =>
+                      setInput({ ...input, role: e.target.value })
+                    }
                     classNames={{
                       trigger: "bg-white",
                       value: "font-semibold text-gray",
@@ -133,7 +128,9 @@ export default function EditAdminPage({
                   labelPlacement="outside"
                   placeholder="Masukan Kata Sandi"
                   name="password"
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={(e) =>
+                    setInput({ ...input, password: e.target.value })
+                  }
                   classNames={{
                     ...customStyleInput,
                     inputWrapper: "bg-white",
@@ -148,7 +145,9 @@ export default function EditAdminPage({
                   labelPlacement="outside"
                   placeholder="Masukan Kunci Akses"
                   name="access_key"
-                  onChange={(e) => handleInputChange(e)}
+                  onChange={(e) =>
+                    setInput({ ...input, access_key: e.target.value })
+                  }
                   classNames={{
                     ...customStyleInput,
                     inputWrapper: "bg-white",
@@ -158,7 +157,10 @@ export default function EditAdminPage({
 
               <Button
                 isLoading={isLoading}
-                isDisabled={isLoading}
+                isDisabled={
+                  isLoading ||
+                  !Object.values(input).every((item) => item.trim() !== "")
+                }
                 color="primary"
                 startContent={
                   isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -179,19 +181,22 @@ export default function EditAdminPage({
 export const getServerSideProps: GetServerSideProps<{
   admins?: Admin;
   error?: any;
-}> = async ({ params }) => {
+  token?: string;
+}> = async ({ params, req }) => {
+  const token = req.headers["access_token"] as string;
+
   try {
     const response = await fetcher({
       endpoint: `/admin/${params?.id as string}`,
       method: "GET",
       role: "admin",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+      token,
     });
 
     return {
       props: {
         admins: response.data as Admin,
+        token: req.headers["access_token"] as string,
       },
     };
   } catch (error: any) {

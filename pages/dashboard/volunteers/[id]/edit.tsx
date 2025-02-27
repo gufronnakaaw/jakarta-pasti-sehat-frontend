@@ -23,9 +23,9 @@ export default function EditVolunteerPage({
   error,
   pillars,
   volunteer,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [input, setInput] = useState({
     title: volunteer?.title as string,
     requirements: volunteer?.requirements as string,
@@ -48,14 +48,9 @@ export default function EditVolunteerPage({
     try {
       const payload = {
         volunteer_id: volunteer?.volunteer_id,
-        title: input.title,
-        requirements: input.requirements,
-        responsibilities: input.responsibilities,
-        by: "Super Admin",
-        ...(changePillar && {
-          pillar_id: pillar,
-          sub_pillar_id: subpillar,
-        }),
+        ...input,
+        ...(changePillar && { pillar_id: pillar, sub_pillar_id: subpillar }),
+        by,
       };
 
       await fetcher({
@@ -192,7 +187,7 @@ export default function EditVolunteerPage({
                     onChange={(text) => {
                       setInput({ ...input, requirements: text });
                     }}
-                    token={token}
+                    token={token as string}
                   />
                 </div>
 
@@ -206,14 +201,17 @@ export default function EditVolunteerPage({
                     onChange={(text) => {
                       setInput({ ...input, responsibilities: text });
                     }}
-                    token={token}
+                    token={token as string}
                   />
                 </div>
               </div>
 
               <Button
                 isLoading={isLoading}
-                isDisabled={isLoading}
+                isDisabled={
+                  isLoading ||
+                  !Object.values(input).every((item) => item.trim() !== "")
+                }
                 color="primary"
                 startContent={
                   isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -235,7 +233,11 @@ export const getServerSideProps: GetServerSideProps<{
   pillars?: PillarDetails[];
   volunteer?: VolunteerDashboardDetails;
   error?: any;
-}> = async ({ params }) => {
+  token?: string;
+  by?: string;
+}> = async ({ params, req }) => {
+  const token = req.headers["access_token"] as string;
+
   try {
     const [responsePillars, responseVolunteer] = await Promise.all([
       fetcher({
@@ -247,8 +249,7 @@ export const getServerSideProps: GetServerSideProps<{
         endpoint: `/volunteers/${params?.id}`,
         method: "GET",
         role: "admin",
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+        token,
       }),
     ]);
 
@@ -256,6 +257,8 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         pillars: responsePillars.data as PillarDetails[],
         volunteer: responseVolunteer.data as VolunteerDashboardDetails,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {

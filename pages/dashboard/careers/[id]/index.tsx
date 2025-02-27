@@ -12,6 +12,7 @@ import { formatDate, formatDateWithoutTime } from "@/utils/formatDate";
 import { getPillarName, getSubPillarName } from "@/utils/pillar";
 import {
   Button,
+  Chip,
   Link,
   Modal,
   ModalBody,
@@ -40,9 +41,8 @@ import { twMerge } from "tailwind-merge";
 
 export default function DetailsCareerPage({
   params,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const { data, isLoading, error } = useSWR<
     SuccessResponse<CareerDashboardDetails>
   >({
@@ -151,14 +151,36 @@ export default function DetailsCareerPage({
           ) : (
             <>
               <div className="grid gap-2">
-                <div className="inline-flex items-center gap-2 text-orange">
-                  <p className="font-medium">
-                    {getPillarName(data?.data.pillar)}
-                  </p>
-                  <div className="size-1.5 rounded-full bg-orange" />
-                  <p className="line-clamp-1 font-medium">
-                    {getSubPillarName(data?.data.subpillar)}
-                  </p>
+                <div className="inline-flex items-end gap-4">
+                  <div className="inline-flex items-center gap-2 text-orange">
+                    <p className="font-medium">
+                      {getPillarName(data?.data.pillar)}
+                    </p>
+                    <div className="size-1.5 rounded-full bg-orange" />
+                    <p className="line-clamp-1 font-medium">
+                      {getSubPillarName(data?.data.subpillar)}
+                    </p>
+                  </div>
+
+                  <Chip
+                    variant="flat"
+                    color="primary"
+                    classNames={{
+                      content: "font-bold px-2 text-orange capitalize",
+                    }}
+                  >
+                    {data?.data.location}
+                  </Chip>
+
+                  <Chip
+                    variant="flat"
+                    color="primary"
+                    classNames={{
+                      content: "font-bold px-2 text-orange capitalize",
+                    }}
+                  >
+                    {data?.data.type}
+                  </Chip>
                 </div>
 
                 <h1 className={twMerge("title", "sm:text-[36px]")}>
@@ -353,7 +375,6 @@ export default function DetailsCareerPage({
                                   isExternal
                                   showAnchorIcon
                                   href={selectedApplicant?.cv_url as string}
-                                  target="_blank"
                                   anchorIcon={
                                     <DownloadSimple
                                       weight="bold"
@@ -408,10 +429,12 @@ export default function DetailsCareerPage({
 
 export const getServerSideProps: GetServerSideProps<{
   params: ParsedUrlQuery;
-}> = async ({ params }) => {
+  token: string;
+}> = async ({ params, req }) => {
   return {
     props: {
       params: params as ParsedUrlQuery,
+      token: req.headers["access_token"] as string,
     },
   };
 };

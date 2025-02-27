@@ -39,10 +39,9 @@ export type PillarResponse = {
 
 export default function DashboardPillarsPage({
   query,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [search, setSearch] = useState<string>("");
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<PillarResponse>
@@ -50,7 +49,7 @@ export default function DashboardPillarsPage({
     endpoint: getUrl(query, "/pillars"),
     method: "GET",
     role: "admin",
-    token: token,
+    token,
   });
 
   const columnsPillar = [
@@ -126,12 +125,12 @@ export default function DashboardPillarsPage({
     }
   }, []);
 
-  async function handleDeletePillar(id: string) {
+  async function handleDeletePillar(pillar_id: string) {
     try {
       await fetcher({
-        endpoint: `/pillars/${id}`,
+        endpoint: `/pillars/${pillar_id}`,
         method: "DELETE",
-        token: token,
+        token,
       });
 
       mutate();
@@ -241,10 +240,12 @@ export default function DashboardPillarsPage({
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
-}> = async ({ query }) => {
+  token: string;
+}> = async ({ req, query }) => {
   return {
     props: {
       query: query as ParsedUrlQuery,
+      token: req.headers["access_token"] as string,
     },
   };
 };

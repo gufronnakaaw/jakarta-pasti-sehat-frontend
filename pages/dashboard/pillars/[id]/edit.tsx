@@ -20,9 +20,9 @@ type SubPillar = {
 export default function EditPillarPage({
   error,
   pillars,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const [name, setName] = useState<string>(pillars?.name as string);
   const [subpillars, setSubpillars] = useState<SubPillar[]>(
     pillars?.subpillars as SubPillar[],
@@ -66,7 +66,7 @@ export default function EditPillarPage({
       await fetcher({
         endpoint: `/pillars/subpillar/${sub_pillar_id}`,
         method: "DELETE",
-        token: token,
+        token,
       });
 
       window.location.reload();
@@ -90,15 +90,15 @@ export default function EditPillarPage({
       const payload = {
         pillar_id: pillars?.pillar_id,
         name: name,
-        by: "Super Admin",
         subpillars: formattedSubPillar,
+        by,
       };
 
       await fetcher({
         endpoint: "/pillars",
         method: "PATCH",
         data: payload,
-        token: token,
+        token,
       });
 
       window.location.reload();
@@ -200,7 +200,7 @@ export default function EditPillarPage({
 
               <Button
                 isLoading={isLoading}
-                isDisabled={isLoading}
+                isDisabled={isLoading || !name || !subpillars}
                 color="primary"
                 startContent={
                   isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -221,19 +221,24 @@ export default function EditPillarPage({
 export const getServerSideProps: GetServerSideProps<{
   pillars?: PillarDetails;
   error?: any;
-}> = async ({ params }) => {
+  token?: string;
+  by?: string;
+}> = async ({ params, req }) => {
+  const token = req.headers["access_token"] as string;
+
   try {
     const response = await fetcher({
       endpoint: `/pillars/${params?.id as string}`,
       method: "GET",
       role: "admin",
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+      token,
     });
 
     return {
       props: {
         pillars: response.data as PillarDetails,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {
