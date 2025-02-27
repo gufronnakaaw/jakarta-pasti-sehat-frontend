@@ -6,11 +6,15 @@ import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { Button, Input } from "@heroui/react";
 import { FloppyDisk, Plus, Trash } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function CreatePillarPage() {
+export default function CreatePillarPage({
+  token,
+  by,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const [name, setName] = useState<string>("");
   const [subpillars, setSubpillars] = useState<string[]>([]);
@@ -36,16 +40,15 @@ export default function CreatePillarPage() {
     try {
       const payload = {
         name,
-        by: "Super Admin",
         subpillars,
+        by,
       };
 
       await fetcher({
         endpoint: "/pillars",
         method: "POST",
         data: payload,
-        token:
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw",
+        token,
       });
 
       toast.success("Pilar berhasil dibuat");
@@ -137,7 +140,7 @@ export default function CreatePillarPage() {
 
             <Button
               isLoading={isLoading}
-              isDisabled={isLoading}
+              isDisabled={isLoading || !name || !subpillars}
               color="primary"
               startContent={
                 isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -153,3 +156,15 @@ export default function CreatePillarPage() {
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  token: string;
+  by: string;
+}> = async ({ req }) => {
+  return {
+    props: {
+      token: req.headers["access_token"] as string,
+      by: req.headers["fullname"] as string,
+    },
+  };
+};
