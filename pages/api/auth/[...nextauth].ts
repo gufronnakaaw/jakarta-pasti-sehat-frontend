@@ -7,6 +7,7 @@ type AdminLogin = {
   admin_id: string;
   fullname: string;
   access_token: string;
+  role: string;
 };
 
 export const authOptions: NextAuthOptions = {
@@ -46,6 +47,7 @@ export const authOptions: NextAuthOptions = {
         token.admin_id = user.admin_id;
         token.access_token = user.access_token;
         token.fullname = user.fullname;
+        token.role = user.role;
       }
       return token;
     },
@@ -54,6 +56,7 @@ export const authOptions: NextAuthOptions = {
       session.user.admin_id = token.admin_id;
       session.user.fullname = token.fullname;
       session.user.access_token = token.access_token;
+      session.user.role = token.role;
       return session;
     },
   },

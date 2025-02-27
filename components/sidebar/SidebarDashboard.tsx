@@ -4,15 +4,18 @@ import {
 } from "@/components/sidebar/SidebarMenuDashboard";
 import { LogoJPS } from "@/public/img/logo";
 import { IconContext } from "@phosphor-icons/react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 export default function SidebarDashboard() {
   const router = useRouter();
-  const adminId: string = "JPSSA1";
+  const { data: session, status } = useSession();
 
   const route = SidebarMainMenuDashboard();
-  const otherRoute = SidebarOtherMenuDashboard(adminId);
+  const otherRoute = SidebarOtherMenuDashboard(
+    status == "authenticated" ? session.user.role : "",
+  );
 
   function isActiveMenu(currentPath: string, menuPath: string) {
     return (

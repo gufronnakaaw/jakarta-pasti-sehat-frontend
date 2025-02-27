@@ -74,9 +74,9 @@ export function SidebarMainMenuDashboard(): SidebarMainMenuDashboard[] {
 }
 
 export function SidebarOtherMenuDashboard(
-  adminId: string,
+  role: string,
 ): SidebarMainMenuDashboard[] {
-  const isSuperAdmin = adminId.startsWith("JPSSA");
+  const isSuperAdmin = role === "superadmin";
 
   const otherMenuItems: SidebarMainMenuDashboard[] = [
     {
