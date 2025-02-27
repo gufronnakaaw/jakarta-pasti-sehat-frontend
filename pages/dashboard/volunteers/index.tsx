@@ -46,10 +46,9 @@ export type VolunteerResponse = {
 
 export default function DashboardVolunteersPage({
   query,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
   const { searchValue, setSearch } = useSearch(800);
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<VolunteerResponse>
@@ -57,7 +56,7 @@ export default function DashboardVolunteersPage({
     endpoint: getUrl(query, "/volunteers", "admin"),
     method: "GET",
     role: "admin",
-    token: token,
+    token,
   });
 
   useEffect(() => {
@@ -294,10 +293,12 @@ export default function DashboardVolunteersPage({
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
-}> = async ({ query }) => {
+  token: string;
+}> = async ({ query, req }) => {
   return {
     props: {
       query,
+      token: req.headers["access_token"] as string,
     },
   };
 };

@@ -360,7 +360,7 @@ export default function DashboardPotisionsPage({
 export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
-}> = async ({ req, query }) => {
+}> = async ({ req }) => {
   return {
     props: {
       token: req.headers["access_token"] as string,
