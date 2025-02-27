@@ -29,18 +29,20 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { Plus, Trash } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { Key, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 
 type InputState = {
-  name: string;
+  value: string;
   access_key: string;
 };
 
-export default function DashboardKeysPage() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
+export default function DashboardKeysPage({
+  token,
+  by,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<AccessKey[]>
@@ -48,11 +50,11 @@ export default function DashboardKeysPage() {
     endpoint: "/keys",
     method: "GET",
     role: "admin",
-    token: token,
+    token,
   });
   const [search, setSearch] = useState<string>("");
   const [input, setInput] = useState<InputState>({
-    name: "",
+    value: "",
     access_key: "",
   });
   const [loading, setLoading] = useState<boolean>(false);
@@ -130,9 +132,8 @@ export default function DashboardKeysPage() {
 
     try {
       const payload = {
-        value: input.name,
-        access_key: input.access_key,
-        by: "Super Admin",
+        ...input,
+        by,
       };
 
       await fetcher({
@@ -145,8 +146,8 @@ export default function DashboardKeysPage() {
       mutate();
       toast.success("Kunci akses berhasil dibuat");
       setInput({
+        value: "",
         access_key: "",
-        name: "",
       });
       onClose();
     } catch (error: any) {
@@ -222,7 +223,7 @@ export default function DashboardKeysPage() {
                   onClose={() => {
                     onClose();
                     setInput({
-                      name: "",
+                      value: "",
                       access_key: "",
                     });
                   }}
@@ -243,13 +244,10 @@ export default function DashboardKeysPage() {
                               label="Nama Akses"
                               labelPlacement="outside"
                               placeholder="Contoh: JPSXXXXX"
-                              name="name"
-                              onChange={(e) => {
-                                setInput({
-                                  ...input,
-                                  [e.target.name]: e.target.value,
-                                });
-                              }}
+                              name="value"
+                              onChange={(e) =>
+                                setInput({ ...input, value: e.target.value })
+                              }
                               classNames={{
                                 ...customStyleInput,
                                 inputWrapper: "bg-white",
@@ -264,12 +262,12 @@ export default function DashboardKeysPage() {
                               labelPlacement="outside"
                               placeholder="Masukan Kunci Akses"
                               name="access_key"
-                              onChange={(e) => {
+                              onChange={(e) =>
                                 setInput({
                                   ...input,
-                                  [e.target.name]: e.target.value,
-                                });
-                              }}
+                                  access_key: e.target.value,
+                                })
+                              }
                               classNames={{
                                 ...customStyleInput,
                                 inputWrapper: "bg-white",
@@ -286,7 +284,7 @@ export default function DashboardKeysPage() {
                               onPress={() => {
                                 onClose();
                                 setInput({
-                                  name: "",
+                                  value: "",
                                   access_key: "",
                                 });
                               }}
@@ -297,7 +295,12 @@ export default function DashboardKeysPage() {
 
                             <Button
                               isLoading={loading}
-                              isDisabled={loading}
+                              isDisabled={
+                                loading ||
+                                !Object.values(input).every(
+                                  (item) => item.trim() !== "",
+                                )
+                              }
                               color="primary"
                               className="px-6 font-bold"
                               onPress={handleAddAccessKey}
@@ -350,3 +353,15 @@ export default function DashboardKeysPage() {
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  token: string;
+  by: string;
+}> = async ({ req }) => {
+  return {
+    props: {
+      token: req.headers["access_token"] as string,
+      by: req.headers["fullname"] as string,
+    },
+  };
+};
