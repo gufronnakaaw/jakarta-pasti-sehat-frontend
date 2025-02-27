@@ -34,7 +34,7 @@ export default function App({
           revalidateOnFocus: false,
         }}
       >
-        <SessionProvider session={session}>
+        <SessionProvider session={session} refetchOnWindowFocus={false}>
           <AppProvider>
             <Component {...pageProps} />
           </AppProvider>
