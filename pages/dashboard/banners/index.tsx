@@ -55,6 +55,8 @@ type BannerResponse = {
 
 export default function DashboardBannersPage({
   query,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { onOpen, isOpen, onOpenChange, onClose } = useDisclosure();
@@ -70,10 +72,6 @@ export default function DashboardBannersPage({
 
   const [typeModal, setTypeModal] = useState<"create" | "edit">("create");
   const [bannerId, setBannerId] = useState("");
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const by = "Super Admin";
 
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<BannerResponse>
@@ -592,9 +590,13 @@ export default function DashboardBannersPage({
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
-}> = async ({ query }) => {
+  token: string;
+  by: string;
+}> = async ({ req, query }) => {
   return {
     props: {
+      token: req.headers["access_token"] as string,
+      by: req.headers["fullname"] as string,
       query,
     },
   };

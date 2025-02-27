@@ -24,12 +24,10 @@ const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
 export default function CreateArticlePage({
   pillars,
   error,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const by = "Super Admin";
 
   const [file, setFile] = useState<string | ArrayBuffer | null>();
   const [filename, setFilename] = useState("");
@@ -341,7 +339,9 @@ export default function CreateArticlePage({
 export const getServerSideProps: GetServerSideProps<{
   pillars?: PillarDetails[];
   error?: any;
-}> = async () => {
+  token: string;
+  by: string;
+}> = async ({ req }) => {
   try {
     const response = await fetcher({
       endpoint: "/pillars",
@@ -351,12 +351,16 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         pillars: response.data as PillarDetails[],
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   }

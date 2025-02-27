@@ -50,12 +50,10 @@ type ArticleResponse = {
 
 export default function DashboardArticlesPage({
   query,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { searchValue, setSearch } = useSearch(800);
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
 
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<ArticleResponse>
@@ -63,7 +61,7 @@ export default function DashboardArticlesPage({
     endpoint: getUrl(query, "/articles", "admin"),
     method: "GET",
     role: "admin",
-    token: token,
+    token,
   });
 
   useEffect(() => {
@@ -320,9 +318,11 @@ export default function DashboardArticlesPage({
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
-}> = async ({ query }) => {
+  token: string;
+}> = async ({ query, req }) => {
   return {
     props: {
+      token: req.headers["access_token"] as string,
       query,
     },
   };

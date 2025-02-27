@@ -37,11 +37,10 @@ export default function EditArticlePage({
   article,
   pillars,
   error,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
 
   const [file, setFile] = useState<string | ArrayBuffer | null>(
     article?.image_url as string,
@@ -105,7 +104,7 @@ export default function EditArticlePage({
       formData.append("content", input?.content as string);
       formData.append("is_active", `${status}`);
 
-      formData.append("by", "Super Admin");
+      formData.append("by", by);
 
       await fetcher({
         endpoint: "/articles",
@@ -379,7 +378,9 @@ export const getServerSideProps: GetServerSideProps<{
   article?: AdminArticle;
   pillars?: PillarDetails[];
   error?: any;
-}> = async ({ params }) => {
+  token: string;
+  by: string;
+}> = async ({ params, req }) => {
   try {
     const [article, pillar] = await Promise.all([
       fetcher({
@@ -399,12 +400,16 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         article: article.data as AdminArticle,
         pillars: pillar.data as PillarDetails[],
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   }
