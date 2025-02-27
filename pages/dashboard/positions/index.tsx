@@ -29,13 +29,15 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { IconContext, PencilLine, Plus, Trash } from "@phosphor-icons/react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { Key, useCallback, useState } from "react";
 import toast from "react-hot-toast";
 import useSWR from "swr";
 
-export default function DashboardPotisionsPage() {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
+export default function DashboardPotisionsPage({
+  token,
+  by,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { isOpen, onOpenChange, onOpen, onClose } = useDisclosure();
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<Position[]>
@@ -43,7 +45,7 @@ export default function DashboardPotisionsPage() {
     endpoint: "/positions",
     method: "GET",
     role: "admin",
-    token: token,
+    token,
   });
   const [search, setSearch] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -135,16 +137,11 @@ export default function DashboardPotisionsPage() {
     setLoading(true);
 
     try {
-      const payload = {
-        name,
-        by: "Super Admin",
-      };
-
       await fetcher({
         endpoint: "/positions",
         method: "POST",
-        data: payload,
-        token: token,
+        data: { name, by },
+        token,
       });
 
       mutate();
@@ -156,7 +153,7 @@ export default function DashboardPotisionsPage() {
       console.error(error);
 
       setLoading(false);
-      toast.error("Gagal menambah jabatan");
+      toast.error("Gagal menambahkan jabatan");
     } finally {
       setLoading(false);
     }
@@ -166,17 +163,11 @@ export default function DashboardPotisionsPage() {
     setLoading(true);
 
     try {
-      const payload = {
-        name,
-        position_id: positionId,
-        by: "Super Admin",
-      };
-
       await fetcher({
         endpoint: "/positions",
         method: "PATCH",
-        data: payload,
-        token: token,
+        data: { position_id: positionId, name, by },
+        token,
       });
 
       mutate();
@@ -200,7 +191,7 @@ export default function DashboardPotisionsPage() {
       await fetcher({
         endpoint: `/positions/${position_id}`,
         method: "DELETE",
-        token: token,
+        token,
       });
 
       mutate();
@@ -306,7 +297,7 @@ export default function DashboardPotisionsPage() {
 
                             <Button
                               isLoading={loading}
-                              isDisabled={loading}
+                              isDisabled={loading || !name}
                               color="primary"
                               onPress={() => {
                                 if (typeModal == "create") {
@@ -365,3 +356,15 @@ export default function DashboardPotisionsPage() {
     </DashboardLayout>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<{
+  token: string;
+  by: string;
+}> = async ({ req, query }) => {
+  return {
+    props: {
+      token: req.headers["access_token"] as string,
+      by: req.headers["fullname"] as string,
+    },
+  };
+};
