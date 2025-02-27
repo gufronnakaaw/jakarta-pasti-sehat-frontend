@@ -5,10 +5,10 @@ import {
   FileText,
   HandHeart,
   Handshake,
-  House,
   Icon,
   Image,
   Key,
+  Monitor,
   Newspaper,
   Users,
 } from "@phosphor-icons/react";
@@ -26,7 +26,7 @@ export function SidebarMainMenuDashboard(): SidebarMainMenuDashboard[] {
     {
       label: "Dashboard",
       path: `${baseUrl}`,
-      icon: House,
+      icon: Monitor,
     },
     {
       label: "Banner",
