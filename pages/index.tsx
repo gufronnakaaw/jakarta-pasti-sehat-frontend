@@ -206,37 +206,39 @@ export default function HomePage({
               </search>
             ) : null}
 
-            {data?.events.length ? (
-              <section className="base">
-                <div className="wrapper">
-                  <div className="flex flex-wrap items-end justify-between gap-4">
-                    <div className="grid gap-2">
-                      <h1 className="title">Event Kami</h1>
-                      <p className="max-w-[450px] font-medium leading-[180%] text-gray">
-                        Daftar event menarik yang kami selenggarakan, mulai dari
-                        seminar, workshop, hingga kegiatan komunitas.
-                      </p>
-                    </div>
-
-                    <Button
-                      variant="light"
-                      color="primary"
-                      endContent={<ArrowRight weight="bold" size={18} />}
-                      onPress={() => router.push("/events")}
-                      className="font-bold capitalize"
-                    >
-                      Lihat semua event
-                    </Button>
+            <section className="base">
+              <div className="wrapper">
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                  <div className="grid gap-2">
+                    <h1 className="title">Event Kami</h1>
+                    <p className="max-w-[450px] font-medium leading-[180%] text-gray">
+                      Daftar event menarik yang kami selenggarakan, mulai dari
+                      seminar, workshop, hingga kegiatan komunitas.
+                    </p>
                   </div>
 
+                  <Button
+                    variant="light"
+                    color="primary"
+                    endContent={<ArrowRight weight="bold" size={18} />}
+                    onPress={() => router.push("/events")}
+                    className="font-bold capitalize"
+                  >
+                    Lihat semua event
+                  </Button>
+                </div>
+
+                {data?.events.length ? (
                   <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
                     {data.events.map((event) => {
                       return <CardEvent key={event.event_id} {...event} />;
                     })}
                   </div>
-                </div>
-              </section>
-            ) : null}
+                ) : (
+                  <EmptyData text="belum ada event yang kami selenggarakan" />
+                )}
+              </div>
+            </section>
 
             {data?.teams.length ? (
               <section className="base">

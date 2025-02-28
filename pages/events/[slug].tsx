@@ -76,142 +76,140 @@ export default function EventDetailsPage({
           {error ? (
             <ErrorPage error={error} />
           ) : (
-            <>
-              <div className="grid w-full max-w-[600px] items-start gap-6 lg:max-w-none lg:grid-cols-[55%_1fr] lg:gap-12 xl:gap-16">
-                <div className="relative aspect-square overflow-hidden rounded-2xl">
-                  <Image
-                    src={data?.image_url as string}
-                    alt={`image ${data?.title}`}
-                    width={800}
-                    height={800}
-                    className="aspect-square size-full object-cover object-center"
-                  />
-
-                  <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-tr from-green/30 to-orange/30" />
-                </div>
-
-                <div className="grid gap-8 lg:sticky lg:right-0 lg:top-[8rem]">
-                  <div className="grid gap-6 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
-                    <h1 className="text-[22px] font-black capitalize leading-[120%] -tracking-wide text-black">
-                      {data?.title}
-                    </h1>
-
-                    <IconContext.Provider
-                      value={{
-                        weight: "bold",
-                        size: 18,
-                        className: "text-orange",
-                      }}
-                    >
-                      <div className="grid gap-2 text-sm text-gray">
-                        {[
-                          [
-                            <CalendarMinus />,
-                            `${formatEventDate(data?.start as string, data?.end as string)}`,
-                          ],
-                          [
-                            <Clock />,
-                            `${formatEventTime(data?.start as string, data?.end as string)}`,
-                          ],
-                          [<MapPin />, `${data?.location}`],
-                        ].map(([icon, label], index) => (
-                          <div
-                            key={index}
-                            className="inline-flex items-center gap-1"
-                          >
-                            {icon}
-                            <p className="font-medium capitalize">{label}</p>
-                          </div>
-                        ))}
-
-                        {data?.map_url ? (
-                          <div className="inline-flex items-center gap-1">
-                            <MapPinArea />
-
-                            <a
-                              href={data.map_url}
-                              target="_blank"
-                              className="text-sm text-gray hover:text-orange"
-                            >
-                              Link Maps
-                            </a>
-                          </div>
-                        ) : null}
-
-                        {data?.payment_url ? (
-                          <div className="inline-flex items-center gap-1">
-                            <Money />
-
-                            <a
-                              href={data.payment_url}
-                              target="_blank"
-                              className="text-sm text-gray hover:text-orange"
-                            >
-                              Link Pembayaran
-                            </a>
-                          </div>
-                        ) : null}
-                      </div>
-                    </IconContext.Provider>
-
-                    <div className="mt-6 flex h-[40px] items-center justify-center rounded-xl border-2 border-gray/20 text-sm font-bold">
-                      Event {data?.type == "free" ? "Gratis 🎉" : "Berbayar 💵"}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
-                    <h2 className="text-[20px] font-bold -tracking-[1px] text-black">
-                      Bagikan Event
-                    </h2>
-
-                    <IconContext.Provider
-                      value={{
-                        weight: "bold",
-                        size: 20,
-                        className: "text-black",
-                      }}
-                    >
-                      <div className="inline-flex items-center gap-4">
-                        <Button
-                          isIconOnly
-                          aria-label="Share Link"
-                          variant="bordered"
-                          radius="full"
-                          onPress={handleShareLink}
-                        >
-                          <ShareNetwork />
-                        </Button>
-
-                        <Button
-                          isIconOnly
-                          aria-label="Share Instagram"
-                          variant="bordered"
-                          radius="full"
-                          onPress={handleShareInstagram}
-                        >
-                          <InstagramLogo />
-                        </Button>
-
-                        <Button
-                          isIconOnly
-                          aria-label="Share Twitter"
-                          variant="bordered"
-                          radius="full"
-                          onPress={handleShareTwitter}
-                        >
-                          <TwitterLogo />
-                        </Button>
-                      </div>
-                    </IconContext.Provider>
-                  </div>
-                </div>
-
-                <p
-                  className="preventive-table preventive-list mt-6 list-outside font-medium leading-[180%] text-gray lg:mt-0"
-                  dangerouslySetInnerHTML={{ __html: data?.detail as string }}
+            <div className="grid w-full max-w-[600px] items-start gap-6 lg:max-w-none lg:grid-cols-[55%_1fr] lg:gap-12 xl:gap-16">
+              <div className="relative aspect-square overflow-hidden rounded-2xl">
+                <Image
+                  src={data?.image_url as string}
+                  alt={`image ${data?.title}`}
+                  width={800}
+                  height={800}
+                  className="aspect-square size-full object-cover object-center"
                 />
+
+                <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-tr from-green/30 to-orange/30" />
               </div>
-            </>
+
+              <div className="grid gap-8 lg:sticky lg:right-0 lg:top-[8rem]">
+                <div className="grid gap-6 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
+                  <h1 className="text-[22px] font-black capitalize leading-[120%] -tracking-wide text-black">
+                    {data?.title}
+                  </h1>
+
+                  <IconContext.Provider
+                    value={{
+                      weight: "bold",
+                      size: 18,
+                      className: "text-orange",
+                    }}
+                  >
+                    <div className="grid gap-2 text-sm text-gray">
+                      {[
+                        [
+                          <CalendarMinus />,
+                          `${formatEventDate(data?.start as string, data?.end as string)}`,
+                        ],
+                        [
+                          <Clock />,
+                          `${formatEventTime(data?.start as string, data?.end as string)}`,
+                        ],
+                        [<MapPin />, `${data?.location}`],
+                      ].map(([icon, label], index) => (
+                        <div
+                          key={index}
+                          className="inline-flex items-center gap-1"
+                        >
+                          {icon}
+                          <p className="font-medium capitalize">{label}</p>
+                        </div>
+                      ))}
+
+                      {data?.map_url ? (
+                        <div className="inline-flex items-center gap-1">
+                          <MapPinArea />
+
+                          <a
+                            href={data.map_url}
+                            target="_blank"
+                            className="text-sm text-gray hover:text-orange"
+                          >
+                            Link Maps
+                          </a>
+                        </div>
+                      ) : null}
+
+                      {data?.payment_url ? (
+                        <div className="inline-flex items-center gap-1">
+                          <Money />
+
+                          <a
+                            href={data.payment_url}
+                            target="_blank"
+                            className="text-sm text-gray hover:text-orange"
+                          >
+                            Link Pembayaran
+                          </a>
+                        </div>
+                      ) : null}
+                    </div>
+                  </IconContext.Provider>
+
+                  <div className="mt-6 flex h-[40px] items-center justify-center rounded-xl border-2 border-gray/20 text-sm font-bold">
+                    Event {data?.type == "free" ? "Gratis 🎉" : "Berbayar 💵"}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
+                  <h2 className="text-[20px] font-bold -tracking-[1px] text-black">
+                    Bagikan Event
+                  </h2>
+
+                  <IconContext.Provider
+                    value={{
+                      weight: "bold",
+                      size: 20,
+                      className: "text-black",
+                    }}
+                  >
+                    <div className="inline-flex items-center gap-4">
+                      <Button
+                        isIconOnly
+                        aria-label="Share Link"
+                        variant="bordered"
+                        radius="full"
+                        onPress={handleShareLink}
+                      >
+                        <ShareNetwork />
+                      </Button>
+
+                      <Button
+                        isIconOnly
+                        aria-label="Share Instagram"
+                        variant="bordered"
+                        radius="full"
+                        onPress={handleShareInstagram}
+                      >
+                        <InstagramLogo />
+                      </Button>
+
+                      <Button
+                        isIconOnly
+                        aria-label="Share Twitter"
+                        variant="bordered"
+                        radius="full"
+                        onPress={handleShareTwitter}
+                      >
+                        <TwitterLogo />
+                      </Button>
+                    </div>
+                  </IconContext.Provider>
+                </div>
+              </div>
+
+              <p
+                className="preventive-table preventive-list mt-6 list-outside font-medium leading-[180%] text-gray lg:mt-0"
+                dangerouslySetInnerHTML={{ __html: data?.detail as string }}
+              />
+            </div>
           )}
         </section>
       </Layout>
