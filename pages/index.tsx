@@ -102,7 +102,7 @@ export default function HomePage({
                 color="primary"
                 endContent={<ArrowRight weight="bold" size={18} />}
                 className="mt-10 w-max px-8 font-bold"
-                onPress={() => router.push("/company/about-us")}
+                onPress={() => router.push("/about-us")}
               >
                 Detail Tentang Kami
               </Button>
