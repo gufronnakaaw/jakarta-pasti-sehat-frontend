@@ -83,7 +83,6 @@ export default function DashboardBannersPage({
 
   const columnsBanner = [
     { name: "Gambar", uid: "image" },
-    { name: "ID Banner", uid: "banner_id" },
     { name: "Deskripsi", uid: "description" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Aksi", uid: "action" },
@@ -105,12 +104,6 @@ export default function DashboardBannersPage({
               className="aspect-square h-16 w-24 cursor-pointer rounded-lg object-cover object-center"
               onClick={() => window.open(banner.image_url, "_blank")}
             />
-          );
-        case "banner_id":
-          return (
-            <div className="w-max font-medium text-black">
-              {banner.banner_id}
-            </div>
           );
         case "description":
           return (

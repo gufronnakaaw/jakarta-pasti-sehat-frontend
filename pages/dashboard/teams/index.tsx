@@ -55,7 +55,6 @@ export default function DashboardTeamsPage({
 
   const columnsTeam = [
     { name: "Foto Profil", uid: "image_url" },
-    { name: "ID Tim", uid: "team_id" },
     { name: "Nama Tim", uid: "fullname" },
     { name: "Dibuat Pada", uid: "created_at" },
     { name: "Aksi", uid: "action" },
@@ -74,10 +73,6 @@ export default function DashboardTeamsPage({
             height={150}
             className="aspect-square size-16 rounded-lg object-cover object-center"
           />
-        );
-      case "team_id":
-        return (
-          <div className="w-max font-medium text-black">{team.team_id}</div>
         );
       case "fullname":
         return (
