@@ -3,7 +3,6 @@ import ErrorPage from "@/components/ErrorPage";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
-import { AdminArticle } from "@/types/article";
 import { Pillar, PillarDetails } from "@/types/pillar";
 import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
@@ -12,29 +11,13 @@ import { onCropComplete } from "@/utils/onCropComplete";
 import { Button, Input, Select, SelectItem, Switch } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import dynamic from "next/dynamic";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
-const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
-  ssr: false,
-});
 
-function getPillarId(
-  pillar: string | { pillar_id: string; name: string } | undefined,
-) {
-  return typeof pillar === "object" ? pillar.pillar_id : null;
-}
-
-function getSubPillarId(
-  subpillar: string | { sub_pillar_id: string; name: string } | undefined,
-) {
-  return typeof subpillar === "object" ? subpillar.sub_pillar_id : null;
-}
-
-export default function EditArticlePage({
-  article,
+export default function CreateDocumentationPage({
   pillars,
   error,
   token,
@@ -42,97 +25,112 @@ export default function EditArticlePage({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
 
-  const [file, setFile] = useState<string | ArrayBuffer | null>(
-    article?.image_url as string,
-  );
+  const [file, setFile] = useState<string | ArrayBuffer | null>();
   const [filename, setFilename] = useState("");
   const [type, setType] = useState("");
   const [input, setInput] = useState({
-    title: article?.title,
-    description: article?.description,
-    content: article?.content,
+    title: "",
   });
-  const [status, setStatus] = useState(article?.is_active as boolean);
-
-  const [pillar, setPillar] = useState(getPillarId(article?.pillar));
-  const [subpillar, setSubpillar] = useState(
-    getSubPillarId(article?.subpillar),
-  );
-
+  const [pillar, setPillar] = useState("");
+  const [subpillar, setSubpillar] = useState("");
   const subPillars = pillars?.find((item) => item.pillar_id === pillar);
-  const [changePillar, setChangePillar] = useState(
-    article?.pillar == "Lainnya" ? false : true,
-  );
+  const [changePillar, setChangePillar] = useState(false);
 
   const [zoomImage, setZoomImage] = useState<number>(1);
   const [cropImage, setCropImage] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  async function handleUpdateArticle() {
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+  function handleFilesDrop(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault();
+    handleFilesState(Array.from(e.dataTransfer.files));
+  }
+
+  function handleFilesSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files) return;
+    handleFilesState(Array.from(e.target.files));
+  }
+
+  function handleFilesState(files: File[]) {
+    const filteredFiles = files.filter((file) =>
+      allowedTypes.includes(file.type),
+    );
+
+    if (filteredFiles.length === 0) return;
+
+    setFiles((prev) => [...prev, ...filteredFiles]);
+
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
+    setPreviews((prev) => [...prev, ...newPreviews]);
+  }
+
+  function handleDelete(index: number) {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
+  }
+
+  async function handleSaveDocs() {
     setLoading(true);
 
     try {
       const formData = new FormData();
+      const croppedImage = await getCroppedImg(file, croppedAreaPixels);
 
-      if (filename) {
-        const croppedImage = await getCroppedImg(file, croppedAreaPixels);
+      const response = await fetch(croppedImage as string);
+      const blob = await response.blob();
 
-        const response = await fetch(croppedImage as string);
-        const blob = await response.blob();
+      const fileConvert = new File([blob], `${filename}`, {
+        type,
+      });
 
-        const fileConvert = new File([blob], `${filename}`, {
-          type,
-        });
-
-        formData.append("articles", fileConvert);
+      if (changePillar) {
+        formData.append("pillar_id", pillar);
+        formData.append("sub_pillar_id", subpillar);
       }
 
-      if (article?.pillar == "Lainnya" && changePillar) {
-        formData.append("pillar_id", pillar as string);
-        formData.append("sub_pillar_id", subpillar as string);
-      }
-
-      if (article?.pillar != "Lainnya" && changePillar) {
-        formData.append("pillar_id", pillar as string);
-        formData.append("sub_pillar_id", subpillar as string);
-      }
-
-      formData.append("article_id", article?.article_id as string);
-      formData.append("title", input?.title as string);
-      formData.append("description", input?.description as string);
-      formData.append("content", input?.content as string);
-      formData.append("is_active", `${status}`);
-
+      formData.append("thumbnail", fileConvert);
+      formData.append("title", input.title);
       formData.append("by", by);
 
+      files.forEach((file) => {
+        formData.append("doc_images", file);
+      });
+
       await fetcher({
-        endpoint: "/articles",
-        method: "PATCH",
+        endpoint: "/docs",
+        method: "POST",
         file: true,
         token,
         data: formData,
       });
 
       router.back();
-      toast.success("Berhasil mengedit artikel");
+      toast.success("Berhasil membuat dokumentasi");
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat mengedit artikel");
+      toast.error("Terjadi kesalahan saat membuat dokumentasi");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <DashboardLayout title="Edit Artikel">
+    <DashboardLayout title="Buat Dokumentasi">
       <DashboardContainer>
         <section className="base-dashboard">
           <ButtonBack className="mt-0" />
 
           <TitleText
-            title="Edit Artikel 🤝"
-            text="Edit dan kelola artikel terbaru"
+            title="Buat Dokumentasi 🤝"
+            text="Buat dan kelola dokumentasi terbaru"
             className="border-b-2 border-dashed border-gray/20 pb-8"
           />
 
@@ -161,63 +159,65 @@ export default function EditArticlePage({
 
                     <p className="text-center text-sm font-medium leading-[170%] text-gray">
                       <strong className="mr-1 text-danger">*</strong>ratio
-                      gambar 1:1
+                      thumbnail 1:1
                     </p>
+
+                    <Input
+                      isRequired
+                      type="file"
+                      accept="image/jpg, image/jpeg, image/png"
+                      variant="flat"
+                      labelPlacement="outside"
+                      classNames={{
+                        inputWrapper: "bg-white",
+                        input:
+                          "block w-full flex-1 text-sm text-gray file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-orange file:text-sm file:font-sans file:font-semibold file:text-white hover:file:bg-orange/80",
+                      }}
+                      onChange={(e) => {
+                        if (!e.target.files?.length) {
+                          setFile(null);
+                          setFilename("");
+                          setType("");
+                          return;
+                        }
+
+                        const validTypes = [
+                          "image/png",
+                          "image/jpg",
+                          "image/jpeg",
+                        ];
+
+                        if (!validTypes.includes(e.target.files[0].type)) {
+                          toast.error(
+                            "Ekstensi file harus png, jpg, atau jpeg",
+                          );
+                          setFile(null);
+                          setFilename("");
+                          setType("");
+                          return;
+                        }
+
+                        setType(e.target.files[0].type);
+                        setFilename(e.target.files[0].name);
+                        const reader = new FileReader();
+                        reader.readAsDataURL(e.target.files[0]);
+
+                        reader.onload = function () {
+                          setFile(reader.result);
+                        };
+
+                        reader.onerror = function (error) {
+                          setFile(null);
+                          setFilename("");
+                          setType("");
+
+                          toast.error("Terjadi kesalahan saat meload gambar");
+
+                          console.log(error);
+                        };
+                      }}
+                    />
                   </div>
-
-                  <Input
-                    isRequired
-                    type="file"
-                    accept="image/jpg, image/jpeg, image/png"
-                    variant="flat"
-                    labelPlacement="outside"
-                    classNames={{
-                      inputWrapper: "bg-white",
-                      input:
-                        "block w-full flex-1 text-sm text-gray file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-orange file:text-sm file:font-sans file:font-semibold file:text-white hover:file:bg-orange/80",
-                    }}
-                    onChange={(e) => {
-                      if (!e.target.files?.length) {
-                        setFile(null);
-                        setFilename("");
-                        setType("");
-                        return;
-                      }
-
-                      const validTypes = [
-                        "image/png",
-                        "image/jpg",
-                        "image/jpeg",
-                      ];
-
-                      if (!validTypes.includes(e.target.files[0].type)) {
-                        toast.error("Ekstensi file harus png, jpg, atau jpeg");
-                        setFile(null);
-                        setFilename("");
-                        setType("");
-                        return;
-                      }
-
-                      setType(e.target.files[0].type);
-                      setFilename(e.target.files[0].name);
-                      const reader = new FileReader();
-                      reader.readAsDataURL(e.target.files[0]);
-
-                      reader.onload = function () {
-                        setFile(reader.result);
-                      };
-
-                      reader.onerror = function (error) {
-                        setFile(null);
-                        setFilename("");
-                        setType("");
-
-                        toast.error("Terjadi kesalahan saat meload gambar");
-
-                        console.log(error);
-                      };
-                    }}
-                  />
                 </div>
 
                 <div className="grid gap-4">
@@ -248,7 +248,7 @@ export default function EditArticlePage({
                         placeholder="Contoh: Pilar 1"
                         name="pillar"
                         items={pillars}
-                        selectedKeys={[pillar as string]}
+                        selectedKeys={[pillar]}
                         onChange={(e) => setPillar(e.target.value)}
                         classNames={{
                           trigger: "bg-white",
@@ -272,7 +272,7 @@ export default function EditArticlePage({
                           placeholder="Contoh: Hepatitis"
                           name="subpillar"
                           items={subPillars?.subpillars}
-                          selectedKeys={[subpillar as string]}
+                          selectedKeys={[subpillar]}
                           onChange={(e) => setSubpillar(e.target.value)}
                           classNames={{
                             trigger: "bg-white",
@@ -309,62 +309,75 @@ export default function EditArticlePage({
                       inputWrapper: "bg-white",
                     }}
                   />
-
-                  <Input
-                    isRequired
-                    type="text"
-                    variant="flat"
-                    label="Deskripsi Singkat"
-                    labelPlacement="outside"
-                    placeholder="Contoh: Penyakit malaria merupakan"
-                    name="alt"
-                    value={input.description}
-                    onChange={(e) =>
-                      setInput({ ...input, description: e.target.value })
-                    }
-                    classNames={{
-                      ...customStyleInput,
-                      inputWrapper: "bg-white",
-                    }}
-                  />
-
-                  <div className="grid gap-2">
-                    <p className="font-medium text-black">Konten</p>
-
-                    <CKEditor
-                      value={input.content as string}
-                      onChange={(text: string) => {
-                        setInput({ ...input, content: text });
-                      }}
-                      token={token}
-                    />
-                  </div>
-
-                  <Switch
-                    color="primary"
-                    isSelected={status}
-                    onValueChange={(e) => setStatus(e)}
-                    classNames={{
-                      label: "text-black font-medium text-sm",
-                    }}
-                    className="mb-4"
-                  >
-                    Status
-                  </Switch>
                 </div>
               </div>
 
+              <div
+                className="h-[350px] w-full rounded-xl border-2 border-dashed border-gray/20 p-1"
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={handleFilesDrop}
+              >
+                <div className="flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray/20">
+                  <p className="text-gray-500">Drag & drop file di sini</p>
+                  <input
+                    type="file"
+                    multiple
+                    className="hidden"
+                    id="fileInput"
+                    onChange={handleFilesSelect}
+                    accept="image/jpg, image/jpeg, image/png"
+                  />
+                  <label
+                    htmlFor="fileInput"
+                    className="mt-2 block cursor-pointer text-gray-500"
+                  >
+                    Atau klik untuk pilih file
+                  </label>
+                </div>
+              </div>
+
+              {previews.length > 0 && (
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  {previews.map((src, index) => (
+                    <div key={index} className="relative">
+                      <Image
+                        width={500}
+                        height={500}
+                        src={src}
+                        alt="preview"
+                        className="h-32 w-full rounded-md object-cover shadow-sm"
+                      />
+
+                      <button
+                        className="mt-1 w-full rounded-md bg-primary py-1 text-xs font-bold text-white"
+                        onClick={() => handleDelete(index)}
+                      >
+                        Hapus
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
               <Button
                 isLoading={loading}
-                isDisabled={loading}
+                isDisabled={
+                  loading ||
+                  !file ||
+                  !files.length ||
+                  !Object.values(input).every((value) => value.trim() !== "") ||
+                  changePillar
+                    ? !pillar || !subpillar
+                    : false
+                }
                 color="primary"
                 startContent={
                   loading ? null : <FloppyDisk weight="bold" size={18} />
                 }
                 className="w-max justify-self-end font-bold"
-                onPress={handleUpdateArticle}
+                onPress={handleSaveDocs}
               >
-                Update
+                Simpan
               </Button>
             </div>
           )}
@@ -375,43 +388,30 @@ export default function EditArticlePage({
 }
 
 export const getServerSideProps: GetServerSideProps<{
-  article?: AdminArticle;
   pillars?: PillarDetails[];
   error?: any;
   token: string;
   by: string;
-}> = async ({ params, req }) => {
-  const token = req.headers["access_token"] as string;
-  const by = req.headers["fullname"] as string;
-
+}> = async ({ req }) => {
   try {
-    const [article, pillar] = await Promise.all([
-      fetcher({
-        endpoint: `/articles/${params?.slug}`,
-        method: "GET",
-        token,
-        role: "admin",
-      }),
-      fetcher({
-        endpoint: "/pillars",
-        method: "GET",
-      }),
-    ]);
+    const response = await fetcher({
+      endpoint: "/pillars",
+      method: "GET",
+    });
 
     return {
       props: {
-        article: article.data as AdminArticle,
-        pillars: pillar.data as PillarDetails[],
-        token,
-        by,
+        pillars: response.data as PillarDetails[],
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
-        token,
-        by,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   }

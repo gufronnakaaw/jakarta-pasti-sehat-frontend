@@ -1,6 +1,7 @@
 import ButtonBack from "@/components/button/ButtonBack";
 import ErrorPage from "@/components/ErrorPage";
 import { InputImage } from "@/components/InputImage";
+import LoadingScreen from "@/components/loading/LoadingScreen";
 import TitleText from "@/components/TitleText";
 import DashboardContainer from "@/components/wrapper/DashboardContainer";
 import DashboardLayout from "@/components/wrapper/DashboardLayout";
@@ -12,17 +13,19 @@ import { onCropComplete } from "@/utils/onCropComplete";
 import {
   Button,
   DatePicker,
+  DateValue,
   Input,
   Select,
   SelectItem,
   Switch,
 } from "@heroui/react";
+import { getLocalTimeZone, now } from "@internationalized/date";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { CalendarDots } from "@phosphor-icons/react/dist/ssr";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
 
@@ -30,30 +33,22 @@ const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
   ssr: false,
 });
 
-type InputState = {
-  title: string;
-  detail: string;
-  start: string;
-  end: string;
-  type: string;
-  location: string;
-};
-
 export default function CreateEventPage({
   error,
   pillars,
+  token,
+  by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
-  const [input, setInput] = useState<InputState>({
+  const [input, setInput] = useState({
     title: "",
     detail: "",
     start: "",
     end: "",
     type: "",
     location: "",
+    map_url: "",
+    payment_url: "",
   });
   const [pillar, setPillar] = useState<string>("");
   const [subpillar, setSubpillar] = useState<string>("");
@@ -66,6 +61,17 @@ export default function CreateEventPage({
   const [zoomImage, setZoomImage] = useState<number>(1);
   const [cropImage, setCropImage] = useState({ x: 0, y: 0 });
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+
+    return () => {
+      setMounted(false);
+    };
+  }, []);
+
+  if (!mounted) return <LoadingScreen />;
 
   async function handleCreateEvent() {
     setIsLoading(true);
@@ -87,11 +93,19 @@ export default function CreateEventPage({
       formData.append("end", input.end);
       formData.append("type", input.type);
       formData.append("location", input.location);
-      formData.append("by", "Super Admin");
+      formData.append("by", by);
 
       if (changePillar) {
         formData.append("pillar_id", pillar);
         formData.append("sub_pillar_id", subpillar);
+      }
+
+      if (input.payment_url) {
+        formData.append("payment_url", input.payment_url);
+      }
+
+      if (input.map_url) {
+        formData.append("map_url", input.map_url);
       }
 
       await fetcher({
@@ -157,25 +171,7 @@ export default function CreateEventPage({
                   <InputImage {...{ setFileImage }} />
                 </div>
 
-                <div className="grid gap-4">
-                  <Input
-                    isRequired
-                    type="text"
-                    variant="flat"
-                    label="Nama Event"
-                    labelPlacement="outside"
-                    placeholder="Contoh: Event Jakarta Pasti Sehat"
-                    name="title"
-                    value={input.title}
-                    onChange={(e) =>
-                      setInput({ ...input, title: e.target.value })
-                    }
-                    classNames={{
-                      ...customStyleInput,
-                      inputWrapper: "bg-white",
-                    }}
-                  />
-
+                <div className="grid gap-6">
                   <Switch
                     color="primary"
                     isSelected={changePillar}
@@ -246,6 +242,24 @@ export default function CreateEventPage({
                     </>
                   ) : null}
 
+                  <Input
+                    isRequired
+                    type="text"
+                    variant="flat"
+                    label="Nama Event"
+                    labelPlacement="outside"
+                    placeholder="Contoh: Event Jakarta Pasti Sehat"
+                    name="title"
+                    value={input.title}
+                    onChange={(e) =>
+                      setInput({ ...input, title: e.target.value })
+                    }
+                    classNames={{
+                      ...customStyleInput,
+                      inputWrapper: "bg-white",
+                    }}
+                  />
+
                   <Select
                     isRequired
                     aria-label="select type"
@@ -256,7 +270,11 @@ export default function CreateEventPage({
                     name="type"
                     selectedKeys={[input.type]}
                     onChange={(e) =>
-                      setInput({ ...input, type: e.target.value })
+                      setInput({
+                        ...input,
+                        type: e.target.value,
+                        payment_url: "",
+                      })
                     }
                     classNames={{
                       trigger: "bg-white",
@@ -267,24 +285,43 @@ export default function CreateEventPage({
                     <SelectItem key="paid">Berbayar</SelectItem>
                   </Select>
 
+                  {input.type == "paid" ? (
+                    <Input
+                      isRequired
+                      type="text"
+                      variant="flat"
+                      label="Link Pembayaran"
+                      labelPlacement="outside"
+                      placeholder="Contoh: https://linkpembayaran.com"
+                      value={input.payment_url}
+                      onChange={(e) =>
+                        setInput({ ...input, payment_url: e.target.value })
+                      }
+                      classNames={{
+                        ...customStyleInput,
+                        inputWrapper: "bg-white",
+                      }}
+                    />
+                  ) : null}
+
                   <div className="grid grid-cols-2 items-center gap-4">
                     <DatePicker
                       isRequired
+                      hideTimeZone
                       showMonthAndYearPickers
-                      hideTimeZone={true}
                       variant="flat"
                       label="Tanggal Mulai"
                       labelPlacement="outside"
                       selectorIcon={<CalendarDots weight="bold" size={18} />}
                       hourCycle={24}
+                      defaultValue={now(getLocalTimeZone())}
                       onChange={(date) => {
                         if (date) {
-                          const now = new Date(date);
-                          now.setHours(0, 0, 0, 0);
+                          const newDate = date as DateValue;
 
                           setInput({
                             ...input,
-                            start: now.toISOString(),
+                            start: newDate.toDate("UTC").toISOString(),
                           });
                         }
                       }}
@@ -303,14 +340,14 @@ export default function CreateEventPage({
                       labelPlacement="outside"
                       selectorIcon={<CalendarDots weight="bold" size={18} />}
                       hourCycle={24}
+                      defaultValue={now(getLocalTimeZone()).add({ days: 1 })}
                       onChange={(date) => {
                         if (date) {
-                          const now = new Date(date);
-                          now.setHours(23, 59, 59, 999);
+                          const newDate = date as DateValue;
 
                           setInput({
                             ...input,
-                            end: now.toISOString(),
+                            end: newDate.toDate("UTC").toISOString(),
                           });
                         }
                       }}
@@ -339,6 +376,23 @@ export default function CreateEventPage({
                     }}
                   />
 
+                  <Input
+                    type="text"
+                    variant="flat"
+                    label="Link Maps (optional)"
+                    labelPlacement="outside"
+                    placeholder="Contoh: Taman Ismail Marzuki, Jakarta"
+                    name="location"
+                    value={input.map_url}
+                    onChange={(e) =>
+                      setInput({ ...input, map_url: e.target.value })
+                    }
+                    classNames={{
+                      ...customStyleInput,
+                      inputWrapper: "bg-white",
+                    }}
+                  />
+
                   <div className="grid gap-2">
                     <p className="text-sm text-black">
                       Detail Event<strong className="text-danger">*</strong>
@@ -357,7 +411,18 @@ export default function CreateEventPage({
 
               <Button
                 isLoading={isLoading}
-                isDisabled={isLoading}
+                isDisabled={
+                  isLoading ||
+                  !fileImage ||
+                  !input.title ||
+                  !input.type ||
+                  !input.start ||
+                  !input.end ||
+                  !input.location ||
+                  !input.detail ||
+                  (changePillar ? !pillar || !subpillar : false) ||
+                  (input.type == "paid" ? !input.payment_url : false)
+                }
                 color="primary"
                 startContent={
                   isLoading ? null : <FloppyDisk weight="bold" size={18} />
@@ -378,7 +443,9 @@ export default function CreateEventPage({
 export const getServerSideProps: GetServerSideProps<{
   pillars?: PillarDetails[];
   error?: any;
-}> = async () => {
+  token: string;
+  by: string;
+}> = async ({ req }) => {
   try {
     const response = await fetcher({
       endpoint: "/pillars",
@@ -388,12 +455,16 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         pillars: response.data as PillarDetails[],
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token: req.headers["access_token"] as string,
+        by: req.headers["fullname"] as string,
       },
     };
   }

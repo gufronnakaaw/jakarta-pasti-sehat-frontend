@@ -48,14 +48,12 @@ type DocsResponse = {
   total_pages: number;
 };
 
-export default function DashboardEventsPage({
+export default function DashboardDocumentationPage({
   query,
+  token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const { searchValue, setSearch } = useSearch(800);
-
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IkpQU1NBMSIsInJvbGUiOiJzdXBlcmFkbWluIiwiaWF0IjoxNzM5MzM3ODgxLCJleHAiOjE3NDcxMTM4ODF9.gKAua-5M9NCQS4YTgz0t6ZgMQ_FyeGSwSaKSWO-hhpw";
 
   const { data, isLoading, mutate, error } = useSWR<
     SuccessResponse<DocsResponse>
@@ -173,7 +171,14 @@ export default function DashboardEventsPage({
                   <Link />
                 </Button>
 
-                <Button isIconOnly variant="light" size="sm">
+                <Button
+                  isIconOnly
+                  variant="light"
+                  size="sm"
+                  onPress={() =>
+                    router.push(`/dashboard/documentations/${doc.slug}`)
+                  }
+                >
                   <PencilLine />
                 </Button>
 
@@ -315,9 +320,11 @@ export default function DashboardEventsPage({
 
 export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
-}> = async ({ query }) => {
+  token: string;
+}> = async ({ query, req }) => {
   return {
     props: {
+      token: req.headers["access_token"] as string,
       query,
     },
   };

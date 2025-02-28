@@ -38,6 +38,7 @@ export type EventDashboard = {
   pillar: string;
   subpillar: string;
   status: string;
+  is_active: boolean;
 };
 
 export type EventDashboardDetail = {
@@ -50,8 +51,8 @@ export type EventDashboardDetail = {
   end: string;
   location: string;
   detail: string;
-  map_url: null;
-  payment_url: null;
+  map_url: string;
+  payment_url: string;
   created_at: string;
   created_by: string;
   is_active: boolean;

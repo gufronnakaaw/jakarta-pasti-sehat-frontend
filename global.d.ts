@@ -6,6 +6,7 @@ declare module "next-auth/jwt" {
     admin_id: string;
     fullname: string;
     access_token: string;
+    role: string;
   }
 }
 
@@ -14,6 +15,7 @@ declare module "next-auth" {
     admin_id: string;
     fullname: string;
     access_token: string;
+    role: string;
     id?: string;
   }
 
@@ -22,6 +24,7 @@ declare module "next-auth" {
       admin_id: string;
       fullname: string;
       access_token: string;
+      role: string;
     };
   }
 }

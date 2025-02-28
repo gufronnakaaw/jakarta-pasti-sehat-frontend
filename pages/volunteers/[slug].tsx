@@ -1,6 +1,7 @@
 import ButtonBack from "@/components/button/ButtonBack";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
+import LoadingScreen from "@/components/loading/LoadingScreen";
 import Navbar from "@/components/navbar/Navbar";
 import Layout from "@/components/wrapper/Layout";
 import { SuccessResponse } from "@/types/global";
@@ -23,7 +24,7 @@ import {
 } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { twMerge } from "tailwind-merge";
 
@@ -41,6 +42,17 @@ export default function VolunteerDetails({
   });
   const [cv, setCv] = useState<File | null>(null);
   const [follow, setFollow] = useState<File | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+
+    return () => {
+      setMounted(false);
+    };
+  }, []);
+
+  if (!mounted) return <LoadingScreen />;
 
   async function handleVolunteerApplicant() {
     try {
