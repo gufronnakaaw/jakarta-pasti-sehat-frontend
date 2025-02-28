@@ -92,53 +92,46 @@ export default function EventDetailsPage({
 
                 <div className="grid gap-8 lg:sticky lg:right-0 lg:top-[8rem]">
                   <div className="grid gap-6 rounded-2xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]">
-                    <h1 className="text-[26px] font-black capitalize leading-[120%] -tracking-wide text-black">
+                    <h1 className="text-[22px] font-black capitalize leading-[120%] -tracking-wide text-black">
                       {data?.title}
                     </h1>
 
                     <IconContext.Provider
                       value={{
                         weight: "bold",
-                        size: 20,
+                        size: 18,
                         className: "text-orange",
                       }}
                     >
-                      <div className="grid gap-2 text-gray">
-                        <div className="inline-flex items-center gap-2">
-                          <CalendarMinus />
-
-                          <p className="flex-1 font-medium">
-                            {formatEventDate(
-                              data?.start as string,
-                              data?.end as string,
-                            )}
-                          </p>
-                        </div>
-
-                        <div className="inline-flex items-center gap-2">
-                          <Clock />
-
-                          <p className="flex-1 font-medium">
-                            {formatEventTime(
-                              data?.start as string,
-                              data?.end as string,
-                            )}
-                          </p>
-                        </div>
-
-                        <div className="inline-flex items-center gap-2">
-                          <MapPin />
-                          <p className="flex-1 font-medium">{data?.location}</p>
-                        </div>
+                      <div className="grid gap-2 text-sm text-gray">
+                        {[
+                          [
+                            <CalendarMinus />,
+                            `${formatEventDate(data?.start as string, data?.end as string)}`,
+                          ],
+                          [
+                            <Clock />,
+                            `${formatEventTime(data?.start as string, data?.end as string)}`,
+                          ],
+                          [<MapPin />, `${data?.location}`],
+                        ].map(([icon, label], index) => (
+                          <div
+                            key={index}
+                            className="inline-flex items-center gap-1"
+                          >
+                            {icon}
+                            <p className="font-medium capitalize">{label}</p>
+                          </div>
+                        ))}
 
                         {data?.map_url ? (
-                          <div className="inline-flex items-center gap-2">
+                          <div className="inline-flex items-center gap-1">
                             <MapPinArea />
 
                             <a
                               href={data.map_url}
                               target="_blank"
-                              className="cursor-pointer text-primary"
+                              className="text-sm text-gray hover:text-orange"
                             >
                               Link Maps
                             </a>
@@ -146,13 +139,13 @@ export default function EventDetailsPage({
                         ) : null}
 
                         {data?.payment_url ? (
-                          <div className="inline-flex items-center gap-2">
+                          <div className="inline-flex items-center gap-1">
                             <Money />
 
                             <a
                               href={data.payment_url}
                               target="_blank"
-                              className="cursor-pointer text-primary"
+                              className="text-sm text-gray hover:text-orange"
                             >
                               Link Pembayaran
                             </a>
@@ -214,7 +207,7 @@ export default function EventDetailsPage({
                 </div>
 
                 <p
-                  className="mt-6 font-medium leading-[180%] text-gray lg:mt-0"
+                  className="preventive-table preventive-list mt-6 list-outside font-medium leading-[180%] text-gray lg:mt-0"
                   dangerouslySetInnerHTML={{ __html: data?.detail as string }}
                 />
               </div>
