@@ -238,7 +238,7 @@ export default function HomePage({
             {data?.teams.length ? (
               <section className="base">
                 <div className="wrapper">
-                  <div className="grid justify-items-center gap-2 text-center">
+                  <div className="-mb-4 grid justify-items-center gap-2 text-center">
                     <h1 className="title">Tim Terbaik Kami</h1>
                     <p className="max-w-[800px] font-medium leading-[180%] text-gray">
                       Tim kami terdiri dari individu yang berdedikasi,
@@ -267,7 +267,7 @@ export default function HomePage({
                         return (
                           <SwiperSlide
                             key={team.fullname}
-                            className="max-w-[300px] xs:max-w-[330px] lg:max-w-[360px]"
+                            className="max-w-[340px] pt-4 lg:max-w-[360px]"
                           >
                             <CardTeam {...team} />
                           </SwiperSlide>

@@ -28,7 +28,7 @@ export default function CardEvent(event: CardEventProps) {
           alt="thumbnail article"
           width={800}
           height={1000}
-          className="h-full w-full object-cover object-center transition-all group-hover:scale-110 xl:h-auto"
+          className="h-[380px] w-auto object-cover object-center transition-all group-hover:scale-110"
         />
 
         <div className="absolute left-0 top-0 z-10 flex h-full w-full flex-col justify-between gap-2 bg-gradient-to-tr from-green/70 to-orange/70 p-6">
