@@ -1,4 +1,3 @@
-import UnderConstruction from "@/components/UnderConstruction";
 import AppProvider from "@/context/AppProvider";
 import "@/styles/globals.css";
 import { fetcher } from "@/utils/fetcher";
@@ -14,9 +13,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  return process.env.NEXT_PUBLIC_MODE == "production" ? (
-    <UnderConstruction />
-  ) : (
+  return (
     <HeroUIProvider>
       <Toaster
         toastOptions={{
