@@ -48,7 +48,7 @@ type DocsResponse = {
   total_pages: number;
 };
 
-export default function DashboardEventsPage({
+export default function DashboardDocumentationPage({
   query,
   token,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -171,7 +171,14 @@ export default function DashboardEventsPage({
                   <Link />
                 </Button>
 
-                <Button isIconOnly variant="light" size="sm">
+                <Button
+                  isIconOnly
+                  variant="light"
+                  size="sm"
+                  onPress={() =>
+                    router.push(`/dashboard/documentations/${doc.slug}`)
+                  }
+                >
                   <PencilLine />
                 </Button>
 
