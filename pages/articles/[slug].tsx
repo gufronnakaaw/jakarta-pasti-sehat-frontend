@@ -8,7 +8,7 @@ import { Article } from "@/types/article";
 import { SuccessResponse } from "@/types/global";
 import { fetcher } from "@/utils/fetcher";
 import { formatDateWithoutTime } from "@/utils/formatDate";
-import { CalendarMinus, Clock, User } from "@phosphor-icons/react";
+import { CalendarMinus, Clock, IconContext, User } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -56,24 +56,32 @@ export default function ArticleDetailsPage({
                   </p>
                 </div>
 
-                <div className="mt-2 inline-flex items-center gap-6 text-gray">
-                  <div className="inline-flex items-center gap-1">
-                    <CalendarMinus weight="bold" size={18} />
-                    <p className="font-medium">
-                      {formatDateWithoutTime(data?.created_at as string)}
-                    </p>
+                <IconContext.Provider
+                  value={{
+                    weight: "bold",
+                    size: 18,
+                    className: "text-orange",
+                  }}
+                >
+                  <div className="mt-2 grid gap-3 text-sm text-gray sm:flex sm:items-center sm:gap-6">
+                    {[
+                      [
+                        <CalendarMinus />,
+                        `${formatDateWithoutTime(data?.created_at as string)}`,
+                      ],
+                      [<Clock />, `${data?.reading_time}`],
+                      [<User />, `${data?.created_by}`],
+                    ].map(([icon, label], index) => (
+                      <div
+                        key={index}
+                        className="inline-flex items-center gap-1"
+                      >
+                        {icon}
+                        <p className="font-medium capitalize">{label}</p>
+                      </div>
+                    ))}
                   </div>
-
-                  <div className="inline-flex items-center gap-1">
-                    <Clock weight="bold" size={18} />
-                    <p className="font-medium">{data?.reading_time}</p>
-                  </div>
-
-                  <div className="inline-flex items-center gap-1">
-                    <User weight="bold" size={18} />
-                    <p className="font-medium">{data?.created_by}</p>
-                  </div>
-                </div>
+                </IconContext.Provider>
               </div>
 
               <div className="relative aspect-square overflow-hidden rounded-2xl">
