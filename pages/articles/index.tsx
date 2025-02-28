@@ -1,5 +1,6 @@
 import CardArticle from "@/components/card/CardArticle";
 import CTAMain from "@/components/cta/CTAMain";
+import EmptyData from "@/components/Empty";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
@@ -77,12 +78,14 @@ export default function ArticlesPage({
 
               {error ? (
                 <ErrorPage error={error} />
-              ) : (
+              ) : data?.articles.length ? (
                 <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
                   {data?.articles.map((article) => (
                     <CardArticle key={article.article_id} {...article} />
                   ))}
                 </div>
+              ) : (
+                <EmptyData text="Oopss! Sepertinya belum ada artikel yang ditulis" />
               )}
 
               {data?.articles.length ? (

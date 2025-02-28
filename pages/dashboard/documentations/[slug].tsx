@@ -9,26 +9,20 @@ import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { onCropComplete } from "@/utils/onCropComplete";
+import { getPillarId, getSubPillarId } from "@/utils/pillar";
 import { Button, Input, Select, SelectItem, Switch } from "@heroui/react";
-import { FloppyDisk } from "@phosphor-icons/react";
+import {
+  Download,
+  FloppyDisk,
+  Trash,
+  WarningCircle,
+} from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
-
-function getPillarId(
-  pillar: string | { pillar_id: string; name: string } | undefined,
-) {
-  return typeof pillar === "object" ? pillar.pillar_id : null;
-}
-
-function getSubPillarId(
-  subpillar: string | { sub_pillar_id: string; name: string } | undefined,
-) {
-  return typeof subpillar === "object" ? subpillar.sub_pillar_id : null;
-}
 
 export default function EditDocumentationPage({
   pillars,
@@ -202,7 +196,7 @@ export default function EditDocumentationPage({
         ...promises,
       ]);
 
-      router.back();
+      window.location.reload();
       toast.success("Berhasil mengedit dokumentasi");
     } catch (error) {
       console.log(error);
@@ -251,63 +245,61 @@ export default function EditDocumentationPage({
                       <strong className="mr-1 text-danger">*</strong>ratio
                       thumbnail 1:1
                     </p>
-
-                    <Input
-                      isRequired
-                      type="file"
-                      accept="image/jpg, image/jpeg, image/png"
-                      variant="flat"
-                      labelPlacement="outside"
-                      classNames={{
-                        inputWrapper: "bg-white",
-                        input:
-                          "block w-full flex-1 text-sm text-gray file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-orange file:text-sm file:font-sans file:font-semibold file:text-white hover:file:bg-orange/80",
-                      }}
-                      onChange={(e) => {
-                        if (!e.target.files?.length) {
-                          setFile(null);
-                          setFilename("");
-                          setType("");
-                          return;
-                        }
-
-                        const validTypes = [
-                          "image/png",
-                          "image/jpg",
-                          "image/jpeg",
-                        ];
-
-                        if (!validTypes.includes(e.target.files[0].type)) {
-                          toast.error(
-                            "Ekstensi file harus png, jpg, atau jpeg",
-                          );
-                          setFile(null);
-                          setFilename("");
-                          setType("");
-                          return;
-                        }
-
-                        setType(e.target.files[0].type);
-                        setFilename(e.target.files[0].name);
-                        const reader = new FileReader();
-                        reader.readAsDataURL(e.target.files[0]);
-
-                        reader.onload = function () {
-                          setFile(reader.result);
-                        };
-
-                        reader.onerror = function (error) {
-                          setFile(null);
-                          setFilename("");
-                          setType("");
-
-                          toast.error("Terjadi kesalahan saat meload gambar");
-
-                          console.log(error);
-                        };
-                      }}
-                    />
                   </div>
+
+                  <Input
+                    isRequired
+                    type="file"
+                    accept="image/jpg, image/jpeg, image/png"
+                    variant="flat"
+                    labelPlacement="outside"
+                    classNames={{
+                      inputWrapper: "bg-white",
+                      input:
+                        "block w-full flex-1 text-sm text-gray file:mr-4 file:py-1 file:px-3 file:border-0 file:rounded-lg file:bg-orange file:text-sm file:font-sans file:font-semibold file:text-white hover:file:bg-orange/80",
+                    }}
+                    onChange={(e) => {
+                      if (!e.target.files?.length) {
+                        setFile(null);
+                        setFilename("");
+                        setType("");
+                        return;
+                      }
+
+                      const validTypes = [
+                        "image/png",
+                        "image/jpg",
+                        "image/jpeg",
+                      ];
+
+                      if (!validTypes.includes(e.target.files[0].type)) {
+                        toast.error("Ekstensi file harus png, jpg, atau jpeg");
+                        setFile(null);
+                        setFilename("");
+                        setType("");
+                        return;
+                      }
+
+                      setType(e.target.files[0].type);
+                      setFilename(e.target.files[0].name);
+                      const reader = new FileReader();
+                      reader.readAsDataURL(e.target.files[0]);
+
+                      reader.onload = function () {
+                        setFile(reader.result);
+                      };
+
+                      reader.onerror = function (error) {
+                        setFile(null);
+                        setFilename("");
+                        setType("");
+
+                        toast.error("Terjadi kesalahan saat meload gambar");
+
+                        console.log(error);
+                      };
+                    }}
+                  />
                 </div>
 
                 <div className="grid gap-4">
@@ -407,39 +399,61 @@ export default function EditDocumentationPage({
                     classNames={{
                       label: "text-black font-medium text-sm",
                     }}
-                    className="mb-4"
+                    className="mt-4"
                   >
                     Status
                   </Switch>
                 </div>
               </div>
 
-              <div
-                className="h-[350px] w-full rounded-xl border-2 border-dashed border-gray/20 p-1"
-                onDragOver={(e) => e.preventDefault()}
-                onDrop={handleFilesDrop}
-              >
-                <div className="flex h-full flex-col items-center justify-center overflow-hidden rounded-xl bg-gray/20">
-                  <p className="text-gray-500">Drag & drop file di sini</p>
-                  <input
-                    type="file"
-                    multiple
-                    className="hidden"
-                    id="fileInput"
-                    onChange={handleFilesSelect}
-                    accept="image/jpg, image/jpeg, image/png"
+              <div className="my-4 grid gap-2">
+                <div className="inline-flex max-w-[400px] items-start gap-2">
+                  <WarningCircle
+                    weight="duotone"
+                    size={24}
+                    className="text-danger"
                   />
+
+                  <p className="text-[12px] font-medium italic text-gray">
+                    Harap masukan foto secara bertahap! Pastikan juga ukuran
+                    foto sudah dikompres agar ukurannya lebih kecil.
+                  </p>
+                </div>
+
+                <div
+                  className="h-[350px] w-full rounded-xl border-2 border-dashed border-gray/20 p-1"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={handleFilesDrop}
+                >
                   <label
                     htmlFor="fileInput"
-                    className="mt-2 block cursor-pointer text-gray-500"
+                    className="flex h-full flex-col items-center justify-center gap-2 overflow-hidden rounded-xl bg-gray/20"
                   >
-                    Atau klik untuk pilih file
+                    <p className="text-sm font-semibold text-gray">
+                      Drag & drop file di sini
+                    </p>
+                    <Download
+                      weight="duotone"
+                      size={72}
+                      className="py-2 text-gray"
+                    />
+                    <input
+                      multiple
+                      id="fileInput"
+                      type="file"
+                      accept="image/jpg, image/jpeg, image/png"
+                      onChange={handleFilesSelect}
+                      className="hidden"
+                    />
+                    <p className="text-sm font-semibold text-gray">
+                      Atau klik untuk pilih file
+                    </p>
                   </label>
                 </div>
               </div>
 
               {previews.length > 0 && (
-                <div className="mt-4 grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   {previews.map((src, index) => (
                     <div key={index} className="relative">
                       <Image
@@ -447,15 +461,17 @@ export default function EditDocumentationPage({
                         height={500}
                         src={src.image_url}
                         alt="preview"
-                        className="h-32 w-full rounded-md object-cover shadow-sm"
+                        className="h-48 w-full rounded-2xl object-cover object-center shadow-sm"
                       />
 
-                      <button
-                        className="mt-1 w-full rounded-md bg-primary py-1 text-xs font-bold text-white"
-                        onClick={() => handleDelete(index)}
+                      <Button
+                        isIconOnly
+                        color="danger"
+                        onPress={() => handleDelete(index)}
+                        className="absolute right-4 top-4 z-20"
                       >
-                        Hapus
-                      </button>
+                        <Trash weight="bold" size={18} />
+                      </Button>
                     </div>
                   ))}
                 </div>
@@ -473,7 +489,7 @@ export default function EditDocumentationPage({
                 className="w-max justify-self-end font-bold"
                 onPress={handleUpdateDocs}
               >
-                Update
+                Simpan Dokumentasi
               </Button>
             </div>
           )}

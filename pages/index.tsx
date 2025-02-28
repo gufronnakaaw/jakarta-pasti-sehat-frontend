@@ -3,6 +3,7 @@ import CardEvent from "@/components/card/CardEvent";
 import CardPartner from "@/components/card/CardPartner";
 import CardPrinciples from "@/components/card/CardPrinciples";
 import CardTeam from "@/components/card/CardTeam";
+import EmptyData from "@/components/Empty";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
@@ -123,29 +124,29 @@ export default function HomePage({
           <ErrorPage error={error} />
         ) : (
           <>
-            {data?.articles.length ? (
-              <section className="grid justify-items-center pb-[100px] xl:pb-[150px]">
-                <div className="wrapper">
-                  <div className="flex flex-wrap items-end justify-between gap-4">
-                    <div className="grid gap-2">
-                      <h1 className="title">Artikel Terbaru</h1>
-                      <p className="max-w-[400px] font-medium leading-[180%] text-gray">
-                        Temukan berbagai artikel terbaru seputar kesehatan, gaya
-                        hidup, dan tips menjaga kesejahteraan.
-                      </p>
-                    </div>
-
-                    <Button
-                      variant="light"
-                      color="primary"
-                      endContent={<ArrowRight weight="bold" size={18} />}
-                      onPress={() => router.push("/articles")}
-                      className="font-bold capitalize"
-                    >
-                      Lihat semua artikel
-                    </Button>
+            <section className="grid justify-items-center pb-[100px] xl:pb-[150px]">
+              <div className="wrapper">
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                  <div className="grid gap-2">
+                    <h1 className="title">Artikel Terbaru</h1>
+                    <p className="max-w-[400px] font-medium leading-[180%] text-gray">
+                      Temukan berbagai artikel terbaru seputar kesehatan, gaya
+                      hidup, dan tips menjaga kesejahteraan.
+                    </p>
                   </div>
 
+                  <Button
+                    variant="light"
+                    color="primary"
+                    endContent={<ArrowRight weight="bold" size={18} />}
+                    onPress={() => router.push("/articles")}
+                    className="font-bold capitalize"
+                  >
+                    Lihat semua artikel
+                  </Button>
+                </div>
+
+                {data?.articles.length ? (
                   <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
                     {data.articles.map((article) => {
                       return (
@@ -153,9 +154,11 @@ export default function HomePage({
                       );
                     })}
                   </div>
-                </div>
-              </section>
-            ) : null}
+                ) : (
+                  <EmptyData text="Oopss! Sepertinya belum ada artikel yang ditulis" />
+                )}
+              </div>
+            </section>
 
             {data?.banners.length ? (
               <search className="grid justify-items-center pb-[100px] xl:pb-[150px]">
@@ -203,42 +206,44 @@ export default function HomePage({
               </search>
             ) : null}
 
-            {data?.events.length ? (
-              <section className="base">
-                <div className="wrapper">
-                  <div className="flex flex-wrap items-end justify-between gap-4">
-                    <div className="grid gap-2">
-                      <h1 className="title">Event Kami</h1>
-                      <p className="max-w-[450px] font-medium leading-[180%] text-gray">
-                        Daftar event menarik yang kami selenggarakan, mulai dari
-                        seminar, workshop, hingga kegiatan komunitas.
-                      </p>
-                    </div>
-
-                    <Button
-                      variant="light"
-                      color="primary"
-                      endContent={<ArrowRight weight="bold" size={18} />}
-                      onPress={() => router.push("/events")}
-                      className="font-bold capitalize"
-                    >
-                      Lihat semua event
-                    </Button>
+            <section className="base">
+              <div className="wrapper">
+                <div className="flex flex-wrap items-end justify-between gap-4">
+                  <div className="grid gap-2">
+                    <h1 className="title">Event Kami</h1>
+                    <p className="max-w-[450px] font-medium leading-[180%] text-gray">
+                      Daftar event menarik yang kami selenggarakan, mulai dari
+                      seminar, workshop, hingga kegiatan komunitas.
+                    </p>
                   </div>
 
+                  <Button
+                    variant="light"
+                    color="primary"
+                    endContent={<ArrowRight weight="bold" size={18} />}
+                    onPress={() => router.push("/events")}
+                    className="font-bold capitalize"
+                  >
+                    Lihat semua event
+                  </Button>
+                </div>
+
+                {data?.events.length ? (
                   <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
                     {data.events.map((event) => {
                       return <CardEvent key={event.event_id} {...event} />;
                     })}
                   </div>
-                </div>
-              </section>
-            ) : null}
+                ) : (
+                  <EmptyData text="belum ada event yang kami selenggarakan" />
+                )}
+              </div>
+            </section>
 
             {data?.teams.length ? (
               <section className="base">
                 <div className="wrapper">
-                  <div className="grid justify-items-center gap-2 text-center">
+                  <div className="-mb-4 grid justify-items-center gap-2 text-center">
                     <h1 className="title">Tim Terbaik Kami</h1>
                     <p className="max-w-[800px] font-medium leading-[180%] text-gray">
                       Tim kami terdiri dari individu yang berdedikasi,
@@ -267,7 +272,7 @@ export default function HomePage({
                         return (
                           <SwiperSlide
                             key={team.fullname}
-                            className="max-w-[300px] xs:max-w-[330px] lg:max-w-[360px]"
+                            className="max-w-[340px] pt-4 lg:max-w-[360px]"
                           >
                             <CardTeam {...team} />
                           </SwiperSlide>

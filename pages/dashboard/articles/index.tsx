@@ -275,7 +275,7 @@ export default function DashboardArticlesPage({
 
                   <TableBody
                     items={data?.data.articles}
-                    emptyContent={<EmptyData text="Article tidak ditemukan!" />}
+                    emptyContent={<EmptyData text="Artikel tidak ditemukan!" />}
                   >
                     {(article: Article) => (
                       <TableRow key={article.article_id}>
