@@ -15,7 +15,7 @@ const priciples = [
   {
     id: 2,
     icon: ChatsCircle,
-    title: "Relateble",
+    title: "Relatable",
     text: "Dekat dan bisa diandalkan, setiap program dan informasi yang kami tawarkan relevan dengan kebutuhan sehari-hari warga Jakarta.",
   },
   {
@@ -39,7 +39,7 @@ export default function CardPrinciples() {
         {priciples.map((item, index) => (
           <div
             key={index}
-            className="grid gap-6 rounded-3xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.0.1)]"
+            className="grid gap-6 rounded-3xl bg-white p-8 shadow-[4px_2px_18px_rgba(0,0,0,0.1)]"
           >
             <item.icon />
 

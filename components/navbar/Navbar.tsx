@@ -1,21 +1,23 @@
+import { AppContext } from "@/context/AppContext";
 import { LogoJPS } from "@/public/img/logo";
 import { Button } from "@heroui/react";
 import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 const navMenu = [
   { key: "home", path: "/", text: "Beranda" },
   { key: "about", path: "/about-us", text: "Tentang Kami" },
-  { key: "documentation", path: "/documentation", text: "Dokumentasi" },
-  { key: "article", path: "/article", text: "Artikel" },
-  { key: "event", path: "/event", text: "Event" },
-  { key: "contact", path: "contact-us", text: "Hubungi Kami" },
+  { key: "documentation", path: "/documentations", text: "Dokumentasi" },
+  { key: "article", path: "/articles", text: "Artikel" },
+  { key: "event", path: "/events", text: "Event" },
+  { key: "contact", path: "/contact-us", text: "Hubungi Kami" },
 ];
 
 export default function Navbar() {
   const router = useRouter();
+  const ctx = useContext(AppContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [stickyHeader, setStickyHeader] = useState(false);
   const isHome = router.pathname === "/";
@@ -56,7 +58,7 @@ export default function Navbar() {
       className={`fixed left-0 top-0 z-50 w-full transition-all ${isHome ? (stickyHeader ? "bg-white" : "bg-transparent") : "bg-white"}`}
     >
       <div className="mx-auto flex h-24 max-w-[1440px] items-center justify-between gap-4 px-6">
-        <Link href="#">
+        <Link href="/">
           <LogoJPS
             className={`h-auto w-[100px] transition-all ${
               isHome
@@ -111,13 +113,21 @@ export default function Navbar() {
             </Button>
           </div>
 
-          <Button color="secondary" className="px-8 font-bold">
+          <Button
+            color="secondary"
+            onPress={() => ctx?.onOpenModal()}
+            className="px-8 font-bold"
+          >
             Dukungan Untuk Kami
           </Button>
         </div>
 
         <div className="flex items-center">
-          <Button color="secondary" className="hidden font-bold lg:flex">
+          <Button
+            color="secondary"
+            onPress={() => ctx?.onOpenModal()}
+            className="hidden font-bold lg:flex"
+          >
             Dukungan Untuk Kami
           </Button>
 
