@@ -1,4 +1,3 @@
-import UnderConstruction from "@/components/UnderConstruction";
 import seoConfig from "@/config/seo.config";
 import AppProvider from "@/context/AppProvider";
 import "@/styles/globals.css";
@@ -16,9 +15,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
-  return process.env.NEXT_PUBLIC_MODE == "production" ? (
-    <UnderConstruction />
-  ) : (
+  return (
     <HeroUIProvider>
       <Toaster
         toastOptions={{

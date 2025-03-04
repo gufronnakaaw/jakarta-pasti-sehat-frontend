@@ -18,7 +18,7 @@ export default function CTAMain({ title }: CTAMainProps) {
 
       <Button
         color="primary"
-        onPress={() => router.push("/company/contact-us")}
+        onPress={() => router.push("/contact-us")}
         className="z-20 w-full px-8 font-bold capitalize md:w-max"
       >
         Hubungi Kami
