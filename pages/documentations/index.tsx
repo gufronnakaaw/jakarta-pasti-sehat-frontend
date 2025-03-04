@@ -1,4 +1,5 @@
 import CardDocumentation from "@/components/card/CardDocumentation";
+import EmptyData from "@/components/Empty";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
@@ -55,10 +56,12 @@ export default function DocumentationsPage({
               <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
                 {error ? (
                   <ErrorPage {...error} />
-                ) : (
+                ) : data?.docs.length ? (
                   data?.docs.map((doc) => {
                     return <CardDocumentation key={doc.doc_id} {...doc} />;
                   })
+                ) : (
+                  <EmptyData text="Belum ada dokumentasi yang kami unggah" />
                 )}
               </div>
             </div>

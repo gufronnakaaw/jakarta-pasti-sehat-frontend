@@ -1,4 +1,5 @@
 import CardCareer from "@/components/card/CardCareer";
+import EmptyData from "@/components/Empty";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
@@ -79,12 +80,14 @@ export default function CareersPage({
 
               {error ? (
                 <ErrorPage error={error} />
-              ) : (
+              ) : data?.careers.length ? (
                 <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-8">
                   {data?.careers.map((career) => {
                     return <CardCareer key={career.slug} {...career} />;
                   })}
                 </div>
+              ) : (
+                <EmptyData text="Maaf, kami belum buka lowongan karir untuk saat ini" />
               )}
 
               {data?.careers.length ? (
