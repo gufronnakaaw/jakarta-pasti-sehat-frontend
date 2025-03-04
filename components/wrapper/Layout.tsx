@@ -1,6 +1,8 @@
 import ModalDonation from "@/components/modal/ModalDonation";
 import { AppContext } from "@/context/AppContext";
+import { NextSeo } from "next-seo";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { ReactNode, useContext } from "react";
 import { twMerge } from "tailwind-merge";
 
@@ -8,13 +10,40 @@ type LayoutProps = {
   children: ReactNode;
   className?: string;
   title?: string;
+  description?: string;
 };
 
-export default function Layout({ children, className, title }: LayoutProps) {
+export default function Layout({
+  children,
+  className,
+  title,
+  description,
+}: LayoutProps) {
+  const router = useRouter();
   const ctx = useContext(AppContext);
+  const currentUrl = `https://jakartapastisehat.com${router.asPath}`;
 
   return (
     <>
+      <NextSeo
+        title={title ? `${title} | Jakarta Pasti Sehat` : "Jakarta Pasti Sehat"}
+        description={
+          description ||
+          "Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat."
+        }
+        canonical={currentUrl}
+        openGraph={{
+          url: currentUrl,
+          title: title
+            ? `${title} | Jakarta Pasti Sehat`
+            : "Jakarta Pasti Sehat",
+          description:
+            description ||
+            "Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat.",
+          site_name: "Jakarta Pasti Sehat",
+        }}
+      />
+
       <Head>
         <title>{`${title} | Jakarta Pasti Sehat`}</title>
       </Head>

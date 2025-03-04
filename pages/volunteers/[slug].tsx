@@ -123,7 +123,7 @@ export default function VolunteerDetails({
     <>
       <Navbar />
 
-      <Layout title={data?.title}>
+      <Layout title={error ? "Volunteer" : data?.title}>
         <ButtonBack />
 
         {error ? (
