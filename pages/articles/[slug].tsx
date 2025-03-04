@@ -34,7 +34,7 @@ export default function ArticleDetailsPage({
     <>
       <Navbar />
 
-      <Layout title={data?.title}>
+      <Layout title={data?.title} description={data?.description}>
         <ButtonBack />
 
         {error ? (
