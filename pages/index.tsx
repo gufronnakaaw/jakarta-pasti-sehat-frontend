@@ -69,7 +69,7 @@ export default function HomePage({
         />
       </section>
 
-      <Layout title="Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat">
+      <Layout title="Komunitas Kesehatan Untuk Warga Jakarta">
         <section id="about" className="base pt-[200px]">
           <div className="wrapper lg:grid-cols-2 lg:items-center xl:gap-12">
             <Image
