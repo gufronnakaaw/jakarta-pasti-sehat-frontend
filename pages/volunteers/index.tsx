@@ -1,4 +1,5 @@
 import CardVolunteer from "@/components/card/CardVolunteer";
+import EmptyData from "@/components/Empty";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
@@ -51,7 +52,10 @@ export default function VolunteersPage({
     <>
       <Navbar />
 
-      <Layout title="Volunteer">
+      <Layout
+        title="Volunteer"
+        description="Sebagai relawan, kamu akan terlibat dalam berbagai kegiatan seru, mulai dari edukasi kesehatan, dan masih banyak lagi."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">
@@ -79,12 +83,14 @@ export default function VolunteersPage({
 
               {error ? (
                 <ErrorPage error={error} />
-              ) : (
+              ) : data?.vols.length ? (
                 <div className="grid items-start gap-4 lg:grid-cols-2 lg:gap-8">
                   {data?.vols.map((vol) => {
                     return <CardVolunteer key={vol.volunteer_id} {...vol} />;
                   })}
                 </div>
+              ) : (
+                <EmptyData text="Maaf, kami belum buka pendaftaran volunteer untuk saat ini" />
               )}
 
               {data?.vols.length ? (

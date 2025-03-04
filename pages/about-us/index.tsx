@@ -44,7 +44,10 @@ export default function AboutUsPage() {
     <>
       <Navbar />
 
-      <Layout title="Tentang Kami">
+      <Layout
+        title="Tentang Kami"
+        description="Jakarta Pasti Sehat adalah sebuah komunitas yang diprakarsai oleh mahasiswa Farmasi dan berfokus pada sektor kesehatan."
+      >
         <section className="base pt-[160px]">
           <div className="wrapper lg:grid-cols-2 lg:items-start xl:gap-12">
             <div className="mt-4 grid gap-16 xl:mt-16">

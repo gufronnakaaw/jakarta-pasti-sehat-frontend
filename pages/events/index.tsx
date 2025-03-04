@@ -31,7 +31,10 @@ export default function EventsPage({
     <>
       <Navbar />
 
-      <Layout title="Event">
+      <Layout
+        title="Event"
+        description="Jelajahi beragam event seru yang menginspirasi gaya hidup sehat dan mendukung kesehatan masyarakat Jakarta."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">

@@ -1,9 +1,11 @@
+import seoConfig from "@/config/seo.config";
 import AppProvider from "@/context/AppProvider";
 import "@/styles/globals.css";
 import { fetcher } from "@/utils/fetcher";
 import { HeroUIProvider } from "@heroui/react";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { SessionProvider } from "next-auth/react";
+import { DefaultSeo } from "next-seo";
 import type { AppProps } from "next/app";
 import NextNProgress from "nextjs-progressbar";
 import { Toaster } from "react-hot-toast";
@@ -33,6 +35,7 @@ export default function App({
       >
         <SessionProvider session={session} refetchOnWindowFocus={false}>
           <AppProvider>
+            <DefaultSeo {...seoConfig} />
             <Component {...pageProps} />
           </AppProvider>
         </SessionProvider>

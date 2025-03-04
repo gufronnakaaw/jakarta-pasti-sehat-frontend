@@ -53,7 +53,10 @@ export default function ArticlesPage({
     <>
       <Navbar />
 
-      <Layout title="Artikel">
+      <Layout
+        title="Artikel"
+        description="emukan berbagai artikel menarik yang membahas kesehatan dan pola hidup sehat untuk mendukung kesehatan masyarakat Jakarta."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">
