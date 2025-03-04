@@ -20,8 +20,7 @@ import {
   Switch,
 } from "@heroui/react";
 import { getLocalTimeZone, now } from "@internationalized/date";
-import { FloppyDisk } from "@phosphor-icons/react";
-import { CalendarDots } from "@phosphor-icons/react/dist/ssr";
+import { CalendarDots, FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
