@@ -1,5 +1,6 @@
 const seoConfig = {
-  title: "Jakarta Pasti Sehat - Komunitas Kesehatan Untuk Warga Jakarta",
+  title:
+    "Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat | Jakarta Pasti Sehat",
   description:
     "Komunitas kesehatan untuk warga Jakarta yang berkomitmen memperkuat kesadaran akan pentingnya gaya hidup sehat, sekaligus menjadi wadah kolaborasi untuk menciptakan lingkungan yang lebih sehat, aktif, dan penuh semangat.",
   canonical: "https://jakartapastisehat.com",
@@ -7,7 +8,8 @@ const seoConfig = {
     type: "website",
     locale: "id_ID",
     url: "https://jakartapastisehat.com",
-    title: "Jakarta Pasti Sehat - Komunitas Kesehatan Untuk Warga Jakarta",
+    title:
+      "Komunitas Kesehatan Yang Berkomitmen Untuk Memperkuat Kesadaran Gaya Hidup Sehat Masyarakat | Jakarta Pasti Sehat",
     description:
       "Komunitas kesehatan untuk warga Jakarta yang berkomitmen memperkuat kesadaran akan pentingnya gaya hidup sehat, sekaligus menjadi wadah kolaborasi untuk menciptakan lingkungan yang lebih sehat, aktif, dan penuh semangat.",
     site_name: "Jakarta Pasti Sehat",
