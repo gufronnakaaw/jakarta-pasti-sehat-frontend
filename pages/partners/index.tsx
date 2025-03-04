@@ -1,5 +1,6 @@
 import CardPartner from "@/components/card/CardPartner";
 import CTAMain from "@/components/cta/CTAMain";
+import EmptyData from "@/components/Empty";
 import ErrorPage from "@/components/ErrorPage";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/navbar/Navbar";
@@ -24,12 +25,14 @@ export default function PartnersPage({
 
             {error ? (
               <ErrorPage error={error} />
-            ) : (
+            ) : data?.length ? (
               <div className="flex flex-wrap items-center justify-center gap-4 xl:gap-8">
                 {data?.map((partner) => (
                   <CardPartner key={partner.partner_id} {...partner} />
                 ))}
               </div>
+            ) : (
+              <EmptyData text="belum ada mitra" />
             )}
           </div>
         </section>
