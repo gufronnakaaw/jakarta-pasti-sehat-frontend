@@ -31,7 +31,10 @@ export default function DocumentationsPage({
     <>
       <Navbar />
 
-      <Layout title="Dokumentasi">
+      <Layout
+        title="Dokumentasi"
+        description="Kami membagikan dokumentasi lengkap dari beberapa kegiatan yang telah kami lakukan."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">

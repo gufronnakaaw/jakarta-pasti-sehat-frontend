@@ -34,7 +34,10 @@ export default function ContactUsPage() {
     <>
       <Navbar />
 
-      <Layout title="Kontak Kami">
+      <Layout
+        title="Kontak Kami"
+        description="Kami selalu terbuka untuk berdiskusi dan bersama-sama membangun komunitas kesehatan yang lebih baik untuk warga Jakarta."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">
