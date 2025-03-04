@@ -52,7 +52,10 @@ export default function VolunteersPage({
     <>
       <Navbar />
 
-      <Layout title="Volunteer">
+      <Layout
+        title="Volunteer"
+        description="Sebagai relawan, kamu akan terlibat dalam berbagai kegiatan seru, mulai dari edukasi kesehatan, dan masih banyak lagi."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">

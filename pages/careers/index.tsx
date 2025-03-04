@@ -52,7 +52,10 @@ export default function CareersPage({
     <>
       <Navbar />
 
-      <Layout title="Karir">
+      <Layout
+        title="Karir"
+        description="Kami mencari orang-orang yang bersemangat untuk bergabung dengan misi kami untuk memperkuat kesadaran kesehatan dan menjaga gaya hidup."
+      >
         <section className="base pt-[160px] xl:pt-[180px]">
           <div className="wrapper">
             <div className="mb-8 grid justify-items-center gap-4 text-center">
