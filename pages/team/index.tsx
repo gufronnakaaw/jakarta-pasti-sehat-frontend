@@ -45,7 +45,7 @@ export default function TeamPage({
                         {...{
                           fullname: team.fullname,
                           image_url: team.image_url,
-                          position: team.position.name,
+                          position: team.position,
                           team_id: team.team_id,
                         }}
                       />
