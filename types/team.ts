@@ -13,10 +13,7 @@ export type Team = {
     socmed_id: string;
     url: string;
   }[];
-  position: {
-    name: string;
-    position_id: string;
-  };
+  position: string;
 };
 
 export type TeamDashboard = {
