@@ -56,17 +56,17 @@ export default function DocumentationsPage({
                 <SelectFilterData {...{ with_other: false }} />
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
-                {error ? (
-                  <ErrorPage {...error} />
-                ) : data?.docs.length ? (
-                  data?.docs.map((doc) => {
+              {error ? (
+                <ErrorPage {...error} />
+              ) : data?.docs.length ? (
+                <div className="grid gap-4 lg:grid-cols-3 lg:items-start xl:grid-cols-4 xl:gap-x-8">
+                  {data?.docs.map((doc) => {
                     return <CardDocumentation key={doc.doc_id} {...doc} />;
-                  })
-                ) : (
-                  <EmptyData text="Belum ada dokumentasi yang kami unggah" />
-                )}
-              </div>
+                  })}
+                </div>
+              ) : (
+                <EmptyData text="Belum ada dokumentasi yang kami unggah" />
+              )}
             </div>
 
             {data?.docs.length ? (
