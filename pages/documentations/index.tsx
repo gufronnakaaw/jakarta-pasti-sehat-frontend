@@ -65,7 +65,7 @@ export default function DocumentationsPage({
                   })}
                 </div>
               ) : (
-                <EmptyData text="Belum ada dokumentasi yang kami unggah" />
+                <EmptyData text="Dokumentasi akan segera tersedia. Pantau terus update dari kami!" />
               )}
             </div>
 

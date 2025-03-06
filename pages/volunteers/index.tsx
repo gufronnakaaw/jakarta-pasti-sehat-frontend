@@ -90,7 +90,7 @@ export default function VolunteersPage({
                   })}
                 </div>
               ) : (
-                <EmptyData text="Maaf, kami belum buka pendaftaran volunteer untuk saat ini" />
+                <EmptyData text="Pendaftaran volunteer belum tersedia untuk saat ini." />
               )}
 
               {data?.vols.length ? (
