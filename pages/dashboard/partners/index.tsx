@@ -95,7 +95,8 @@ export default function DashboardTeamsPage({
             alt={partner.alt}
             width={150}
             height={150}
-            className="aspect-square size-16 rounded-lg object-cover object-center"
+            className="aspect-square size-16 cursor-pointer rounded-lg object-cover object-center"
+            onClick={() => window.open(partner.image_url, "_blank")}
           />
         );
       case "alt":
