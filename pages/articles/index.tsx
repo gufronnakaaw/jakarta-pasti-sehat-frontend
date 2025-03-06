@@ -88,7 +88,7 @@ export default function ArticlesPage({
                   ))}
                 </div>
               ) : (
-                <EmptyData text="Oopss! Sepertinya belum ada artikel yang ditulis" />
+                <EmptyData text="Artikel akan segera kami tulis. Pantau terus update dari kami!" />
               )}
 
               {data?.articles.length ? (
