@@ -97,24 +97,6 @@ export default function EditCareerPage({
           ) : (
             <div className="grid max-w-[700px] gap-8">
               <div className="grid gap-4">
-                <Input
-                  isRequired
-                  type="text"
-                  variant="flat"
-                  label="Nama Karir"
-                  labelPlacement="outside"
-                  placeholder="Contoh: Web Developer"
-                  name="title"
-                  value={input.title}
-                  onChange={(e) =>
-                    setInput({ ...input, title: e.target.value })
-                  }
-                  classNames={{
-                    ...customStyleInput,
-                    inputWrapper: "bg-white",
-                  }}
-                />
-
                 <Switch
                   color="primary"
                   isSelected={changePillar}
@@ -184,6 +166,24 @@ export default function EditCareerPage({
                     ) : null}
                   </>
                 ) : null}
+
+                <Input
+                  isRequired
+                  type="text"
+                  variant="flat"
+                  label="Nama Karir"
+                  labelPlacement="outside"
+                  placeholder="Contoh: Web Developer"
+                  name="title"
+                  value={input.title}
+                  onChange={(e) =>
+                    setInput({ ...input, title: e.target.value })
+                  }
+                  classNames={{
+                    ...customStyleInput,
+                    inputWrapper: "bg-white",
+                  }}
+                />
 
                 <div className="grid grid-cols-2 items-center gap-4">
                   <Select
@@ -266,7 +266,10 @@ export default function EditCareerPage({
                 isLoading={isLoading}
                 isDisabled={
                   isLoading ||
-                  !Object.values(input).every((item) => item.trim() !== "")
+                  !Object.values(input).every((item) => item.trim() !== "") ||
+                  changePillar
+                    ? !pillar || !subpillar
+                    : false
                 }
                 color="primary"
                 startContent={
@@ -293,6 +296,7 @@ export const getServerSideProps: GetServerSideProps<{
   by?: string;
 }> = async ({ params, req }) => {
   const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
 
   try {
     const [responsePillars, responseCareer] = await Promise.all([
@@ -313,14 +317,16 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         pillars: responsePillars.data as PillarDetails[],
         career: responseCareer.data as CareerDashboardDetails,
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token,
+        by,
       },
     };
   }
