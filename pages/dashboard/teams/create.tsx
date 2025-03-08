@@ -25,6 +25,7 @@ const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
 type InputState = {
   fullname: string;
   position: string;
+  description: string;
 };
 
 type EducationState = {
@@ -47,18 +48,14 @@ export default function CreateTeamPage({
   const [input, setInput] = useState<InputState>({
     fullname: "",
     position: "",
+    description: "",
   });
-  const [description, setDescription] = useState<string>("");
   const [selected, setSelected] = useState({
     withEducation: false,
     withSocialLinks: false,
   });
-  const [educations, setEducations] = useState<EducationState[]>([
-    { name: "", level: "" },
-  ]);
-  const [socialLinks, setSocialLinks] = useState<SocialLinksState[]>([
-    { name: "", url: "" },
-  ]);
+  const [educations, setEducations] = useState<EducationState[]>([]);
+  const [socialLinks, setSocialLinks] = useState<SocialLinksState[]>([]);
 
   const [file, setFile] = useState<string | ArrayBuffer | null>();
   const [filename, setFilename] = useState("");
@@ -103,21 +100,25 @@ export default function CreateTeamPage({
       formData.append("teams", fileConvert);
 
       formData.append("fullname", input.fullname);
-      formData.append("description", description);
+      formData.append("description", input.description);
       formData.append("position_id", input.position);
       formData.append("with_education", selected.withEducation as any);
       formData.append("with_social_links", selected.withSocialLinks as any);
       formData.append("by", by as string);
 
-      educations.forEach((edu, index) => {
-        formData.append(`educations[${index}][name]`, edu.name);
-        formData.append(`educations[${index}][level]`, edu.level);
-      });
+      if (educations.length) {
+        educations.forEach((edu, index) => {
+          formData.append(`educations[${index}][name]`, edu.name);
+          formData.append(`educations[${index}][level]`, edu.level);
+        });
+      }
 
-      socialLinks.forEach((social, index) => {
-        formData.append(`social_links[${index}][name]`, social.name);
-        formData.append(`social_links[${index}][url]`, social.url);
-      });
+      if (socialLinks.length) {
+        socialLinks.forEach((social, index) => {
+          formData.append(`social_links[${index}][name]`, social.name);
+          formData.append(`social_links[${index}][url]`, social.url);
+        });
+      }
 
       await fetcher({
         endpoint: "/teams",
@@ -290,8 +291,10 @@ export default function CreateTeamPage({
                       </p>
 
                       <CKEditor
-                        value={description}
-                        onChange={setDescription}
+                        value={input.description}
+                        onChange={(text) =>
+                          setInput({ ...input, description: text })
+                        }
                         token={token as string}
                       />
                     </div>
@@ -302,12 +305,14 @@ export default function CreateTeamPage({
                     <Switch
                       color="primary"
                       isSelected={selected.withEducation}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
                         setSelected((prev) => ({
                           ...prev,
                           withEducation: value,
-                        }))
-                      }
+                        }));
+
+                        setEducations([]);
+                      }}
                       classNames={{
                         label: "text-black font-medium text-sm",
                       }}
@@ -403,12 +408,14 @@ export default function CreateTeamPage({
                     <Switch
                       color="primary"
                       isSelected={selected.withSocialLinks}
-                      onValueChange={(value) =>
+                      onValueChange={(value) => {
                         setSelected((prev) => ({
                           ...prev,
                           withSocialLinks: value,
-                        }))
-                      }
+                        }));
+
+                        setSocialLinks([]);
+                      }}
                       classNames={{
                         label: "text-black font-medium text-sm",
                       }}

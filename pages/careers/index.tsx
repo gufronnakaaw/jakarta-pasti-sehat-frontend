@@ -90,7 +90,7 @@ export default function CareersPage({
                   })}
                 </div>
               ) : (
-                <EmptyData text="Maaf, kami belum buka lowongan karir untuk saat ini" />
+                <EmptyData text="Pendaftaran lowongan karir belum tersedia untuk saat ini." />
               )}
 
               {data?.careers.length ? (

@@ -64,7 +64,7 @@ export default function EventsPage({
                   })}
                 </div>
               ) : (
-                <EmptyData text="belum ada event yang kami selenggarakan" />
+                <EmptyData text="Event akan segera kami selenggarakan. Pantau terus update dari kami!" />
               )}
 
               {data?.events.length ? (

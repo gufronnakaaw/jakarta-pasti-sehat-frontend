@@ -32,7 +32,7 @@ export default function PartnersPage({
                 ))}
               </div>
             ) : (
-              <EmptyData text="belum ada mitra" />
+              <EmptyData text="Mitra akan segera tersedia. Pantau terus update dari kami!" />
             )}
           </div>
         </section>
