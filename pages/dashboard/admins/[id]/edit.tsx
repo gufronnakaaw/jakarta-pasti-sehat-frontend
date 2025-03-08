@@ -196,13 +196,14 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         admins: response.data as Admin,
-        token: req.headers["access_token"] as string,
+        token,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token,
       },
     };
   }

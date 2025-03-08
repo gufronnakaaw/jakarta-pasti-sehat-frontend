@@ -143,13 +143,14 @@ export default function DashboardKeysPage({
         token,
       });
 
-      mutate();
-      toast.success("Kunci akses berhasil dibuat");
       setInput({
         value: "",
         access_key: "",
       });
       onClose();
+
+      mutate();
+      toast.success("Kunci akses berhasil dibuat");
     } catch (error: any) {
       console.error(error);
 
@@ -358,10 +359,13 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
-      by: req.headers["fullname"] as string,
+      token,
+      by,
     },
   };
 };
