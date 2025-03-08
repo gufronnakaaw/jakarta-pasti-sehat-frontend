@@ -22,7 +22,13 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { IconContext, PencilLine, Plus, Trash } from "@phosphor-icons/react";
+import {
+  IconContext,
+  Link,
+  PencilLine,
+  Plus,
+  Trash,
+} from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -94,6 +100,17 @@ export default function DashboardTeamsPage({
             }}
           >
             <div className="inline-flex w-max items-center gap-1">
+              <Button
+                isIconOnly
+                variant="light"
+                size="sm"
+                onPress={() =>
+                  window.open(`${window.origin}/team/${team.team_id}`, "_blank")
+                }
+              >
+                <Link />
+              </Button>
+
               <Button
                 isIconOnly
                 variant="light"
@@ -247,10 +264,12 @@ export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
   token: string;
 }> = async ({ query, req }) => {
+  const token = req.headers["access_token"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
       query,
+      token,
     },
   };
 };
