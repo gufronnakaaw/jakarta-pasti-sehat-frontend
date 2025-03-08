@@ -242,10 +242,12 @@ export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
   token: string;
 }> = async ({ req, query }) => {
+  const token = req.headers["access_token"] as string;
+
   return {
     props: {
-      query: query as ParsedUrlQuery,
-      token: req.headers["access_token"] as string,
+      query,
+      token,
     },
   };
 };
