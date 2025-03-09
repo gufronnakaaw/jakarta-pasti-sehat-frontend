@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* * {
+  @apply border-2 border-red-600;
+} */
+
 ::-webkit-scrollbar {
   @apply hidden;
 }
@@ -12,20 +16,9 @@
   @apply bg-secondary text-white;
 }
 
-.preventive-list ul {
-  @apply list-outside list-disc pl-8;
-}
-.preventive-list ol {
-  @apply list-outside list-decimal pl-8;
-}
-.preventive-list li {
-  @apply list-outside;
-}
-
 .ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred,
 .ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-focused {
   @apply px-8;
-  @apply h-40;
 }
 .ck.ck-content.ck-editor__editable.ck-rounded-corners.ck-editor__editable_inline.ck-blurred
   ul,
@@ -50,6 +43,9 @@
   @apply h-2 w-6 rounded-full !bg-primary;
 }
 
+.preventif-overlaps-text {
+  overflow-wrap: anywhere;
+}
 .preventive-table table {
   table-layout: auto;
   width: 100%;

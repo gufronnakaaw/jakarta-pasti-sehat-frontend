@@ -102,7 +102,7 @@ export default function ArticleDetailsPage({
               </div>
 
               <p
-                className="preventive-table preventive-list list-outside font-medium leading-[180%] text-gray"
+                className="preventive-table preventive-list preventif-overlaps-text font-medium leading-[180%] text-gray"
                 dangerouslySetInnerHTML={{ __html: data?.content as string }}
               />
             </div>
