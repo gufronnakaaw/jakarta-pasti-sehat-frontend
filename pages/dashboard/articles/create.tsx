@@ -263,7 +263,15 @@ export default function CreateArticlePage({
                     isRequired
                     type="text"
                     variant="flat"
-                    label="Judul"
+                    label={
+                      <>
+                        Judul{" "}
+                        <span className="font-bold text-orange">
+                          (sisa: {Math.max(0, 190 - input.title.length)}{" "}
+                          karakter)
+                        </span>
+                      </>
+                    }
                     labelPlacement="outside"
                     placeholder="Contoh: Artikel Terbaru Jakarta Pasti Sehat"
                     name="alt"
@@ -281,7 +289,15 @@ export default function CreateArticlePage({
                     isRequired
                     type="text"
                     variant="flat"
-                    label="Deskripsi Singkat"
+                    label={
+                      <>
+                        Deskripsi Singkat{" "}
+                        <span className="font-bold text-orange">
+                          (sisa: {Math.max(0, 190 - input.description.length)}{" "}
+                          karakter)
+                        </span>
+                      </>
+                    }
                     labelPlacement="outside"
                     placeholder="Contoh: Penyakit malaria merupakan"
                     name="alt"
@@ -314,10 +330,12 @@ export default function CreateArticlePage({
                 isDisabled={
                   loading ||
                   !file ||
-                  !Object.values(input).every((value) => value.trim() !== "") ||
-                  changePillar
-                    ? !pillar || !subpillar
-                    : false
+                  !input.title ||
+                  !input.description ||
+                  !input.content ||
+                  input.title.length >= 190 ||
+                  input.description.length >= 190 ||
+                  (changePillar ? !pillar || !subpillar : false)
                 }
                 color="primary"
                 startContent={
