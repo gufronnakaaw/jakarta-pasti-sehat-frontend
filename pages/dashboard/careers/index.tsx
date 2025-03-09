@@ -192,7 +192,7 @@ export default function DashboardCareersPage({
       });
 
       mutate();
-      toast.success("karir berhasil dihapus");
+      toast.success("Karir berhasil dihapus");
     } catch (error: any) {
       console.error(error);
 
@@ -295,10 +295,12 @@ export const getServerSideProps: GetServerSideProps<{
   query: ParsedUrlQuery;
   token: string;
 }> = async ({ query, req }) => {
+  const token = req.headers["access_token"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
       query,
+      token,
     },
   };
 };

@@ -118,10 +118,10 @@ export default function CreateDocumentationPage({
       });
 
       router.back();
-      toast.success("Berhasil membuat dokumentasi");
+      toast.success("Dokumentasi berhasil dibuat");
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat membuat dokumentasi");
+      toast.error("Gagal menambahkan dokumentasi");
     } finally {
       setLoading(false);
     }
@@ -299,7 +299,7 @@ export default function CreateDocumentationPage({
                     isRequired
                     type="text"
                     variant="flat"
-                    label="Judul"
+                    label="Judul Dokumentasi"
                     labelPlacement="outside"
                     placeholder="Contoh: Dokumentasi Kegiatan Jakarta Pasti Sehat"
                     name="alt"

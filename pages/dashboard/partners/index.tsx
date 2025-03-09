@@ -195,11 +195,10 @@ export default function DashboardTeamsPage({
       setType("");
       setAltImage("");
       setCroppedAreaPixels(null);
+      onClose();
 
       mutate();
-
       toast.success("Mitra berhasil dibuat");
-      onClose();
     } catch (error: any) {
       console.error(error);
 
@@ -249,16 +248,15 @@ export default function DashboardTeamsPage({
       setCroppedAreaPixels(null);
       setAltImage("");
       setPartnerId("");
+      onClose();
 
       mutate();
-
-      toast.success("Mitra berhasil dibuat");
-      onClose();
+      toast.success("Mitra berhasil diubah");
     } catch (error: any) {
       console.error(error);
 
       setLoading(false);
-      toast.error("Gagal menambahkan mitra");
+      toast.error("Gagal mengubah data mitra");
     } finally {
       setLoading(false);
     }
@@ -560,11 +558,14 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req, query }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
-      by: req.headers["fullname"] as string,
       query,
+      token,
+      by,
     },
   };
 };

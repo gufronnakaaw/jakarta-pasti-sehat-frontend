@@ -89,24 +89,6 @@ export default function EditVolunteerPage({
           ) : (
             <div className="grid max-w-[700px] gap-8">
               <div className="grid gap-4">
-                <Input
-                  isRequired
-                  type="text"
-                  variant="flat"
-                  label="Nama Volunteer"
-                  labelPlacement="outside"
-                  placeholder="Contoh: Volunteer Batch 1"
-                  name="title"
-                  value={input.title}
-                  onChange={(e) =>
-                    setInput({ ...input, title: e.target.value })
-                  }
-                  classNames={{
-                    ...customStyleInput,
-                    inputWrapper: "bg-white",
-                  }}
-                />
-
                 <Switch
                   color="primary"
                   isSelected={changePillar}
@@ -177,6 +159,24 @@ export default function EditVolunteerPage({
                   </>
                 ) : null}
 
+                <Input
+                  isRequired
+                  type="text"
+                  variant="flat"
+                  label="Nama Volunteer"
+                  labelPlacement="outside"
+                  placeholder="Contoh: Volunteer Batch 1"
+                  name="title"
+                  value={input.title}
+                  onChange={(e) =>
+                    setInput({ ...input, title: e.target.value })
+                  }
+                  classNames={{
+                    ...customStyleInput,
+                    inputWrapper: "bg-white",
+                  }}
+                />
+
                 <div className="grid gap-2">
                   <p className="text-sm text-black">
                     Persyaratan<strong className="text-danger">*</strong>
@@ -210,7 +210,10 @@ export default function EditVolunteerPage({
                 isLoading={isLoading}
                 isDisabled={
                   isLoading ||
-                  !Object.values(input).every((item) => item.trim() !== "")
+                  !Object.values(input).every((item) => item.trim() !== "") ||
+                  changePillar
+                    ? !pillar || !subpillar
+                    : false
                 }
                 color="primary"
                 startContent={
@@ -237,6 +240,7 @@ export const getServerSideProps: GetServerSideProps<{
   by?: string;
 }> = async ({ params, req }) => {
   const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
 
   try {
     const [responsePillars, responseVolunteer] = await Promise.all([
@@ -257,14 +261,16 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         pillars: responsePillars.data as PillarDetails[],
         volunteer: responseVolunteer.data as VolunteerDashboardDetails,
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token,
+        by,
       },
     };
   }

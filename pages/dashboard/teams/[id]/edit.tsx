@@ -633,6 +633,7 @@ export const getServerSideProps: GetServerSideProps<{
   by?: string;
 }> = async ({ params, req }) => {
   const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
 
   try {
     const [responseTeam, responsePositions] = await Promise.all([
@@ -655,14 +656,16 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         team: responseTeam.data as Team,
         positions: responsePositions.data as Position[],
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token,
+        by,
       },
     };
   }

@@ -208,9 +208,11 @@ export default function DashboardAminssPage({
 export const getServerSideProps: GetServerSideProps<{
   token: string;
 }> = async ({ req }) => {
+  const token = req.headers["access_token"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
+      token,
     },
   };
 };

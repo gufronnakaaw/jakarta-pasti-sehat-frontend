@@ -223,12 +223,12 @@ export default function DashboardBannersPage({
 
       mutate();
 
-      toast.success("Berhasil menyimpan banner");
+      toast.success("Banner berhasil dibuat");
       onClose();
       setLoading(false);
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat menyimpan banner");
+      toast.error("Gagal menambahkan banner");
     } finally {
       setLoading(false);
     }
@@ -293,12 +293,12 @@ export default function DashboardBannersPage({
       setBannerId("");
 
       mutate();
-      toast.success("Berhasil mengedit banner");
+      toast.success("Banner berhasil diubah");
 
       onClose();
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat mengedit banner");
+      toast.error("Gagal mengubah data banner");
     } finally {
       setLoading(false);
     }
@@ -335,7 +335,7 @@ export default function DashboardBannersPage({
                 placement="center"
                 isOpen={isOpen}
                 onOpenChange={onOpenChange}
-                size="xl"
+                size="md"
                 onClose={() => {
                   setCrop({ x: 0, y: 0 });
                   setZoom(1);
@@ -586,11 +586,14 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req, query }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
-      by: req.headers["fullname"] as string,
       query,
+      token,
+      by,
     },
   };
 };

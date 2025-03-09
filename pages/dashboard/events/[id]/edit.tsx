@@ -176,7 +176,7 @@ export default function EditEventPage({
         token,
       });
 
-      router.back();
+      window.location.reload();
       toast.success("Event berhasil diubah");
     } catch (error: any) {
       console.error(error);
@@ -527,7 +527,7 @@ export default function EditEventPage({
                     }}
                     className="mb-4"
                   >
-                    Status
+                    Aktifkan Event
                   </Switch>
                 </div>
               </div>
