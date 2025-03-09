@@ -57,7 +57,7 @@ export default function CreatePillarPage({
       console.error(error);
 
       setIsLoading(false);
-      toast.error(error?.message || "Telah terjadi kesalahan");
+      toast.error("Gagal menambahkan pilar");
     }
   }
 
@@ -161,10 +161,13 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
-      by: req.headers["fullname"] as string,
+      token,
+      by,
     },
   };
 };

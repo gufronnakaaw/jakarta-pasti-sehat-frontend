@@ -66,11 +66,11 @@ export default function ArticleDetailsPage({
                   <div className="mt-2 grid gap-3 text-sm text-gray sm:flex sm:items-center sm:gap-6">
                     {[
                       [
-                        <CalendarMinus />,
+                        <CalendarMinus key="calendar-minus" />,
                         `${formatDateWithoutTime(data?.created_at as string)}`,
                       ],
-                      [<Clock />, `${data?.reading_time}`],
-                      [<User />, `${data?.created_by}`],
+                      [<Clock key="clock" />, `${data?.reading_time}`],
+                      [<User key="user" />, `${data?.created_by}`],
                     ].map(([icon, label], index) => (
                       <div
                         key={index}
@@ -88,9 +88,8 @@ export default function ArticleDetailsPage({
                 <Image
                   src={data?.image_url as string}
                   alt={`image ${data?.title}`}
-                  width={800}
-                  height={800}
-                  className="aspect-square size-full object-cover object-center"
+                  fill
+                  className="aspect-square object-cover object-center"
                 />
 
                 <div className="absolute left-0 top-0 h-full w-full bg-gradient-to-tr from-green/30 to-orange/30" />

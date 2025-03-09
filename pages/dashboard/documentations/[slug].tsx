@@ -19,7 +19,6 @@ import {
 } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import Cropper from "react-easy-crop";
 import toast from "react-hot-toast";
@@ -31,8 +30,6 @@ export default function EditDocumentationPage({
   token,
   by,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const router = useRouter();
-
   const [file, setFile] = useState<string | ArrayBuffer | null>(
     doc?.thumbnail_url as string,
   );
@@ -197,10 +194,10 @@ export default function EditDocumentationPage({
       ]);
 
       window.location.reload();
-      toast.success("Berhasil mengedit dokumentasi");
+      toast.success("Dokumentasi berhasil diubah");
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat mengedit dokumentasi");
+      toast.error("Gagal mengubah data dokumentasi");
     } finally {
       setLoading(false);
     }
@@ -401,7 +398,7 @@ export default function EditDocumentationPage({
                     }}
                     className="mt-4"
                   >
-                    Status
+                    Aktifkan Dokumentasi
                   </Switch>
                 </div>
               </div>
@@ -506,6 +503,9 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req, params }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   try {
     const [doc, pillar] = await Promise.all([
       fetcher({
@@ -524,16 +524,16 @@ export const getServerSideProps: GetServerSideProps<{
       props: {
         doc: doc.data as DetailDocumentationAdmin,
         pillars: pillar.data as PillarDetails[],
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   }

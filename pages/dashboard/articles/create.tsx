@@ -263,7 +263,15 @@ export default function CreateArticlePage({
                     isRequired
                     type="text"
                     variant="flat"
-                    label="Judul"
+                    label={
+                      <>
+                        Judul{" "}
+                        <span className="font-bold text-orange">
+                          (sisa: {Math.max(0, 190 - input.title.length)}{" "}
+                          karakter)
+                        </span>
+                      </>
+                    }
                     labelPlacement="outside"
                     placeholder="Contoh: Artikel Terbaru Jakarta Pasti Sehat"
                     name="alt"
@@ -281,7 +289,15 @@ export default function CreateArticlePage({
                     isRequired
                     type="text"
                     variant="flat"
-                    label="Deskripsi Singkat"
+                    label={
+                      <>
+                        Deskripsi Singkat{" "}
+                        <span className="font-bold text-orange">
+                          (sisa: {Math.max(0, 190 - input.description.length)}{" "}
+                          karakter)
+                        </span>
+                      </>
+                    }
                     labelPlacement="outside"
                     placeholder="Contoh: Penyakit malaria merupakan"
                     name="alt"
@@ -314,10 +330,12 @@ export default function CreateArticlePage({
                 isDisabled={
                   loading ||
                   !file ||
-                  !Object.values(input).every((value) => value.trim() !== "") ||
-                  changePillar
-                    ? !pillar || !subpillar
-                    : false
+                  !input.title ||
+                  !input.description ||
+                  !input.content ||
+                  input.title.length >= 190 ||
+                  input.description.length >= 190 ||
+                  (changePillar ? !pillar || !subpillar : false)
                 }
                 color="primary"
                 startContent={
@@ -326,7 +344,7 @@ export default function CreateArticlePage({
                 className="w-max justify-self-end font-bold"
                 onPress={handleSaveArticle}
               >
-                Simpan
+                Simpan Artikel
               </Button>
             </div>
           )}
@@ -342,6 +360,9 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   try {
     const response = await fetcher({
       endpoint: "/pillars",
@@ -351,16 +372,16 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         pillars: response.data as PillarDetails[],
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   }

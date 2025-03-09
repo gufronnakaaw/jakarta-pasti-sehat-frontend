@@ -1,6 +1,7 @@
 import { decodeHtmlEntities } from "@/utils/decodeHtml";
 import { CKEditor as CKEditorComponent } from "@ckeditor/ckeditor5-react";
 import {
+  Alignment,
   Bold,
   ClassicEditor,
   Essentials,
@@ -12,6 +13,7 @@ import {
   ImageToolbar,
   ImageUpload,
   Italic,
+  Link,
   List,
   Paragraph,
   SimpleUploadAdapter,
@@ -37,6 +39,9 @@ export default function CKEditor({ value, onChange, token }: CKEditorProps) {
           items: [
             "undo",
             "|",
+            "|",
+            "heading",
+            "|",
             "fontsize",
             "|",
             "bold",
@@ -47,6 +52,9 @@ export default function CKEditor({ value, onChange, token }: CKEditorProps) {
             "|",
             "bulletedList",
             "numberedList",
+            "alignment",
+            "|",
+            "link",
           ],
           shouldNotGroupWhenFull: true,
         },
@@ -70,6 +78,8 @@ export default function CKEditor({ value, onChange, token }: CKEditorProps) {
           ImageUpload,
           ImageResize,
           ImageResizeHandles,
+          Alignment,
+          Link,
         ],
         simpleUpload: {
           uploadUrl: `https://${process.env.NEXT_PUBLIC_MODE === "production" ? "api" : "dev"}.jakartapastisehat.com/api/contents/image`,

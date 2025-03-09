@@ -539,6 +539,7 @@ export const getServerSideProps: GetServerSideProps<{
   by?: string;
 }> = async ({ req }) => {
   const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
 
   try {
     const response = await fetcher({
@@ -551,14 +552,16 @@ export const getServerSideProps: GetServerSideProps<{
     return {
       props: {
         positions: response.data as Position[],
-        token: req.headers["access_token"] as string,
-        by: req.headers["fullname"] as string,
+        token,
+        by,
       },
     };
   } catch (error: any) {
     return {
       props: {
         error,
+        token,
+        by,
       },
     };
   }

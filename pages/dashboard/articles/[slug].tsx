@@ -9,6 +9,7 @@ import getCroppedImg from "@/utils/cropImage";
 import { customStyleInput } from "@/utils/customStyleInput";
 import { fetcher } from "@/utils/fetcher";
 import { onCropComplete } from "@/utils/onCropComplete";
+import { getPillarId, getSubPillarId } from "@/utils/pillar";
 import { Button, Input, Select, SelectItem, Switch } from "@heroui/react";
 import { FloppyDisk } from "@phosphor-icons/react";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
@@ -20,18 +21,6 @@ import toast from "react-hot-toast";
 const CKEditor = dynamic(() => import("@/components/editor/CKEditor"), {
   ssr: false,
 });
-
-function getPillarId(
-  pillar: string | { pillar_id: string; name: string } | undefined,
-) {
-  return typeof pillar === "object" ? pillar.pillar_id : null;
-}
-
-function getSubPillarId(
-  subpillar: string | { sub_pillar_id: string; name: string } | undefined,
-) {
-  return typeof subpillar === "object" ? subpillar.sub_pillar_id : null;
-}
 
 export default function EditArticlePage({
   article,
@@ -114,11 +103,11 @@ export default function EditArticlePage({
         data: formData,
       });
 
-      router.back();
-      toast.success("Berhasil mengedit artikel");
+      window.location.reload();
+      toast.success("Artikel berhasil diubah");
     } catch (error) {
       console.log(error);
-      toast.error("Terjadi kesalahan saat mengedit artikel");
+      toast.error("Gagal mengubah data artikel");
     } finally {
       setLoading(false);
     }
@@ -349,14 +338,23 @@ export default function EditArticlePage({
                     }}
                     className="mb-4"
                   >
-                    Status
+                    Aktifkan Artikel
                   </Switch>
                 </div>
               </div>
 
               <Button
                 isLoading={loading}
-                isDisabled={loading}
+                isDisabled={
+                  loading ||
+                  !file ||
+                  !Object.values(input).every(
+                    (value) => value?.trim() !== "",
+                  ) ||
+                  changePillar
+                    ? !pillar || !subpillar
+                    : false
+                }
                 color="primary"
                 startContent={
                   loading ? null : <FloppyDisk weight="bold" size={18} />
@@ -364,7 +362,7 @@ export default function EditArticlePage({
                 className="w-max justify-self-end font-bold"
                 onPress={handleUpdateArticle}
               >
-                Update
+                Simpan Artikel
               </Button>
             </div>
           )}

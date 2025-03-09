@@ -180,7 +180,7 @@ export default function DashboardPotisionsPage({
       console.error(error);
 
       setLoading(false);
-      toast.error("Gagal mengubah jabatan");
+      toast.error("Gagal mengubah data jabatan");
     } finally {
       setLoading(false);
     }
@@ -361,10 +361,13 @@ export const getServerSideProps: GetServerSideProps<{
   token: string;
   by: string;
 }> = async ({ req }) => {
+  const token = req.headers["access_token"] as string;
+  const by = req.headers["fullname"] as string;
+
   return {
     props: {
-      token: req.headers["access_token"] as string,
-      by: req.headers["fullname"] as string,
+      token,
+      by,
     },
   };
 };
