@@ -210,7 +210,7 @@ export default function EventDetailsPage({
                 </div>
               </div>
 
-              <p
+              <div
                 className="preventive-table preventive-list mt-6 list-outside font-medium leading-[180%] text-gray lg:mt-0"
                 dangerouslySetInnerHTML={{ __html: data?.detail as string }}
               />

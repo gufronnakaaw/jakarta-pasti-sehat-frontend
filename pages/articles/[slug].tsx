@@ -101,7 +101,7 @@ export default function ArticleDetailsPage({
                 <div className="h-[3px] w-[64px] border-t-3 border-orange" />
               </div>
 
-              <p
+              <div
                 className="preventive-table preventive-list preventif-overlaps-text font-medium leading-[180%] text-gray"
                 dangerouslySetInnerHTML={{ __html: data?.content as string }}
               />

@@ -155,7 +155,7 @@ export default function VolunteerDetails({
                     Requirements:
                   </h1>
 
-                  <p
+                  <div
                     className="font-medium text-gray"
                     dangerouslySetInnerHTML={{
                       __html: data?.requirements as string,
@@ -169,7 +169,7 @@ export default function VolunteerDetails({
                       Responsibilities:
                     </h1>
 
-                    <p
+                    <div
                       className="font-medium text-gray"
                       dangerouslySetInnerHTML={{
                         __html: data.responsibilities,
