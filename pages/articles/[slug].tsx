@@ -71,7 +71,7 @@ export default function ArticleDetailsPage({
                         `${formatDateWithoutTime(data?.created_at as string)}`,
                       ],
                       [<Clock key="clock" />, `${data?.reading_time}`],
-                      [<User key="user" />, `${data?.created_by}`],
+                      [<User key="user" />, "Admin"],
                     ].map(([icon, label], index) => (
                       <div
                         key={index}
