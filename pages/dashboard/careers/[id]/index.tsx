@@ -33,6 +33,7 @@ import {
   Eye,
   IconContext,
 } from "@phosphor-icons/react";
+import parse from "html-react-parser";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { ParsedUrlQuery } from "querystring";
 import { Key, useCallback, useState } from "react";
@@ -206,12 +207,9 @@ export default function DetailsCareerPage({
                   Persyaratan
                 </h2>
 
-                <div
-                  className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray"
-                  dangerouslySetInnerHTML={{
-                    __html: data?.data.requirements as string,
-                  }}
-                />
+                <div className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray">
+                  {parse(data?.data.requirements as string)}
+                </div>
               </div>
 
               <div className="grid gap-2">
@@ -224,15 +222,11 @@ export default function DetailsCareerPage({
                   Tanggung Jawab
                 </h2>
 
-                <div
-                  className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray"
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      data?.data.responsibilities === null
-                        ? "-"
-                        : (data?.data.responsibilities as string),
-                  }}
-                />
+                <div className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray">
+                  {data?.data.responsibilities === null
+                    ? "-"
+                    : parse(data?.data.responsibilities as string)}
+                </div>
               </div>
 
               <div className="grid gap-2">
@@ -324,6 +318,7 @@ export default function DetailsCareerPage({
                               [
                                 "Instagram",
                                 <Link
+                                  key="email"
                                   isExternal
                                   showAnchorIcon
                                   href="#"
@@ -348,6 +343,7 @@ export default function DetailsCareerPage({
                               [
                                 "Portofolio",
                                 <Link
+                                  key="portfolio"
                                   isExternal
                                   showAnchorIcon
                                   href="#"
@@ -372,6 +368,7 @@ export default function DetailsCareerPage({
                               [
                                 "CV / Resume",
                                 <Link
+                                  key="cv"
                                   isExternal
                                   showAnchorIcon
                                   href={selectedApplicant?.cv_url as string}

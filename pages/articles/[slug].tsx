@@ -9,6 +9,7 @@ import { SuccessResponse } from "@/types/global";
 import { fetcher } from "@/utils/fetcher";
 import { formatDateWithoutTime } from "@/utils/formatDate";
 import { CalendarMinus, Clock, IconContext, User } from "@phosphor-icons/react";
+import parse from "html-react-parser";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -101,10 +102,9 @@ export default function ArticleDetailsPage({
                 <div className="h-[3px] w-[64px] border-t-3 border-orange" />
               </div>
 
-              <div
-                className="preventive-table preventive-list preventif-overlaps-text font-medium leading-[180%] text-gray"
-                dangerouslySetInnerHTML={{ __html: data?.content as string }}
-              />
+              <div className="ck-content preventive-table preventive-list preventif-overlaps-text font-medium leading-[180%] text-gray">
+                {parse(data?.content as string)}
+              </div>
             </div>
           </section>
         )}

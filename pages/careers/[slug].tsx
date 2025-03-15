@@ -16,6 +16,7 @@ import {
   MapPin,
   PaperPlaneTilt,
 } from "@phosphor-icons/react";
+import parse from "html-react-parser";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -161,12 +162,9 @@ export default function CareerDetailsPage({
                     Requirements:
                   </h1>
 
-                  <div
-                    className="font-medium text-gray"
-                    dangerouslySetInnerHTML={{
-                      __html: data?.requirements as string,
-                    }}
-                  />
+                  <div className="font-medium text-gray">
+                    {parse(data?.requirements as string)}
+                  </div>
                 </div>
 
                 {data?.responsibilities ? (
@@ -175,12 +173,9 @@ export default function CareerDetailsPage({
                       Responsibilities:
                     </h1>
 
-                    <div
-                      className="font-medium text-gray"
-                      dangerouslySetInnerHTML={{
-                        __html: data.responsibilities,
-                      }}
-                    />
+                    <div className="font-medium text-gray">
+                      {parse(data.responsibilities)}
+                    </div>
                   </div>
                 ) : null}
               </div>
