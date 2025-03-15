@@ -14,6 +14,7 @@ import {
   TiktokLogo,
   YoutubeLogo,
 } from "@phosphor-icons/react";
+import parse from "html-react-parser";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 
@@ -55,12 +56,9 @@ export default function DetailTeamPage({
                     Deskripsi Singkat
                   </h1>
 
-                  <div
-                    className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray"
-                    dangerouslySetInnerHTML={{
-                      __html: data?.description as string,
-                    }}
-                  />
+                  <div className="preventive-list preventive-table list-outside font-medium leading-[180%] text-gray">
+                    {parse(data?.description as string)}
+                  </div>
                 </div>
               </div>
 

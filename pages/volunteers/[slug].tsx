@@ -22,6 +22,7 @@ import {
   IconContext,
   PaperPlaneTilt,
 } from "@phosphor-icons/react";
+import parse from "html-react-parser";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -155,12 +156,9 @@ export default function VolunteerDetails({
                     Requirements:
                   </h1>
 
-                  <p
-                    className="font-medium text-gray"
-                    dangerouslySetInnerHTML={{
-                      __html: data?.requirements as string,
-                    }}
-                  />
+                  <div className="font-medium text-gray">
+                    {parse(data?.requirements as string)}
+                  </div>
                 </div>
 
                 {data?.responsibilities ? (
@@ -169,12 +167,9 @@ export default function VolunteerDetails({
                       Responsibilities:
                     </h1>
 
-                    <p
-                      className="font-medium text-gray"
-                      dangerouslySetInnerHTML={{
-                        __html: data.responsibilities,
-                      }}
-                    />
+                    <div className="font-medium text-gray">
+                      {parse(data.responsibilities)}
+                    </div>
                   </div>
                 ) : null}
               </div>

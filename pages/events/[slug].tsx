@@ -20,6 +20,7 @@ import {
   ShareNetwork,
   TwitterLogo,
 } from "@phosphor-icons/react";
+import parse from "html-react-parser";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -110,14 +111,14 @@ export default function EventDetailsPage({
                     <div className="grid gap-2 text-sm text-gray">
                       {[
                         [
-                          <CalendarMinus />,
+                          <CalendarMinus key="calendar" />,
                           `${formatEventDate(data?.start as string, data?.end as string)}`,
                         ],
                         [
-                          <Clock />,
+                          <Clock key="clock" />,
                           `${formatEventTime(data?.start as string, data?.end as string)}`,
                         ],
-                        [<MapPin />, `${data?.location}`],
+                        [<MapPin key="mappin" />, `${data?.location}`],
                       ].map(([icon, label], index) => (
                         <div
                           key={index}
@@ -210,10 +211,9 @@ export default function EventDetailsPage({
                 </div>
               </div>
 
-              <p
-                className="preventive-table preventive-list mt-6 list-outside font-medium leading-[180%] text-gray lg:mt-0"
-                dangerouslySetInnerHTML={{ __html: data?.detail as string }}
-              />
+              <div className="preventive-table preventive-list mt-6 list-outside font-medium leading-[180%] text-gray lg:mt-0">
+                {parse(data?.detail as string)}
+              </div>
             </div>
           )}
         </section>
