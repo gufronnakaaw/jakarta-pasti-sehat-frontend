@@ -34,6 +34,31 @@
   @apply pl-4;
 }
 
+.ck-content .image-style-align-left {
+  @apply float-left mr-2 !important;
+}
+
+.ck-content .image-style-align-right {
+  @apply float-right ml-2 !important;
+}
+
+.ck-content .image-style-align-center {
+  @apply mx-auto block !important;
+}
+
+figure.image {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+figure.image figcaption {
+  text-align: center;
+  font-size: 14px;
+  color: #666;
+  margin-top: 5px;
+}
+
 .teams-container .swiper-pagination {
   @apply static mx-auto pt-4 transition-all xs:pt-8;
 }
